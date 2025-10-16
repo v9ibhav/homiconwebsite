@@ -8,14 +8,14 @@
 // scss-docs-start gray-color-variables
 $white:    #fff !default;
 $gray-100: #f8f9fa !default;
-$gray-200: #efeff8 !default;
-$gray-300: #f9f9ff !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
 $gray-400: #ced4da !default;
 $gray-500: #adb5bd !default;
 $gray-600: #6c757d !default;
 $gray-700: #495057 !default;
-$gray-800: #343a40 !default; 
-$gray-900: #ffffff !default; // card bg
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
 $black:    #000 !default;
 // scss-docs-end gray-color-variables
 
@@ -36,16 +36,16 @@ $grays: (
 // fusv-enable
 
 // scss-docs-start color-variables
-$blue:    #5F60B9 !default;
-$indigo:  #6610f2 !default;
-$purple:  #6f42c1 !default;
-$pink:    #d63384 !default;
-$red:     #eb5757 !default;
-$orange:  #faa938 !default;
-$yellow:  #ff9302 !default;
-$green:   #219653 !default;
-$teal:    #1C1F34 !default;
-$cyan:    #08B1BA !default;
+$blue:    $gray-800 !default;
+$indigo:  $gray-700 !default;
+$purple:  $gray-600 !default;
+$pink:    $gray-500 !default;
+$red:     $black !default;
+$orange:  $gray-600 !default;
+$yellow:  $gray-500 !default;
+$green:   $gray-700 !default;
+$teal:    $gray-900 !default;
+$cyan:    $gray-600 !default;
 // scss-docs-end color-variables
 
 // scss-docs-start colors-map
@@ -298,13 +298,13 @@ $cyans: (
 // fusv-enable
 
 // scss-docs-start theme-color-variables
-$primary:       $blue !default;
-$secondary:     $teal !default;
-$success:       $green !default;
-$info:          $cyan !default;
-$warning:       $yellow !default;
-$danger:        $red !default;
-$light:         $gray-300 !default;
+$primary:       $gray-800 !default;
+$secondary:     $gray-600 !default;
+$success:       $gray-700 !default;
+$info:          $gray-600 !default;
+$warning:       $gray-500 !default;
+$danger:        $black !default;
+$light:         $gray-200 !default;
 $dark:          $black !default;
 $gray:          $gray-600 !default;
 $gray-dark:     $gray-800 !default;
@@ -439,8 +439,8 @@ $position-values: (
 // Settings for the `<body>` element.
 
 $body-text-align:           null !default;
-$body-color:                #727272 !default;
-$body-bg:                   #fff !default;
+$body-color:                $gray-800 !default;
+$body-bg:                   $white !default;
 
 $body-secondary-color:      rgba($body-color, .75) !default;
 $body-secondary-bg:         $gray-200 !default;
