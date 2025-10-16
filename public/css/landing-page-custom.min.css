@@ -178,7 +178,7 @@ a {
   padding: 0.25rem 0.5rem;
   margin-top: 0.125rem;
   margin-left: 0.25rem;
-  color: rgba(52, 58, 64, 0.95);
+  color: rgba(206, 212, 218, 0.95);
   text-decoration: none;
 }
 .bd-aside a:hover, .bd-aside a:focus {
@@ -192,7 +192,7 @@ a {
 .bd-aside .btn {
   padding: 0.25rem 0.5rem;
   font-weight: 600;
-  color: #343a40;
+  color: #ced4da;
   border: 0;
 }
 .bd-aside .btn .right-icon {
@@ -499,7 +499,7 @@ body.uikit .btn-download {
 
 .social-login-label {
   position: relative;
-  color: #343a40;
+  color: #ced4da;
   font-size: 0.875rem;
   font-weight: 500;
   line-height: normal;
@@ -1922,7 +1922,7 @@ table.provider-detail-info td h6 {
 }
 .service-box-card .price-content li.service-price::before {
   content: "";
-  background: #343a40;
+  background: #ced4da;
   width: 6px;
   height: 6px;
   position: absolute;

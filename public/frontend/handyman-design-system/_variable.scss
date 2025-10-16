@@ -280,7 +280,7 @@ $position-values: (
 // Settings for the `<body>` element.
 
 $body-bg:                   $white !default;
-$body-color:                $gray-800 !default;
+$body-color:                $gray-400 !default;
 $body-text-align:           null !default;
 
 
@@ -491,7 +491,7 @@ $headings-font-family:        'Inter' !default;
 $headings-font-style:         normal !default;
 $headings-font-weight:        500 !default;
 $headings-line-height:        130% !default;
-$headings-color:              #1C1F34 !default;
+$headings-color:              $white !default;
 // scss-docs-end headings-variables
 
 // scss-docs-start display-headings
