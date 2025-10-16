@@ -454,10 +454,10 @@ $body-emphasis-color:       $black !default;
 //
 // Style anchor elements.
 
-$link-color:                              $primary !default;
+$link-color:                              $white !default;
 $link-decoration:                         none !default;
 $link-shade-percentage:                   15% !default;
-$link-hover-color:                        shift-color($link-color, $link-shade-percentage) !default;
+$link-hover-color:                        $gray-200 !default;
 $link-hover-decoration:                   null !default;
 
 $stretched-link-pseudo-element:           after !default;
@@ -1164,8 +1164,8 @@ $nav-link-padding-y:                .5rem !default;
 $nav-link-padding-x:                1rem !default;
 $nav-link-font-size:                null !default;
 $nav-link-font-weight:              null !default;
-$nav-link-color:                    var(--bs-primary) !default;
-$nav-link-hover-color:              $link-hover-color !default;
+$nav-link-color:                    $white !default;
+$nav-link-hover-color:              $gray-200 !default;
 $nav-link-transition:               color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out !default;
 $nav-link-disabled-color:           $gray-400 !default;
 $nav-link-focus-box-shadow:         none !default;
