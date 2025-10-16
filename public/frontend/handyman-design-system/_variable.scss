@@ -36,10 +36,10 @@ $grays: (
 // fusv-enable
 
 // scss-docs-start color-variables
-$blue:    #5F60B9  !default;
-$blue_rgb:    #5F60B9  !default;
-$indigo:  #6610f2 !default;
-$purple:  #6f42c1 !default;
+$blue:    $gray-700  !default;
+$blue_rgb:    $gray-700  !default;
+$indigo:  $gray-600 !default;
+$purple:  $gray-800 !default;
 $pink:    #d63384 !default;
 $red:     #c03221  !default;
 $orange:  #DD6F1D !default;
@@ -69,11 +69,11 @@ $colors: (
 // scss-docs-end colors-map
 
 // scss-docs-start theme-color-variables
-$primary:       $blue !default;
-$primary_rgb:       $blue_rgb !default;
+$primary:       $gray-700 !default;
+$primary_rgb:       $gray-700 !default;
 $secondary:     $gray-600 !default;
 $success:       $green !default;
-$info:          $cyan !default;
+$info:          $gray-500 !default;
 $warning:       $orange !default;
 $danger:        $red !default;
 $light:         $gray-300 !default;
@@ -279,8 +279,8 @@ $position-values: (
 //
 // Settings for the `<body>` element.
 
-$body-bg:                   #f6f7f9 !default;
-$body-color:                #6c757d !default;
+$body-bg:                   $white !default;
+$body-color:                $gray-700 !default;
 $body-text-align:           null !default;
 
 
@@ -370,7 +370,7 @@ $border-widths: (
 ) !default;
 
 $border-color:                #EBEBEB !default;
-$primary-light:                 #E7E7F5;
+$primary-light:                 $gray-200;
 // scss-docs-end border-variables
 
 // scss-docs-start border-radius-variables
@@ -542,7 +542,7 @@ $nested-kbd-font-weight:      $font-weight-bold !default;
 
 $list-inline-padding:         .5rem !default;
 
-$mark-bg:                     #fcf8e3 !default;
+$mark-bg:                     $gray-100 !default;
 // scss-docs-end type-variables
 
 
@@ -1155,7 +1155,7 @@ $card-group-margin:                 $grid-gutter-width * .5 !default;
 $accordion-padding-y:                     1rem !default;
 $accordion-padding-x:                     1.5rem !default;
 $accordion-color:                         $body-color !default;
-$accordion-bg:                            $body-bg !default;
+$accordion-bg:                            $white !default;
 $accordion-border-width:                  $border-width !default;
 $accordion-border-color:                  rgba($black, .125) !default;
 $accordion-border-radius:                 $border-radius !default;
