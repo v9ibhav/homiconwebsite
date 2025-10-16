@@ -36,17 +36,17 @@ $grays: (
 // fusv-enable
 
 // scss-docs-start color-variables
-$blue:    $gray-700  !default;
-$blue_rgb:    $gray-700  !default;
-$indigo:  $gray-600 !default;
-$purple:  $gray-800 !default;
-$pink:    #d63384 !default;
-$red:     #c03221  !default;
-$orange:  #DD6F1D !default;
-$yellow:  #f16a1b  !default;
-$green:   #1aa053  !default;
-$teal:    #20c997 !default;
-$cyan:    #079aa2  !default;
+$blue:    $gray-800 !default;
+$blue_rgb:    $gray-800 !default;
+$indigo:  $gray-700 !default;
+$purple:  $gray-600 !default;
+$pink:    $gray-500 !default;
+$red:     $gray-800 !default;
+$orange:  $gray-600 !default;
+$yellow:  $gray-500 !default;
+$green:   $gray-700 !default;
+$teal:    $gray-900 !default;
+$cyan:    $gray-600 !default;
 // scss-docs-end color-variables
 
 // scss-docs-start colors-map
@@ -69,14 +69,14 @@ $colors: (
 // scss-docs-end colors-map
 
 // scss-docs-start theme-color-variables
-$primary:       $gray-700 !default;
-$primary_rgb:       $gray-700 !default;
+$primary:       $gray-800 !default;
+$primary_rgb:       $gray-800 !default;
 $secondary:     $gray-600 !default;
-$success:       $green !default;
-$info:          $gray-500 !default;
-$warning:       $orange !default;
-$danger:        $red !default;
-$light:         $gray-300 !default;
+$success:       $gray-700 !default;
+$info:          $gray-600 !default;
+$warning:       $gray-500 !default;
+$danger:        $gray-800 !default;
+$light:         $gray-200 !default;
 $dark:          $gray-900 !default;
 // scss-docs-end theme-color-variables
 
@@ -280,7 +280,7 @@ $position-values: (
 // Settings for the `<body>` element.
 
 $body-bg:                   $white !default;
-$body-color:                $gray-700 !default;
+$body-color:                $gray-800 !default;
 $body-text-align:           null !default;
 
 
@@ -369,8 +369,8 @@ $border-widths: (
   5: 5px
 ) !default;
 
-$border-color:                #EBEBEB !default;
-$primary-light:                 $gray-200;
+$border-color:                $gray-200 !default;
+$primary-light:                 $gray-100;
 // scss-docs-end border-variables
 
 // scss-docs-start border-radius-variables
