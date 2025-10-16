@@ -369,28 +369,28 @@ a {
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.75;
-  --bs-body-color: #ced4da;
-  --bs-body-color-rgb: 206, 212, 218;
+  --bs-body-color: #343a40;
+  --bs-body-color-rgb: 52, 58, 64;
   --bs-body-bg: #fff;
   --bs-body-bg-rgb: 255, 255, 255;
   --bs-emphasis-color: #000;
   --bs-emphasis-color-rgb: 0, 0, 0;
-  --bs-secondary-color: rgba(206, 212, 218, 0.75);
-  --bs-secondary-color-rgb: 206, 212, 218;
+  --bs-secondary-color: rgba(52, 58, 64, 0.75);
+  --bs-secondary-color-rgb: 52, 58, 64;
   --bs-secondary-bg: #e9ecef;
   --bs-secondary-bg-rgb: 233, 236, 239;
-  --bs-tertiary-color: rgba(206, 212, 218, 0.5);
-  --bs-tertiary-color-rgb: 206, 212, 218;
+  --bs-tertiary-color: rgba(52, 58, 64, 0.5);
+  --bs-tertiary-color-rgb: 52, 58, 64;
   --bs-tertiary-bg: #f8f9fa;
   --bs-tertiary-bg-rgb: 248, 249, 250;
-  --bs-heading-color: #fff;
+  --bs-heading-color: #343a40;
   --bs-link-color: #343a40;
   --bs-link-color-rgb: 52, 58, 64;
   --bs-link-decoration: none;
   --bs-link-hover-color: #2c3136;
   --bs-link-hover-color-rgb: 44, 49, 54;
   --bs-code-color: #adb5bd;
-  --bs-highlight-color: #ced4da;
+  --bs-highlight-color: #343a40;
   --bs-highlight-bg: #fcf8e3;
   --bs-border-width: 1px;
   --bs-border-style: solid;
@@ -4300,7 +4300,7 @@ textarea.form-control-lg {
   --bs-navbar-toggler-padding-y: 0.25rem;
   --bs-navbar-toggler-padding-x: 0.75rem;
   --bs-navbar-toggler-font-size: 1.188rem;
-  --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28206, 212, 218, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2852, 58, 64, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
   --bs-navbar-toggler-border-color: rgba(var(--bs-emphasis-color-rgb), 0.15);
   --bs-navbar-toggler-border-radius: 0.25rem;
   --bs-navbar-toggler-focus-width: 0rem;
@@ -14796,7 +14796,7 @@ th {
 
 .booking-detail-table tr th {
   text-transform: capitalize;
-  color: #fff;
+  color: #343a40;
   font-family: "Inter", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-weight: 500;
   padding-left: 0;
@@ -14952,7 +14952,7 @@ table.dataTable.table-striped > tbody > tr.odd > * {
   border-bottom: 4px solid rgba(var(--bs-primary-rgb), 0.1);
 }
 .tab-bottom-bordered .nav-tabs .nav-link {
-  color: #ced4da;
+  color: #343a40;
   position: relative;
 }
 .tab-bottom-bordered .nav-tabs .nav-link::after {
@@ -15005,7 +15005,7 @@ table.dataTable.table-striped > tbody > tr.odd > * {
   border-bottom: 1px solid var(--bs-border-color);
 }
 .tab-bottom-bordered.tab-border-botton-style-2 .nav-tabs .nav-link {
-  color: #ced4da;
+  color: #343a40;
   font-size: 1rem;
   text-transform: capitalize;
   margin: 0;
@@ -15096,7 +15096,7 @@ service-tab-list
   transform: translate(-50%, -50%);
   width: 1.7rem;
   height: 2px;
-  background-color: #ced4da;
+  background-color: #343a40;
   background-image: none;
   display: inline-block;
 }
@@ -15107,7 +15107,7 @@ service-tab-list
   transition: all 0.2s;
   width: 1.7rem;
   height: 2px;
-  background-color: #ced4da;
+  background-color: #343a40;
   display: inline-block;
 }
 .nav .navbar-toggler .navbar-toggler-btn .navbar-toggler-icon::after {
@@ -15145,14 +15145,14 @@ service-tab-list
 .iq-nav-menu > li > a {
   font-weight: 500;
   font-size: 1rem;
-  color: #ced4da;
+  color: #343a40;
 }
 .iq-nav-menu a {
   position: relative;
   display: block;
   padding: 0.625rem 1.875rem;
   outline-width: 0;
-  color: #ced4da;
+  color: #343a40;
   text-decoration: none;
 }
 .iq-nav-menu .menu-arrow {
@@ -15215,7 +15215,7 @@ header .navbar .iq-nav-menu.navbar-nav li ul.sub-nav {
 }
 header .navbar .iq-nav-menu.navbar-nav li ul.sub-nav li a.nav-link {
   padding: 10px 25px;
-  color: #ced4da;
+  color: #343a40;
   font-weight: 400;
   position: relative;
   font-size: 0.875rem;
@@ -15283,7 +15283,7 @@ header .iq-navbar .dropdown .dropdown-menu-end[data-bs-popper].dropdown-user li:
 header .iq-navbar .dropdown .dropdown-menu-end[data-bs-popper] .dropdown-item {
   position: relative;
   padding: 10px 0;
-  color: #ced4da;
+  color: #343a40;
   font-size: 0.875rem;
   transition: all 0.3s ease-in-out;
 }
@@ -15345,7 +15345,7 @@ header .iq-navbar .navbar-toggler {
   padding: 0.75rem 1.25rem !important;
   display: inline-block;
   width: 100%;
-  color: #ced4da;
+  color: #343a40;
   transition: all 400ms ease;
 }
 .iq-navbar .dropdown .dropdown-menu.sub-drop .iq-sub-card:hover {
