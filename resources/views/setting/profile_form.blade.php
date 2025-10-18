@@ -133,7 +133,7 @@
                         </div>
                     </div>           
 
-                @if(auth()->user()->hasRole('handyman'))
+                    @if(auth()->user()->hasRole('handyman'))
 
                     <div class="form-group col-md-6">
                         {{ html()->label(__('messages.select_name', ['select' => __('messages.handymantype')]) . ' <span class="text-danger">*</span>', 'handymantype_id')
@@ -146,7 +146,7 @@
                             ->attribute('data-ajax--url', route('ajax-list', ['type' => 'handymantype'])) }}
                     </div>
                 
-                    {{-- <div class="form-group col-md-6">
+                    <div class="form-group col-md-6">
                         {{ html()->label(__('messages.select_name', ['select' => __('messages.provider_address')]), 'name')
                             ->class('form-control-label') }}
                         <br />
@@ -155,16 +155,7 @@
                             ->id('service_address_id')
                             ->attribute('data-ajax--url', route('ajax-list', ['type' => 'provider_address', 'provider_id' => $user_data->provider_id]))
                             ->attribute('data-placeholder', __('messages.select_name', ['select' => __('messages.provider_address')])) }}
-                    </div> --}}
-
-                    <div class="form-group col-md-12">
-                    {{ html()->label(__('messages.select_name', ['select' => __('messages.service_zone')]), 'handyman_zone_id')->class('form-control-label') }}
-                    <br />
-                    {{ html()->select('handyman_zone_id', $serviceZones->pluck('name', 'id'), $user_data->handyman_zone_id)
-                        ->class('select2js form-group')
-                        ->id('handyman_zone_id')
-                        ->attribute('data-placeholder', __('messages.select_name', ['select' => __('messages.service_zone')])) }}
-                </div>
+                    </div>
                 @endif
                 
                 <div class="form-group col-md-6">
@@ -187,19 +178,17 @@
                         for="profile_image">{{ __('messages.profile_image') }}</label>                    
                     </div>
                 </div>
-
-            
-                @if($user_data->user_type =='provider')   
-
-                    <div class="form-group col-md-12">
-                    {{ html()->label(__('messages.select_name', ['select' => __('messages.service_zone')]), 'service_zones')->class('form-control-label') }}
-                    <br />
-                    {{ html()->select('service_zones[]', $serviceZones->pluck('name', 'id'), $user_data->serviceZones->pluck('id')->toArray())
-                        ->class('select2js form-group')
-                        ->id('service_zones')
-                        ->multiple()
-                        ->attribute('data-placeholder', __('messages.select_name', ['select' => __('messages.service_zone')])) }}
+                
+                <div class="form-group col-md-12">
+                    {{ html()->label(__('messages.address'), 'address')
+                        ->class('form-control-label') }}
+                    {{ html()->textarea('address',$user_data->address)
+                        ->class('form-control textarea')
+                        ->rows(2)
+                        ->placeholder(__('messages.address')) }}
                 </div>
+                
+                  @if($user_data->user_type =='provider')   
 
                 <div class="form-group col-md-12 mt-4">
                     <h4>{{ __('messages.why_choose_me') }}</h4>
@@ -508,7 +497,7 @@ $(document).ready(function() {
         var dialCode = countryData.dialCode;
         var localNumber = number.replace(`+${dialCode}`, '');
 
-        var formattedNumber = `+${dialCode} ${localNumber}`;
+        var formattedNumber = `+${dialCode}-${localNumber}`;
         $('#contact_number').val(formattedNumber); // Update before submit
     }
 });

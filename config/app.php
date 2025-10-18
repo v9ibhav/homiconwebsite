@@ -15,7 +15,7 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
-    'version' => env('APP_VERSION', '11.14.3'),
+    'version' => env('APP_VERSION', '11.13.2'),
 
     /*
     |--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ return [
     |
     */
 
-    'locale' => env('DEFAULT_LANGUAGE', 'en'),
+    'locale' => env('DEFAULT_LANGUAGE','en'),
 
     /*
     |--------------------------------------------------------------------------

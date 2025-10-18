@@ -58,9 +58,4 @@ class PromotionalBanner extends Model implements HasMedia
            
         });
     }
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('banner_image')
-            ->singleFile();
-    }
 }

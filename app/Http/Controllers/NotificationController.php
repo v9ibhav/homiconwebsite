@@ -18,19 +18,9 @@ class NotificationController extends Controller
     }
     public function index_data(DataTables $datatable)
     {
-       $notifications = \Auth::user()->notifications()->latest()->get();
-    
-        // Step 2: Assign row numbers based on ascending age (oldest = 1)
-        $total = $notifications->count();
-        $notifications = $notifications->values()->map(function ($item, $index) use ($total) {
-            $item->custom_row_index = $total - $index; // So latest is last, oldest is 1
-            return $item;
-        });
-    
-        return $datatable->collection($notifications)
-            ->editColumn('DT_RowIndex', function ($row) {
-                return $row->custom_row_index;
-            })
+        $row = \Auth::user()->notifications;
+
+        return $datatable->collection($row)
         ->editColumn('type', function ($row) {
             $data = $row->data ?? [];
 
@@ -79,6 +69,7 @@ class NotificationController extends Controller
                 return '<a href="#"><span class="iq-bg-info mr-2"><i class="far fa-eye text-secondary"></i></span></a>';
             }
         })
+        ->addIndexColumn()
         ->rawColumns(['type','action','thread'])
         ->toJson();
     }

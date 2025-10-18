@@ -11,8 +11,8 @@ $auth_user= authSession();
         data--confirmation='true' 
         data--ajax="true"
         data-datatable="reload"
-        data-title="{{ __('messages.delete_form_title',['form'=>  __('messages.notification') ]) }}"
-        title="{{ __('messages.delete_form_title',['form'=>  __('messages.notification') ]) }}"
+        data-title="{{ __('messages.delete_form_title',['form'=>  __('messages.payment') ]) }}"
+        title="{{ __('messages.delete_form_title',['form'=>  __('messages.payment') ]) }}"
         data-message='{{ __("messages.delete_msg") }}'>
         <i class="far fa-trash-alt text-danger"></i>
     </a>

@@ -142,25 +142,16 @@ class CustomerController extends Controller
                 break;
 
             case 'delete':
-                if (!auth()->user()->can('user delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 User::whereIn('id', $ids)->delete();
                 $message = 'Bulk Customer Deleted';
                 break;
                             
             case 'restore':
-                if (!auth()->user()->can('user delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 User::whereIn('id', $ids)->restore();
                 $message = 'Bulk Customer Restored';
                 break;
             
             case 'permanently-delete':
-                if (!auth()->user()->can('user delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 User::whereIn('id', $ids)->forceDelete();
                 $message = 'Bulk Customer Permanently Deleted';
                 break;
@@ -208,9 +199,8 @@ class CustomerController extends Controller
             $pageTitle = __('messages.add_button_form',['form' => __('messages.user')]);
             $customerdata = new User;
         }
-        $backUrl = $request->get('backUrl', url()->previous());
-
-        return view('customer.create', compact('pageTitle' ,'customerdata' ,'auth_user','roles', 'backUrl' ));
+        
+        return view('customer.create', compact('pageTitle' ,'customerdata' ,'auth_user','roles' ));
     }
 
     /**

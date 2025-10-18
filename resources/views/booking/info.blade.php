@@ -274,7 +274,7 @@ $datetime = $sitesetup ? json_decode($sitesetup->value) : null;
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                                    <table class="table table-borderless booking-info-table align-middle mb-0">
+                                    <table class="table table-borderless align-middle mb-0">
                                         <tbody>
                                             <h3 class="mb-3">{{__('messages.payment_summary')}}</h3>
                                             <tr class="border-bottom">

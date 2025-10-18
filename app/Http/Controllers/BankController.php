@@ -169,7 +169,6 @@ class BankController extends Controller
      */
     public function store(BankRequest $request)
     {
-       
         if (demoUserPermission()) {
             return  redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
         }
@@ -180,11 +179,11 @@ class BankController extends Controller
         $type = $data['type'] ?? '';
         unset($data['type']);
         if (!$request->is('api/*')) {
-            // if ($request->id == null) {
-            //     if (!isset($data['bank_attachment'])) {
-            //         return  redirect()->back()->withErrors(__('validation.required', ['attribute' => 'attachments']));
-            //     }
-            // }    
+            if ($request->id == null) {
+                if (!isset($data['bank_attachment'])) {
+                    return  redirect()->back()->withErrors(__('validation.required', ['attribute' => 'attachments']));
+                }
+            }
         }
         $result = Bank::updateOrCreate(['id' => $data['id']], $data);
         if ($request->is('api/*')) {
@@ -198,8 +197,7 @@ class BankController extends Controller
                 storeMediaFile($result, $file, 'bank_attachment');
             }
         } else {
-
-            // storeMediaFile($result, $request->bank_attachment, 'bank_attachment');
+            storeMediaFile($result, $request->bank_attachment, 'bank_attachment');
         }
         $message = trans('messages.update_form', ['form' => trans('messages.bank')]);
         if ($result->wasRecentlyCreated) {

@@ -6,7 +6,7 @@
                 <div class="card-body p-0">
                     <div class="d-flex justify-content-between align-items-center p-3">
                         <h5 class="fw-bold">{{ $pageTitle ?? trans('messages.list') }}</h5>
-                        <a href="{{ route('handymanEarning') }}" class=" float-end btn btn-sm btn-primary"><i
+                        <a href="{{ route('handyman.index') }}" class=" float-end btn btn-sm btn-primary"><i
                                     class="fa fa-angle-double-left"></i> {{ __('messages.back') }}</a>
                     </div>
                 </div>

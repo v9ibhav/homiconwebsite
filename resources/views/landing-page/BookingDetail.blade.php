@@ -576,21 +576,18 @@
                                         </td>
                                     </tr>
                                     @endif
-                                    @if($bookingData['coupon_data'] && $bookingData['booking_detail']['final_coupon_discount_amount'] < $bookingData['booking_detail']['total_amount'])
-    <tr>
-        <td>
-            <span class="text-capitalize">{{ __('landingpage.coupon') }}
-                <span class="text-primary"> ({{ $bookingData['coupon_data']['code'] }})</span>
-            </span>
-        </td>
-        <td>
-            <span class="d-block text-end text-success">
-                -{{ getPriceFormat($bookingData['booking_detail']['final_coupon_discount_amount']) }}
-            </span>
-        </td>
-    </tr>
-@endif
+                                    @if($bookingData['coupon_data'])
+                                    <tr>
+                                        <td>
+                                            <span class="text-capitalize">{{__('landingpage.coupon')}}<span class="text-primary"> ({{$bookingData['coupon_data']['code']}})</span></span>
+                                        </td>
 
+
+                                        <td>
+                                            <span class="d-block text-end text-success">-{{ getPriceFormat($bookingData['booking_detail']['final_coupon_discount_amount']) }}</span>
+                                        </td>
+                                    </tr>
+                                    @endif
 
                                     @if(!empty($bookingData['booking_detail']['BookingAddonService']))
                                     <tr>

@@ -36,9 +36,7 @@ class BookingExport implements FromQuery, WithHeadings, WithMapping
             'colPrice' => fn() => optional($booking->provider)->display_name . ' (' . optional($booking->provider)->email . ')',
             'colStatus' => fn() => strip_tags(bookingstatus(BookingStatus::bookingStatus($booking->status))),
             'colDoctor' => fn() => $booking->total_amount ? getPriceFormat($booking->total_amount) : '-',
-            // 'colPaymentStatus' => fn() => $booking->payment->payment_status ?? __('messages.pending'),
-            'colPaymentStatus' => fn() => ucfirst($booking->payment->payment_status ?? __('messages.pending')),
-
+            'colPaymentStatus' => fn() => $booking->payment->payment_status ?? __('messages.pending'),
         ];
 
         foreach ($this->columns as $column) {

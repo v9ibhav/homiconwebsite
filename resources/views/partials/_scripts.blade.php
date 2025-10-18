@@ -5,7 +5,7 @@
 <link href="{{ asset('css/dragula.css') }}" rel="stylesheet">
 <script src="{{ asset('js/dragula.min.js') }}"></script>
 <script src="{{ asset('js/swiper-bundle.min.js') }}"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
       // Set the primary locale (default language)
    const primaryLanguageId = 'en';
@@ -163,7 +163,7 @@
                             if (selectedItem) {
                                 // Check if the option is already present to prevent duplication
                                 const existingOption = $element.find(`option[value="${selectedItem.id}"]`);
-
+                                console.log('existingOption before appending:', existingOption.length);
                                 if (existingOption.length === 0) {
                                     const option = new Option(selectedItem.text, selectedItem.id, true, true);
                                     $element.append(option);
@@ -185,7 +185,7 @@
                         if (selectedItem) {
                             const option = new Option(selectedItem.text, selectedItem.id, true, true);
                             const existingOption = $element.find(`option[value="${selectedItem.id}"]`);
-                           
+                            console.log('existingOption before appending:', existingOption.length);
                             if (existingOption.length === 0) {
                                 $element.append(option);
                                  // Update DOM and total price only after appending
@@ -213,7 +213,7 @@
     }
 
     function updateTotalPrice(totalServicePrice) {
-       
+        console.log('totalServicePrice:',totalServicePrice)
         $('#original_price').val(totalServicePrice.toFixed(2));
     }
    
@@ -314,7 +314,7 @@
                 ? ajaxUrl.replace(/subcategory_id=[^&]*/, `subcategory_id=${subcategoryId}`)
                 : ajaxUrl + `&subcategory_id=${subcategoryId}`;
         } 
- 
+        console.log(ajaxUrl); 
         $serviceDropdown.empty();
         $serviceDropdown.data('ajax--url', ajaxUrl);
         initializeSelect2($serviceDropdown);
@@ -391,7 +391,7 @@
         const $providerDropdown = $(`#provider_id_${languageId}`);
         const $subcategoryDropdown = $(`#subcategory_id_${languageId}`);
         const $serviceDropdown = $(`#service_id_${languageId}`);
-
+        console.log($subcategoryDropdown);
         if ($subcategoryDropdown.length || $serviceDropdown.length) {
             updateDropdowns($providerDropdown, $categoryDropdown, $subcategoryDropdown, $serviceDropdown);
         }
@@ -402,7 +402,7 @@
     });
     $('.select2js-service').on('select2:select', function (e) {
         const selectedService = e.params.data;
-
+        console.log(selectedService);
         if (selectedService && selectedService.price) {
             totalServicePrice += parseFloat(selectedService.price);
             updateTotalPrice(totalServicePrice); // Update the total price when a service is selected

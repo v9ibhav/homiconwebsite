@@ -34,9 +34,9 @@ class NewPasswordController extends Controller
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required|string|confirmed|min:8|max:14',
+            'password' => 'required|string|confirmed|min:8',
         ]);
-    
+
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user) use ($request) {
@@ -44,33 +44,14 @@ class NewPasswordController extends Controller
                     'password' => Hash::make($request->password),
                     'remember_token' => Str::random(60),
                 ])->save();
-    
+
                 event(new PasswordReset($user));
             }
         );
-    
-        if ($status == Password::PASSWORD_RESET) {
-            $user = \App\Models\User::where('email', $request->email)->first();
-    
-            if ($user) {
-                // Adjust based on your database field for role
-                switch ($user->user_type ?? null) {
-                    case 'user':
-                        return redirect()->route('user.login')->with('status', __($status)); // landing-page/login
-                    case 'admin':
-                    case 'provider':
-                    case 'handyman':
-                        return redirect()->route('auth.login')->with('status', __($status)); // backend auth login
-                    default:
-                        return redirect()->route('login')->with('status', __($status));
-                }
-            }
-    
-            return redirect()->route('login')->with('status', __($status));
-        }
-    
-        return back()->withInput($request->only('email'))
-            ->withErrors(['email' => __($status)]);
+
+        return $status == Password::PASSWORD_RESET
+                    ? redirect()->route('login')->with('status', __($status))
+                    : back()->withInput($request->only('email'))
+                            ->withErrors(['email' => __($status)]);
     }
-    
 }

@@ -27,7 +27,6 @@ use App\Models\Setting;
 use App\Models\Country;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\PaymentGateway;
-use App\Models\ServiceZone;
 use App\Traits\TranslationTrait;
 
 class BookingController extends Controller
@@ -55,36 +54,36 @@ class BookingController extends Controller
         $customer_id = '';
 
         // Calculate total earnings based on role
-        $advanceFilter = ['paymentStatus' => ['paid', 'pending', 'advance_paid', 'advance_refund']];
-        $paymentStatus = ['paid', 'pending', 'advanced_paid', 'Advanced Refund'];
-        $paymentType = PaymentGateway::where('status', 1)->get()->pluck('title', 'type')->put('wallet', 'Wallet');
+        $advanceFilter = [];
+        $paymentStatus = ['paid', 'pending','advanced_paid','Advanced Refund'];
+        $paymentType = PaymentGateway::where('status',1)->get()->pluck('title', 'type')->put('wallet', 'Wallet');
         $bookingStatus = BookingStatus::where('status', 1)->orderBy('sequence', 'ASC')->get()->pluck('label', 'value');
         switch ($authRole) {
             case 'admin':
                 $totalEarning = Booking::where('status', '!=', 'cancelled')
-                    ->whereHas('handymanAdded', function ($query) {
-                        $query->whereNotNull('provider_id'); // Ensure handyman is not null
-                    })
-                    ->sum('total_amount');
+                ->whereHas('handymanAdded', function ($query) {
+                    $query->whereNotNull('provider_id'); // Ensure handyman is not null
+                })
+                ->sum('total_amount');
                 break;
             case 'demo_admin':
                 $totalEarning = Booking::where('status', '!=', 'cancelled')
-                    ->whereHas('handymanAdded', function ($query) {
-                        $query->whereNotNull('provider_id'); // Ensure handyman is not null
-                    })
-                    ->sum('total_amount');
+                                 ->whereHas('handymanAdded', function ($query) {
+                                     $query->whereNotNull('provider_id'); // Ensure handyman is not null
+                                 })
+                                 ->sum('total_amount');
                 break;
 
 
             case 'provider':
-                $totalEarning = Booking::where('status', '!=', 'cancelled')->whereHas('handymanAdded', function ($query) use ($auth_user) {
+                $totalEarning = Booking::where('status','!=' ,'cancelled')->whereHas('handymanAdded', function ($query) use ($auth_user) {
                     $query->where('provider_id', $auth_user->id);
                 })->sum('total_amount');
-                break;
+            break;
 
 
             case 'handyman':
-                $totalEarning = Booking::where('status', '!=', 'cancelled')->whereHas('handymanAdded', function ($query) use ($auth_user) {
+                $totalEarning = Booking::where('status','!=' ,'cancelled')->whereHas('handymanAdded', function ($query) use ($auth_user) {
                     $query->where('handyman_id', $auth_user->id);
                 })->sum('total_amount');
                 break;
@@ -95,7 +94,7 @@ class BookingController extends Controller
         }
 
         $advanceFilter = [
-            'paymentStatus' => ['paid', 'advance paid', 'advance refund'],
+            'paymentStatus' => ['paid', 'pending', 'advanced_paid', 'Advanced Refund'],
             'paymentType' => PaymentGateway::where('status', 1)->get()->pluck('title', 'type')->put('wallet', 'Wallet'),
             'bookingStatus' => BookingStatus::where('status', 1)->orderBy('sequence', 'ASC')->get()->pluck('label', 'value')
         ];
@@ -108,16 +107,10 @@ class BookingController extends Controller
     {
         $auth_user = authSession();
         $query = Booking::query()->myBooking()->with('payment', 'commissionsdata', 'handymanAdded');
-        if ($request->provider_id) {
-            $query->where('provider_id', $request->provider_id);
-            $query->where('status', 'completed')
-                ->whereHas('commissionsdata', function ($q) {
-                    $q->whereIn('commission_status', ['paid', 'unpaid']);
-                });
-        }
+
         // Apply role-based filters
         if ($auth_user->hasRole('handyman')) {
-            $query->whereHas('handymanAdded', function ($q) use ($auth_user) {
+            $query->whereHas('handymanAdded', function($q) use ($auth_user) {
                 $q->where('handyman_id', $auth_user->id);
             });
         }
@@ -144,7 +137,7 @@ class BookingController extends Controller
                     $startDate = date('Y-m-d', strtotime($dates[0]));
                     $endDate = date('Y-m-d', strtotime($dates[1]));
                     $query->whereDate('date', '>=', $startDate)
-                        ->whereDate('date', '<=', $endDate);
+                          ->whereDate('date', '<=', $endDate);
                 } elseif (count($dates) === 1) {
                     $date = date('Y-m-d', strtotime($dates[0]));
                     $query->whereDate('date', $date);
@@ -203,7 +196,7 @@ class BookingController extends Controller
                     ->join('users as customers', 'customers.id', '=', 'bookings.customer_id')
                     ->orderBy('customers.display_name', $order);
             })
-            ->editColumn('service_id', function ($query) use ($primary_locale) {
+            ->editColumn('service_id', function ($query) use($primary_locale){
                 if (!empty($query->bookingPackage)) {
                     // $name = optional($query->bookingPackage)->name;
                     $name = $this->getTranslation($query->bookingPackage->package->translations, $primary_locale, 'name', optional(optional($query->bookingPackage)->package)->name) ?? optional($query->bookingPackage)->name;
@@ -214,7 +207,7 @@ class BookingController extends Controller
                 $service_name = ($query->service_id != null && isset($query->service)) ? $name : "";
                 return "<a class='btn-link btn-link-hover' href=" . route('booking.show', $query->id) . ">" . $service_name . "</a>";
             })
-            ->filterColumn('service_id', function ($query, $keyword) use ($primary_locale) {
+            ->filterColumn('service_id', function ($query, $keyword) use ($primary_locale){
                 // $query->whereHas('service', function ($q) use ($keyword) {
                 //     $q->where('name', 'like', '%' . $keyword . '%');
                 // });
@@ -224,10 +217,10 @@ class BookingController extends Controller
                             // Search in the translations table for the given locale
                             $q->whereHas('translations', function ($q) use ($keyword, $primary_locale) {
                                 $q->where('locale', $primary_locale)
-                                    ->where('value', 'LIKE', '%' . $keyword . '%');
+                                ->where('value', 'LIKE', '%' . $keyword . '%');
                             })
-                                // Fallback to checking 'name' field if no translation is found
-                                ->orWhere('name', 'LIKE', '%' . $keyword . '%');
+                            // Fallback to checking 'name' field if no translation is found
+                            ->orWhere('name', 'LIKE', '%' . $keyword . '%');
                         });
                     } else {
                         // If locale is 'en', search directly in the 'name' field
@@ -325,7 +318,7 @@ class BookingController extends Controller
         // Apply role-based filters
         switch ($auth_user->roles->pluck('name')->first()) {
             case 'handyman':
-                $query->whereHas('handymanAdded', function ($q) use ($auth_user) {
+                $query->whereHas('handymanAdded', function($q) use ($auth_user) {
                     $q->where('handyman_id', $auth_user->id);
                 });
                 break;
@@ -354,12 +347,12 @@ class BookingController extends Controller
                 $query->whereIn('status', $advanceFilter['booking_status']);
             }
             if (!empty($advanceFilter['payment_status'])) {
-                $query->whereHas('payment', function ($q) use ($advanceFilter) {
+                $query->whereHas('payment', function($q) use ($advanceFilter) {
                     $q->whereIn('payment_status', $advanceFilter['payment_status']);
                 });
             }
             if (!empty($advanceFilter['payment_type'])) {
-                $query->whereHas('payment', function ($q) use ($advanceFilter) {
+                $query->whereHas('payment', function($q) use ($advanceFilter) {
                     $q->whereIn('payment_type', $advanceFilter['payment_type']);
                 });
             }
@@ -367,7 +360,7 @@ class BookingController extends Controller
                 $dates = explode(' to ', $advanceFilter['date_range']);
                 if (count($dates) === 2) {
                     $query->whereDate('date', '>=', $dates[0])
-                        ->whereDate('date', '<=', $dates[1]);
+                          ->whereDate('date', '<=', $dates[1]);
                 } elseif (count($dates) === 1) {
                     $query->whereDate('date', $dates[0]);
                 }
@@ -475,12 +468,6 @@ class BookingController extends Controller
         $admin = json_decode($sitesetup->value);
         date_default_timezone_set($admin->time_zone ?? 'UTC');
         $data = $request->all();
-        $serviceZone = ServiceZone::all();
-
-        if (count($serviceZone) > 0) {
-
-            $data['zone_id'] = $data['booking_address_id'] ?? null;
-        }
 
         $data['tax'] = null;
 
@@ -509,26 +496,12 @@ class BookingController extends Controller
                 ->whereHas('serviceAdded', function ($coupon) use ($service_data) {
                     $coupon->where('service_id', $service_data->id);
                 })->first();
-
             if ($coupons == null) {
                 return comman_message_response(__('messages.invalid_coupon_code'), 406);
+            } else {
+                $data['coupon_id'] = $coupons->id;
             }
-
-            // ✅ Check if the coupon discount exceeds the service price
-            $discountAmount = 0;
-            if ($coupons->discount_type === 'fixed') {
-                $discountAmount = $coupons->discount;
-            } elseif ($coupons->discount_type === 'percent') {
-                $discountAmount = ($service_data->price * $coupons->discount) / 100;
-            }
-
-            if ($discountAmount >= $service_data->price) {
-                return comman_message_response(__('messages.invalid_coupon_code'), 406);
-            }
-
-            $data['coupon_id'] = $coupons->id;
         }
-
 
         $user = User::where('id', $data['provider_id'])->with('providertype')->first();
 
@@ -554,22 +527,18 @@ class BookingController extends Controller
 
             $result->couponAdded()->create($coupon_data);
         }
+        if ($request->has('booking_address_id') && $request->booking_address_id != null) {
+            $booking_address_mapping = ProviderAddressMapping::find($data['booking_address_id']);
 
-        if (count($serviceZone) == 0) {
+            $booking_address_data = [
+                'booking_id' => $result->id,
+                'address' => $booking_address_mapping->address,
+                'latitude' => $booking_address_mapping->latitude,
+                'longitude' => $booking_address_mapping->longitude,
+            ];
 
-            if ($request->has('booking_address_id') && $request->booking_address_id != null) {
-                $booking_address_mapping = ProviderAddressMapping::find($data['booking_address_id']);
-
-                $booking_address_data = [
-                    'booking_id' => $result->id,
-                    'address' => $booking_address_mapping->address,
-                    'latitude' => $booking_address_mapping->latitude,
-                    'longitude' => $booking_address_mapping->longitude,
-                ];
-                $result->addressAdded()->create($booking_address_data);
-            }
+            $result->addressAdded()->create($booking_address_data);
         }
-
 
         if ($request->has('service_addon_id') && is_array($request->service_addon_id) != null) {
             foreach ($request->service_addon_id as $serviceaddon) {
@@ -648,6 +617,7 @@ class BookingController extends Controller
             return comman_custom_response($response);
         }
         return redirect(route('booking.index'))->withSuccess($message);
+
     }
 
     /**
@@ -675,7 +645,9 @@ class BookingController extends Controller
                         $notification->markAsRead();
                     }
                 }
+
             }
+
         }
 
 
@@ -779,6 +751,7 @@ class BookingController extends Controller
                 'booking' => $bookingdata,
             ];
             $this->sendNotification($activity_data);
+
         }
         if ($bookingdata->payment_id != null) {
             $data['payment_status'] = isset($data['payment_status']) ? $data['payment_status'] : 'pending';
@@ -795,6 +768,7 @@ class BookingController extends Controller
                     'booking' => $bookingdata,
                 ];
                 $this->sendNotification($activity_data);
+
             }
         }
         $message = __('messages.update_form', ['form' => __('messages.booking')]);
@@ -847,7 +821,7 @@ class BookingController extends Controller
         if ($bookingdata->handymanAdded()->count() > 0) {
             $assigned_handyman_ids = $bookingdata->handymanAdded()->pluck('handyman_id')->toArray();
             $bookingdata->handymanAdded()->delete();
-            $assigned_handyman = $bookingdata->handymanAdded()->orderBy('id', 'desc')->withTrashed()->first();
+            $assigned_handyman = $bookingdata->handymanAdded()->orderBy('id','desc')->withTrashed()->first();
             $message = __('messages.transfer_to_handyman');
             $activity_type = 'transfer_booking';
             $activity_data = [
@@ -857,9 +831,9 @@ class BookingController extends Controller
                 'booking' => $bookingdata,
             ];
             $this->sendNotification($activity_data);
-        }
-
-        if ($request->handyman_id != null) {
+        } 
+        
+        if ($request->handyman_id != null){
             $message = __('messages.assigned_to_handyman');
             $activity_type = 'assigned_booking';
         }
@@ -887,7 +861,7 @@ class BookingController extends Controller
         if ($bookingdata) {
             $this->addBookingCommission($bookingdata);
         }
-        if ($activity_type == "assigned_booking") {
+        if($activity_type == "assigned_booking"){
             $activity_data = [
                 'activity_type' => $activity_type,
                 'booking_id' => $bookingdata->id,
@@ -959,6 +933,8 @@ class BookingController extends Controller
                 'start_at' => $start_at,
                 'end_at' => $end_at,
             ];
+
+
         }
 
         if ($request->ajax()) {
@@ -1032,74 +1008,27 @@ class BookingController extends Controller
         $auth_user = authSession();
         $user_id = $auth_user->id;
         $user_data = User::find($user_id);
-
-        $bookingdata = Booking::with('handymanAdded', 'payment', 'bookingExtraCharge', 'bookingAddonService')
-            ->myBooking()
-            ->find($id);
-
+        $bookingdata = Booking::with('handymanAdded', 'payment', 'bookingExtraCharge', 'bookingAddonService')->myBooking()->find($id);
         $payment = Payment::where('booking_id', $id)->orderBy('id', 'desc')->first() ?? null;
-
         $serviceconfig = Setting::getValueByKey('service-configurations', 'service-configurations');
         $advancePaymentPercentage = isset($serviceconfig->advance_paynment_percantage) ? $serviceconfig->advance_paynment_percantage : 0;
         $global_advance_payment = isset($serviceconfig->global_advance_payment) ? $serviceconfig->global_advance_payment : 0;
-
-        $bookingdata->service->is_enable_advance_payment = $bookingdata->service->type == 'fixed'
-            ? ($bookingdata->service->is_enable_advance_payment == 1
-                ? $bookingdata->service->is_enable_advance_payment
-                : $global_advance_payment)
-            : 0;
-
-        $bookingdata->service->advance_payment_amount = $bookingdata->service->type == 'fixed'
-            ? ($bookingdata->service->advance_payment_amount > 0
-                ? $bookingdata->service->advance_payment_amount
-                : $advancePaymentPercentage)
-            : 0;
-
-        // ✅ Advance Payment Refund Message Logic
-        $advancePaymentMade = false;
-        $advancePaymentMessage = null;
-
-        if ($bookingdata->status == 'cancelled') {
-            $advanceAmount = $bookingdata->service->advance_payment_amount;
-            $paymentAmount = $payment ? $payment->amount : 0;
-
-            if ($advanceAmount > 0 && $paymentAmount >= $advanceAmount) {
-                $advancePaymentMade = true;
-                $advancePaymentMessage = __('messages.advance_payment_refund_message', ['days' => 7]);
-            }
-        }
+        $bookingdata->service->is_enable_advance_payment = $bookingdata->service->type == 'fixed' ? ($bookingdata->service->is_enable_advance_payment == 1 ? $bookingdata->service->is_enable_advance_payment : $global_advance_payment) : 0;
+        $bookingdata->service->advance_payment_amount = $bookingdata->service->type == 'fixed' ? ($bookingdata->service->advance_payment_amount > 0 ? $bookingdata->service->advance_payment_amount : $advancePaymentPercentage) : 0;
 
         switch ($tabpage) {
             case 'info':
-                $data = view('booking.' . $tabpage, compact(
-                    'user_data',
-                    'tabpage',
-                    'auth_user',
-                    'bookingdata',
-                    'payment'
-                ))->render();
+                $data = view('booking.' . $tabpage, compact('user_data', 'tabpage', 'auth_user', 'bookingdata', 'payment'))->render();
                 break;
-
             case 'status':
-                $data = view('booking.' . $tabpage, compact(
-                    'user_data',
-                    'tabpage',
-                    'auth_user',
-                    'bookingdata',
-                    'payment',
-                    'advancePaymentMade',
-                    'advancePaymentMessage'
-                ))->render();
+                $data = view('booking.' . $tabpage, compact('user_data', 'tabpage', 'auth_user', 'bookingdata', 'payment'))->render();
                 break;
-
             default:
                 $data = view('booking.' . $tabpage, compact('tabpage', 'auth_user', 'bookingdata'))->render();
                 break;
         }
-
         return response()->json($data);
     }
-
     public function createPDF($id)
     {
         $data = AppSetting::take(1)->first();
@@ -1188,11 +1117,13 @@ class BookingController extends Controller
         if (isset($checkout_session['message'])) {
 
             return comman_custom_response($checkout_session);
+
         } else {
             Payment::where('booking_id', $data['booking_id'])->update(['other_transaction_detail' => $checkout_session['id']]);
 
             return comman_custom_response($checkout_session);
         }
+
     }
 
     public function saveStripePayment(Request $request, $id)
@@ -1218,7 +1149,9 @@ class BookingController extends Controller
 
                 $result->payment_status = 'paid';
             }
-        };
+
+        }
+        ;
 
         $result->update();
 
@@ -1239,12 +1172,13 @@ class BookingController extends Controller
         $this->sendNotification($activity_data);
 
         return redirect('/booking-list');
+
     }
 
     public function getEarningsBreakdown(Request $request)
     {
         $authRole = auth()->user()->roles->pluck('name')->first();
-        $bookings = Booking::query()->where('status', '!=', 'cancelled')->with('commissionsdata', 'payment', 'handymanAdded');
+        $bookings = Booking::query()->where('status','!=','cancelled')->with('commissionsdata', 'payment', 'handymanAdded');
 
         // Apply filters from the request
         if ($request->has('advanceFilter')) {
@@ -1268,7 +1202,7 @@ class BookingController extends Controller
                         $dates = explode(' to ', $advanceFilter['date_range']);
                         if (count($dates) === 2) {
                             $bookings->whereDate('date', '>=', $dates[0])
-                                ->whereDate('date', '<=', $dates[1]);
+                                    ->whereDate('date', '<=', $dates[1]);
                         } elseif (count($dates) === 1) {
                             $bookings->whereDate('date', $dates[0]);
                         }
@@ -1345,14 +1279,14 @@ class BookingController extends Controller
                             break;
                     }
                 }
-                // Track components
-                $earnings['tax'] += $booking->final_total_tax ?? 0;
-                $earnings['discount'] += $booking->final_discount_amount ?? 0;
+                 // Track components
+            $earnings['tax'] += $booking->final_total_tax ?? 0;
+            $earnings['discount'] += $booking->final_discount_amount ?? 0;
 
-                // Update totals - switched rawTotal and actualTotal
-                $earnings['totalAmountWithDiscount'] += $rawTotal;
-                $earnings['totalAmountWithoutDiscount'] += $actualTotal;
-                $earnings['total'] += $rawTotal - ($booking->final_discount_amount ?? 0); // Changed to rawTotal to show amount before discount
+            // Update totals - switched rawTotal and actualTotal
+            $earnings['totalAmountWithDiscount'] += $rawTotal;
+            $earnings['totalAmountWithoutDiscount'] += $actualTotal;
+            $earnings['total'] += $rawTotal - ($booking->final_discount_amount ?? 0); // Changed to rawTotal to show amount before discount
 
             }
             // else {
@@ -1375,4 +1309,9 @@ class BookingController extends Controller
             'userRole' => $authRole,
         ]);
     }
+
+
+
 }
+
+

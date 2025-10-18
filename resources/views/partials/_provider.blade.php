@@ -34,9 +34,9 @@
         <li class="nav-item {{request()->routeIs('providerpayout.show') ? 'active' : ''}}">
             <a class="nav-link" href="{{ route('providerpayout.show',$providerdata->id) }}">{{__('messages.list_form_title',['form' => __('messages.provider_payout')])}}</a>
         </li>
-        <!-- <li class="nav-item {{request()->routeIs('provideraddress.show') ? 'active' : ''}}">
+        <li class="nav-item {{request()->routeIs('provideraddress.show') ? 'active' : ''}}">
             <a class="nav-link" href="{{ route('provideraddress.show',$providerdata->id) }}">{{__('messages.list_form_title',['form' => __('messages.provider_address')])}}</a>
-        </li> -->
+        </li>
         @if ($auth_user->can('bank list'))
         <li class="nav-item {{request()->routeIs('bank.list') ? 'active' : ''}}">
             <a class="nav-link" href="{{ route('bank.list',$providerdata->id) }}">{{__('messages.list_form_title',['form' => __('messages.bank')])}}</a>

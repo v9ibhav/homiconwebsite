@@ -10,7 +10,7 @@
             data--ajax="true"
             data--datatable="reload"
             data--confirmation="true"
-            data-title="{{ __('messages.delete_form_title',['form'=>  __('messages.category') ]) }}"
+            data-title="{{ __('category',['form'=>  __('category') ]) }}"
             title="{{ __('messages.delete_form_title',['form'=>  __('messages.category') ]) }}"
             data--message='{{ __("messages.delete_msg") }}'>
             <i class="far fa-trash-alt text-danger"></i>

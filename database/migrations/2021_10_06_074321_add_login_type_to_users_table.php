@@ -17,6 +17,7 @@ class AddLoginTypeToUsersTable extends Migration
             $table->string('login_type')->nullable();
             $table->unsignedBigInteger('service_address_id')->nullable();
             $table->string('uid')->nullable();
+
             $table->foreign('service_address_id')->references('id')->on('provider_address_mappings')->onDelete('cascade');
         });
     }

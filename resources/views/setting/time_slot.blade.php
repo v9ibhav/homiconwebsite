@@ -49,10 +49,7 @@
                                                                                 $slotTime = sprintf('%02d:00', $hour);
                                                                                 $isActive = in_array($slotTime, $activeSlots[$day] ?? []);
                                                                             @endphp
-                                                                             <a href="javascript:void(0)" name="start_at"
-                                                                             class="nav-link time-link  @if ($isActive) active @endif slot-link"
-                                                                             data-day="{{ $day }}" data-slot="{{ $slotTime }}" rel="tooltip">{{
-                                                                             $slotTime }}</a>
+                                                                            <a href="javascript:void(0)" name="start_at" class="nav-link time-link  @if ($isActive) active @endif slot-link" data-day="{{ $day }}" data-slot="{{ $slotTime }}" data-bs-toggle="tab" rel="tooltip">{{ $slotTime }}</a>
                                                                         </li>
                                                                     @endfor
                                                                 </ul>

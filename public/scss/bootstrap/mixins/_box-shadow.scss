@@ -1,20 +1,18 @@
 @mixin box-shadow($shadow...) {
   @if $enable-shadows {
-    // If the shadow is exactly 'none' and only one argument, apply it directly
-    @if length($shadow) == 1 and nth($shadow, 1) == none {
-      box-shadow: none;
-    } @else {
-      $result: ();
+    $result: ();
 
-      @each $value in $shadow {
-        @if $value != null and $value != none {
-          $result: append($result, $value, comma);
-        }
+    @each $value in $shadow {
+      @if $value != null {
+        $result: append($result, $value, "comma");
       }
+      @if $value == none and length($shadow) > 1 {
+        @warn "The keyword 'none' must be used as a single argument.";
+      }
+    }
 
-      @if (length($result) > 0) {
-        box-shadow: $result;
-      }
+    @if (length($result) > 0) {
+      box-shadow: $result;
     }
   }
 }

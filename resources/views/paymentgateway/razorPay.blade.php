@@ -35,37 +35,30 @@
                 ->class('form-control') }}
             <small class="help-block with-errors text-danger"></small>
         </div>
-     @php
-    $isAdmin = auth()->user()->hasRole('admin'); // Adjust this condition as per your system
-@endphp
-
-<div class="form-group col-md-12">
-    {{ html()->label(trans('messages.razor_url').' <span class="text-danger">*</span>', 'razor_url')->class('form-control-label') }}
-    {{ html()->{$isAdmin ? 'text' : 'password'}('razor_url', old('razor_url'))
-        ->id('razor_url')
-        ->placeholder(trans('messages.razor_url'))
-        ->class('form-control') }}
-    <small class="help-block with-errors text-danger"></small>
-</div>
-
-<div class="form-group col-md-12">
-    {{ html()->label(trans('messages.razor_key').' <span class="text-danger">*</span>', 'razor_key')->class('form-control-label') }}
-    {{ html()->{$isAdmin ? 'text' : 'password'}('razor_key', old('razor_key'))
-        ->id('razor_key')
-        ->placeholder(trans('messages.razor_key'))
-        ->class('form-control') }}
-    <small class="help-block with-errors text-danger"></small>
-</div>
-
-<div class="form-group col-md-12">
-    {{ html()->label(trans('messages.razor_secret').' <span class="text-danger">*</span>', 'razor_secret')->class('form-control-label') }}
-    {{ html()->{$isAdmin ? 'text' : 'password'}('razor_secret', old('razor_secret'))
-        ->id('razor_secret')
-        ->placeholder(trans('messages.razor_secret'))
-        ->class('form-control') }}
-    <small class="help-block with-errors text-danger"></small>
-</div>
-       
+        <div class="form-group col-md-12">
+            {{ html()->label(trans('messages.razor_url').' <span class="text-danger">*</span>', 'razor_url')->class('form-control-label') }}
+            {{ html()->text('razor_url',  old('razor_url'))
+                ->id('razor_url')
+                ->placeholder(trans('messages.razor_url'))
+                ->class('form-control') }}
+            <small class="help-block with-errors text-danger"></small>
+        </div>
+        <div class="form-group col-md-12">
+            {{ html()->label(trans('messages.razor_key').' <span class="text-danger">*</span>', 'razor_key')->class('form-control-label') }}
+            {{ html()->text('razor_key',  old('razor_key'))
+                ->id('razor_key')
+                ->placeholder(trans('messages.razor_key'))
+                ->class('form-control') }}
+            <small class="help-block with-errors text-danger"></small>
+        </div>
+        <div class="form-group col-md-12">
+            {{ html()->label(trans('messages.razor_secret').' <span class="text-danger">*</span>', 'razor_secret')->class('form-control-label') }}
+            {{ html()->text('razor_secret',  old('razor_secret'))
+                ->id('razor_secret')
+                ->placeholder(trans('messages.razor_secret'))
+                ->class('form-control') }}
+            <small class="help-block with-errors text-danger"></small>
+        </div>        
 </div>
 {{ html()->submit(__('messages.save'))->class('btn btn-md btn-primary float-md-end') }}
 {{ html()->form()->close() }}

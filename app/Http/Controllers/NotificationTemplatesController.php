@@ -130,9 +130,9 @@ class NotificationTemplatesController extends Controller
             ->orderColumn('label', function ($query, $order) {
                 $query->select('notification_templates.*')
                       ->join('notification_template_content_mapping', 'notification_template_content_mapping.template_id', '=', 'notification_templates.id')
-                      ->groupBy('notification_templates.id')
-                      ->orderBy('notification_template_content_mapping.subject', $order);
-            })
+                      ->groupBy('notification_templates.id')  
+                      ->orderBy('notification_template_content_mapping.subject', $order);   
+            })            
             ->editColumn('status', function ($query) {
                 $disabled = $query->trashed() ? 'disabled' : '';
                 return '<div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
@@ -187,7 +187,7 @@ class NotificationTemplatesController extends Controller
         $map['subject'] = $request->defaultNotificationTemplateMap['subject'];
         $map['notification_message'] = $request->defaultNotificationTemplateMap['notification_message'];
         $map['notification_link'] = $request->defaultNotificationTemplateMap['notification_link'];
-
+        
 
         $request['to'] = isset($request->to) ? json_encode($request->to) : null;
         $request['bcc'] = isset($request->bcc) ? json_encode($request->bcc) : null;
@@ -243,7 +243,7 @@ class NotificationTemplatesController extends Controller
 
         $assets = ['textarea'];
 
-        return view('notificationtemplates.form', compact('module_action', 'data', 'assets', 'buttonTypes', 'pageTitle', 'pageTitle1', 'page','notification_template_data'));
+        return view('notificationtemplates.form', compact('module_action', 'data', 'assets', 'buttonTypes', 'pageTitle', 'pageTitle1', 'page','notification_template_data')); 
         // return view('setting.edit', compact('module_action', 'data', 'assets', 'buttonTypes', 'pageTitle', 'pageTitle1', 'page'));
     }
 
@@ -341,7 +341,7 @@ class NotificationTemplatesController extends Controller
         //         ]);
 
         //         $data->defaultMailTemplateMap()->create($request->defaultMailTemplateMap);
-
+                
         //     }
         // }
 
@@ -351,7 +351,7 @@ class NotificationTemplatesController extends Controller
 
         // return redirect()->route('notification-templates.index')->with('success', $message);
     }
-
+    
 
     /**
      * Remove the specified resource from storage.
@@ -483,54 +483,27 @@ class NotificationTemplatesController extends Controller
         return redirect()->route('setting.index', ['page' => $page])->withSuccess($message);
     }
 
-    public function parseTemplate($template, $data)
-{
-    foreach ($data as $key => $value) {
-        $template = str_replace('[[' . $key . ']]', $value, $template);
+    public function fetchNotificationData(Request $request)
+    {
+        $userType = $request->input('user_type');
+        $type = $request->input('type');
+
+        $ids = NotificationTemplate::where('type', $type)->pluck('id');
+
+        $data = NotificationTemplateContentMapping::with('template')->whereIn('template_id', $ids)
+            ->where('user_type', $userType)
+            ->first();
+
+        $notification_templte_ids = NotificationTemplate::where('type', $type)->pluck('id') ;
+        $notification_template_data = NotificationTemplateContentMapping::with('template')->whereIn('template_id', $notification_templte_ids)
+            ->where('user_type', $userType)
+            ->first();
+    
+
+        if ($data) {
+            return response()->json(['success' => true, 'data' => $data,'notification_template_data'=>$notification_template_data]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'No data found for the selected user_type.']);
+        }
     }
-    return $template;
-}
-
-   public function fetchNotificationData(Request $request)
-{
-    $userType = $request->input('user_type');
-    $type = $request->input('type');
-
-    $ids = NotificationTemplate::where('type', $type)->pluck('id');
-
-    $data = NotificationTemplateContentMapping::with('template')->whereIn('template_id', $ids)
-        ->where('user_type', $userType)
-        ->first();
-
-    $notification_template_data = NotificationTemplateContentMapping::with('template')->whereIn('template_id', $ids)
-        ->where('user_type', $userType)
-        ->first();
-
-    // 🔁 Dummy dynamic values – Replace with actual booking data
-    $replacements = [
-        'booking_id' => 'BK1234',
-        'booking_services_name' => 'Car Wash',
-        // Add more if needed
-    ];
-
-    if ($data) {
-        // ✅ Parse placeholders
-        $data->template_detail = $this->parseTemplate($data->template_detail, $replacements);
-        $data->mail_template_detail = $this->parseTemplate($data->mail_template_detail, $replacements);
-        $data->sms_template_detail = $this->parseTemplate($data->sms_template_detail, $replacements);
-        $data->whatsapp_template_detail = $this->parseTemplate($data->whatsapp_template_detail, $replacements);
-
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-            'notification_template_data' => $notification_template_data
-        ]);
-    } else {
-        return response()->json([
-            'success' => false,
-            'message' => 'No data found for the selected user_type.'
-        ]);
-    }
-}
-
 }

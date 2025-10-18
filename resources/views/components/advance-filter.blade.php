@@ -8,8 +8,8 @@
             <button type="reset" id="refresh-filter" class="btn-icon btn-refresh me-2" title="Refresh">
                 <i class="fas fa-sync-alt"></i>
             </button>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
-                <span aria-hidden="true"></span>
+            <button type="button" data-bs-dismiss="offcanvas" aria-label="Close" class="btn-icon btn-close-offcanvas">
+                <i class="far fa-window-close"></i>
             </button>
         </div>
     </div>

@@ -24,20 +24,12 @@ use App\Models\Category;
 use App\Models\ServiceAddon;
 use App\Http\Resources\API\ServiceAddonResource;
 use App\Models\Tax;
-use App\Models\ServiceZoneMapping;
-use App\Traits\ZoneTrait;
-use App\Models\ServiceZone;
 
 class ServiceController extends Controller
 {
-    use ZoneTrait;
-    public function getServiceList(Request $request)
-    {
-
-        $headerValue = $headerValue = $request->header('language-code') ?? session()->get('locale', 'en');
-        $lat = $request->latitude ?? session()->get('user_lat', null);
-        $lng = $request->longitude ?? session()->get('user_lng', null);
-        $service = Service::where('service_type', 'service')->with(['providers', 'category', 'serviceRating', 'translations'])->orderBy('created_at', 'desc');
+    public function getServiceList(Request $request){
+        $headerValue = $headerValue = $request->header('language-code') ?? session()->get('locale', 'en');;
+        $service = Service::where('service_type','service')->with(['providers','category','serviceRating','translations'])->orderBy('created_at','desc');
         $category = Category::onlyTrashed()->get();
         $category = $category->pluck('id');
         $service = $service->whereNotIn('category_id', $category);
@@ -47,6 +39,7 @@ class ServiceController extends Controller
 
             if ($request->request_status == 'reject') {
                 $service->where('service_request_status', "reject")->where('service_request_status', "reject");
+
             } elseif ($request->request_status == 'approve') {
                 $service->where('service_request_status', "approve")->where('service_request_status', "approve");
             } else if ($request->request_status == 'pending') {
@@ -115,7 +108,9 @@ class ServiceController extends Controller
                 $service->whereHas('providers', function ($a) use ($request) {
                     $a->where('status', 1)->where('is_subscribe', 1);
                 });
+
             }
+
         } else {
             if (default_earning_type() === 'subscription') {
                 if (auth()->user() !== null && !auth()->user()->hasRole('admin')) {
@@ -127,34 +122,16 @@ class ServiceController extends Controller
                         $a->where('status', 1)->where('is_subscribe', 1);
                     });
                 }
+
             }
         }
-        if ($lat && !empty($lat) && $lng && !empty($lng)) {
+        if ($request->has('latitude') && !empty($request->latitude) && $request->has('longitude') && !empty($request->longitude)) {
+            $get_distance = getSettingKeyValue('site-setup', 'radious');
+            $get_unit = getSettingKeyValue('site-setup', 'distance_type');
 
-
-            $serviceZone = ServiceZone::all();
-
-            if (count($serviceZone) > 0) {
-
-                try {
-
-                    $matchingZoneIds = $this->getMatchingZonesByLatLng($lat, $lng);
-
-                    $service->whereHas('serviceZoneMapping', function ($service) use ($matchingZoneIds) {
-                        $service->whereIn('zone_id', $matchingZoneIds);
-                    });
-                } catch (\Exception $e) {
-                    $service = $service;
-                }
-            } else {
-
-                $get_distance = getSettingKeyValue('site-setup', 'radious') ?? 50;
-                $get_unit = getSettingKeyValue('site-setup', 'distance_type') ?? 'km';
-
-                $locations = $service->locationService($lat, $lng, $get_distance, $get_unit);
-                $service_in_location = ProviderServiceAddressMapping::whereIn('provider_address_id', $locations)->get()->pluck('service_id');
-                $service->with('providerServiceAddress')->whereIn('id', $service_in_location);
-            }
+            $locations = $service->locationService($request->latitude, $request->longitude, $get_distance, $get_unit);
+            $service_in_location = ProviderServiceAddressMapping::whereIn('provider_address_id', $locations)->get()->pluck('service_id');
+            $service->with('providerServiceAddress')->whereIn('id', $service_in_location);
         }
 
         if ($request->has('search')) {
@@ -174,9 +151,11 @@ class ServiceController extends Controller
         if (auth()->user() !== null && auth()->user()->hasRole('admin')) {
 
             $service = $service->orderBy('created_at', 'desc');
+
         } else {
 
             $service = $service->where('status', 1)->orderBy('created_at', 'desc');
+
         }
 
         $service = $service->paginate($per_page);
@@ -215,14 +194,15 @@ class ServiceController extends Controller
     {
         $id = $request->service_id;
         $headerValue = $request->header('language-code') ?? session()->get('locale', 'en');
-        if (auth()->user() !== null) {
-            if (auth()->user()->hasRole('admin')) {
-                $service = Service::where('service_type', 'service')->withTrashed()->where('status', 1)->with('providers', 'category', 'serviceRating', 'serviceAddon', 'translations', 'zones')->findorfail($id);
-            } else {
-                $service = Service::where('service_type', 'service')->where('status', 1)->with('providers', 'category', 'serviceRating', 'serviceAddon', 'translations', 'zones')->findorfail($id);
+        if(auth()->user() !== null){
+            if(auth()->user()->hasRole('admin')){
+                $service = Service::where('service_type','service')->withTrashed()->where('status',1)->with('providers','category','serviceRating','serviceAddon','translations')->findorfail($id);
             }
-        } else {
-            $service = Service::where('service_type', 'service')->where('status', 1)->with('providers', 'category', 'serviceRating', 'serviceAddon', 'translations', 'zones')->find($id);
+            else{
+                $service = Service::where('service_type','service')->where('status',1)->with('providers','category','serviceRating','serviceAddon','translations')->findorfail($id);
+            }
+        }else{
+            $service = Service::where('service_type','service')->where('status',1)->with('providers','category','serviceRating','serviceAddon','translations')->find($id);
         }
 
         if (empty($service)) {
@@ -230,74 +210,20 @@ class ServiceController extends Controller
             return comman_message_response($message, 406);
         }
 
+
         $service_detail = new ServiceDetailResource($service);
+        $related = $service->where('service_type', 'service')->where('category_id', $service->category_id)->where('status', 1);
+        if (default_earning_type() === 'subscription') {
 
-        $related = $service->where('service_type', 'service')
-            ->where('category_id', $service->category_id)
-            ->where('status', 1)
-            ->where('service_request_status', 'approve')
-            ->where('id', '!=', $service->id); // Exclude self
-
-
-        $lat = $request->latitude ?? session()->get('user_lat', null);
-        $lng = $request->longitude ?? session()->get('user_lng', null);
-
-
-        $isSubscription = default_earning_type() === 'subscription';
-        $hasLocation = $lat && !empty($lat) && $lng && !empty($lng);
-
-        $providerFilter = function ($query) use ($isSubscription) {
-            $query->where('status', 1);
-            if ($isSubscription) {
-                $query->where('is_subscribe', 1);
-            }
-        };
-
-        if ($hasLocation) {
-
-            if ($lat && !empty($lat) && $lng && !empty($lng)) {
-
-                $serviceZone = ServiceZone::all();
-
-                if (count($serviceZone) > 0) {
-
-                    try {
-                        $distanceLimit = getSettingKeyValue('site-setup', 'radious');
-                        $unit = getSettingKeyValue('site-setup', 'distance_type');
-
-                        $allServices = $service->where('service_type', 'service')
-                            ->where('category_id', $service->category_id)
-                            ->where('status', 1)
-                            ->where('id', '!=', $service->id)->get();
-
-                        $matchingServiceIds = [];
-
-                        foreach ($allServices as $serv) {
-                            $matchingZoneIds = $this->getNearbyZoneserviceIds($serv->id, $lat, $lng);
-                            if (!empty($matchingZoneIds)) {
-                                $matchingServiceIds[] = $serv->id;
-                            }
-                        }
-
-                        if (!empty($matchingServiceIds)) {
-                            $related = $related->whereIn('id', $matchingServiceIds);
-                        } else {
-                            $related = $related->whereRaw('1 = 0'); // force empty result
-
-                        }
-                        $related = $related->get();
-                    } catch (\Exception $e) {
-                        $related = $related->whereRaw('1 = 0');
-                        $related = $related->get();
-                    }
-                }
-            }
+            $related->whereHas('providers', function ($a) use ($request) {
+                $a->where('status', 1)->where('is_subscribe', 1);
+            });
         } else {
-            // Without location
-            $related->whereHas('providers', $providerFilter);
-            $related = $related->get();
+            $related->whereHas('providers', function ($a) use ($request) {
+                $a->where('status', 1);
+            });
         }
-
+        $related = $related->get();
         $related_service = ServiceResource::collection($related);
 
         $rating_data = BookingRatingResource::collection($service_detail->serviceRating->take(5));
@@ -326,20 +252,6 @@ class ServiceController extends Controller
         $servicefaq = ServiceFaq::where('service_id', $id)->where('status', 1)->get();
         $serviceAddon = ServiceAddon::where('service_id', $id)->where('status', 1)->get();
         $serviceaddon = ServiceAddonResource::collection($serviceAddon);
-
-        // Get zones data
-        $zones = $service->zones()
-            ->where('service_zones.status', 1)
-            ->select('service_zones.id', 'service_zones.name', 'service_zones.coordinates')
-            ->get()
-            ->map(function ($zone) {
-                return [
-                    'id' => $zone->id,
-                    'name' => $zone->name,
-                    // 'coordinates' => $zone->coordinates
-                ];
-            });
-
         $response = [
             'service_detail' => $service_detail,
             'provider' => new UserResource(optional($service->providers)),
@@ -349,9 +261,9 @@ class ServiceController extends Controller
             'taxes' => $taxes,
             'related_service' => $related_service,
             'service_faq' => $servicefaq,
-            'serviceaddon' => $serviceaddon,
-            'zones' => $zones
+            'serviceaddon' => $serviceaddon
         ];
+        
 
         return comman_custom_response($response);
     }
@@ -525,7 +437,7 @@ class ServiceController extends Controller
             'request_status' => 'required|string',
             'reject_reason' => 'nullable|string',
         ]);
-
+    
 
         $service = Service::find($validatedData['id']);
 
@@ -534,30 +446,30 @@ class ServiceController extends Controller
         if (!$service) {
             return response()->json(['message' => 'Service not found'], 404);
         }
-
+    
         $requestStatus = $validatedData['request_status'];
-
+    
 
         if ($requestStatus === 'delete') {
-
+            
             if ($service->trashed()) {
                 return response()->json(['message' => 'Service is already soft deleted. Use "permanently_delete" to delete permanently.'], 400);
             }
-
+        
             $service->delete();
             return response()->json(['message' => 'Service soft deleted successfully'], 200);
         }
-
+        
         if ($requestStatus === 'permanently_delete') {
             if ($service->trashed()) {
                 $service->forceDelete();
                 return response()->json(['message' => 'Service permanently deleted successfully'], 200);
             }
-
+        
             return response()->json(['message' => 'Service is not soft deleted. Use "delete" first.'], 400);
         }
-
-
+        
+    
         if ($requestStatus === 'restore') {
             if ($service->trashed()) {
                 $service->restore();
@@ -566,27 +478,30 @@ class ServiceController extends Controller
                 return response()->json(['message' => 'Service is not deleted'], 400);
             }
         }
-
-
-
+        
+        
+    
 
         $statusMapping = ['pending', 'approve', 'reject'];
         if (!in_array($requestStatus, $statusMapping)) {
             return response()->json(['message' => 'Invalid request status'], 400);
         }
-
-
+    
+        
         $service->service_request_status = $requestStatus;
-
-
+    
+        
         if ($requestStatus === 'reject') {
             $service->reject_reason = $validatedData['reject_reason'] ?? 'No reason provided';
         } else {
-            $service->reject_reason = null;
+            $service->reject_reason = null; 
         }
-
+    
         $service->save();
-
+    
         return response()->json(['message' => 'Service updated successfully'], 200);
     }
+    
+
+
 }

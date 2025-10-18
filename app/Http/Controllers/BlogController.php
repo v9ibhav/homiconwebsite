@@ -98,25 +98,16 @@ class BlogController extends Controller
                 break;
 
             case 'delete':
-                if (!auth()->user()->can('blog delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 Blog::whereIn('id', $ids)->delete();
                 $message = 'Bulk Blog Deleted';
                 break;
 
             case 'restore':
-                if (!auth()->user()->can('blog delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 Blog::whereIn('id', $ids)->restore();
                 $message = 'Bulk Blog Restored';
                 break;
 
             case 'permanently-delete':
-                if (!auth()->user()->can('blog delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 Blog::whereIn('id', $ids)->forceDelete();
                 $message = 'Bulk Blog Permanently Deleted';
                 break;

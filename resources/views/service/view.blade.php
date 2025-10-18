@@ -1,4 +1,4 @@
-    <x-master-layout>
+<x-master-layout>
     <div class="container-fluid">
         @include('partials._provider')
         <div class="row">

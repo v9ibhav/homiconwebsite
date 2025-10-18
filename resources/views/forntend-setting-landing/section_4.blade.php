@@ -6,7 +6,7 @@
 
 <div class="form-group">
     <div class="form-control d-flex align-items-center justify-content-between">
-                    <label for="enable_section_4" class="mb-0">{{__('messages.fetured_services')}}</label>
+                    <label for="enable_section_4" class="mb-0">{{__('messages.enable_section_4')}}</label>
         <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
                         <input type="checkbox" class="custom-control-input section_4" name="status" id="section_4" data-type="section_4"  {{!empty($landing_page) && $landing_page->status == 1 ? 'checked' : ''}}>
             <label class="custom-control-label" for="section_4"></label>

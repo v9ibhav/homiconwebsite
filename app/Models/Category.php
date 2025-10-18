@@ -16,13 +16,11 @@ class Category extends BaseModel implements HasMedia
     use TranslationTrait;
     protected $table = 'categories';
     protected $fillable = [
-        'name', 'description', 'is_featured', 'status' , 'color', 'meta_title', 'meta_description', 'meta_keywords', 'canonical_url', 'seo_enabled', 'slug'
+        'name', 'description', 'is_featured', 'status' , 'color'
     ];
     protected $casts = [
         'status'    => 'integer',
         'is_featured'  => 'integer',
-        'meta_keywords' => 'array',
-        'seo_enabled' => 'boolean',
     ];
     public function translations()
     {
@@ -53,20 +51,5 @@ class Category extends BaseModel implements HasMedia
         return $query->orderByRaw('deleted_at IS NULL DESC, deleted_at DESC')->orderBy('updated_at', 'desc');
     }
     
-    public function serviceZones()
-    {
-        return $this->belongsToMany(ServiceZone::class, 'category_service_zone');
-    }
     
-    /**
-     * Register media collections
-     */
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('category_image')
-            ->singleFile();
-            
-        $this->addMediaCollection('seo_image')
-            ->singleFile();
-    }
 }

@@ -25,22 +25,28 @@
                                 <h6>{{ round($serviceData['service_detail']['total_rating'],1) }}<span class="text-body"> <a href="{{route('rating.all', ['service_id' => $serviceData['service_detail']['id']])}}"> ({{ $serviceData['service_detail']['total_review'] }} {{__('messages.reviews')}})</span></a></h6>
                               
                             </div>
-                            @if(!empty($serviceData['service_detail']['duration']))
-    @php
-        $durationParts = explode(':', $serviceData['service_detail']['duration']);
-        $hours = isset($durationParts[0]) ? intval($durationParts[0]) : 0;
-        $minutes = isset($durationParts[1]) ? intval($durationParts[1]) : 0;
-    @endphp
+                        </li>
+                        @if(!empty($serviceData['service_detail']['duration']))
+                        <li>
+                            <h6 class="text-body">
+                                @php
 
-    @if($hours > 0 || $minutes > 0)
-        <li>
-            <h6 class="text-body">
-                ({{ $hours }} hrs @if($minutes > 0) {{ $minutes }} min @endif)
-            </h6>
-        </li>
-    @endif
-@endif
+                                $durationParts = explode(':', $serviceData['service_detail']['duration']);
+                                $hours = intval($durationParts[0]);
+                                $minutes = intval($durationParts[1]);
+                                @endphp
 
+                                @if($hours > 0)
+                                ({{ $hours }} hrs @if($minutes > 0) {{ $minutes }} min @endif)
+                                @else
+                                ({{ $minutes }} min)
+                                @endif
+
+
+
+                            </h6>
+                        </li>
+                        @endif
                     </ul>
                     <div>
                         <span class="text-capitalize">{{__('landingpage.created_by')}}: </span>
@@ -497,13 +503,6 @@
                     </ul>
                 </div>
                 @endif
-
-                @php
-                     $serviceZone = App\Models\ServiceZone::all();
-                @endphp
-
-              @if(count($serviceZone) == 0)
-                
                 @if(!empty($serviceData['service_detail']['service_address_mapping']))
                 <div class="bg-light p-5 rounded-3 mt-5">
                     <h5 class="mb-2">{{__('landingpage.available_location')}}</h5>
@@ -529,57 +528,6 @@
                     </ul>
                 </div>
                 @endif
-
-               @else
-
-                @if(!empty($serviceData['service_detail']['service_zone_mappings']))
-                <div class="bg-light p-5 rounded-3 mt-5">
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
-                            <circle cx="12" cy="9" r="2.5"></circle>
-                        </svg>
-                           <h5 class="mb-0">{{__('landingpage.available_location')}}</h5>
-                    </div>
-                    <ul class="list-inline m-0 p-0 d-flex align-items-center gap-2 flex-wrap">
-                        @php
-                        $hasZones = false;
-                        @endphp
-
-                        @foreach($serviceData['service_detail']['service_zone_mappings'] as $zoneMapping)
-                        @if(!empty($zoneMapping['zone']['name']))
-                        @php
-                        $hasZones = true;
-                        @endphp
-                        <li>
-                            <span class="btn btn-sm btn-outline-primary text-capitalize cursor-default d-flex align-items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
-                                    <circle cx="12" cy="9" r="2.5"></circle>
-                                </svg>
-                                {{ $zoneMapping['zone']['name'] }}
-                            </span>
-                        </li>
-                        @endif
-                        @endforeach
-
-                        @if(!$hasZones)
-                        <li class="text-muted">
-                            <span class="d-flex align-items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                </svg>
-                                {{ __('messages.no_zones') }}
-                            </span>
-                        </li>
-                        @endif
-                    </ul>
-                </div>
-              @endif
-
-                 @endif
             </div>
         </div>
     </div>

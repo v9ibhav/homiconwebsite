@@ -336,7 +336,7 @@ class AlterMailTemplatesTable extends Migration
      Constant::updateOrCreate(['type' => $value['type'], 'value' => $value['value']], $value);
  }
 
-//  echo " Insert: mailtempletes \n\n";
+ echo " Insert: mailtempletes \n\n";
 
  // Enable foreign key checks!
  DB::statement('SET FOREIGN_KEY_CHECKS=1;');
@@ -1068,7 +1068,7 @@ class AlterMailTemplatesTable extends Migration
                            <p>Best regards,<br />[[ company_name ]]</p>',
  ]);
 
-
+ 
 
 
  $template = MailTemplates::create([

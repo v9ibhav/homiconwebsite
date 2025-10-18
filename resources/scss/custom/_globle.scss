@@ -27,35 +27,32 @@
   }
 }
 
-.d-inherit {
+.d-inherit{
   display: inherit;
 }
 
-.lh-normal {
+.lh-normal{
   line-height: normal;
 }
 
-.vue-star-rating {
-  svg.vue-star-rating-star {
+.vue-star-rating{
+  svg.vue-star-rating-star{
     height: 14px;
     width: 14px;
     vertical-align: inherit;
   }
 }
-
 .btn-close:focus {
   box-shadow: none;
 }
-
-.star-rating {
+.star-rating{
   line-height: normal;
-
   >div {
     line-height: 0;
   }
 }
 
-.rating-component {
+.rating-component{
   .vue-star-rating {
     svg.vue-star-rating-star {
       height: 20px;
@@ -64,15 +61,15 @@
   }
 }
 
-.review-0 {
+.review-0{
   display: none;
 }
 
-.readmore-btn {
+.readmore-btn{
   text-transform: capitalize;
 }
 
-.custom-card-table {
+.custom-card-table{
   .row {
     tr {
       td {
@@ -83,19 +80,18 @@
   }
 }
 
-.cookiePopup {
+.cookiePopup{
   z-index: 1000;
 }
 
-div {
-  &.dataTables_processing {
-    &.card {
+div{
+  &.dataTables_processing{
+    &.card{
       background-color: var(--bs-gray-300);
     }
-
-    >div {
-      &:last-child {
-        >div {
+    >div{
+      &:last-child{
+        >div{
           background: var(--bs-primary) !important;
         }
       }
@@ -103,11 +99,10 @@ div {
   }
 }
 
-.padding-top-bottom-70 {
-  &.blog-more-images {
+.padding-top-bottom-70{
+  &.blog-more-images{
     padding: 0;
-
-    &:has(img) {
+    &:has(img){
       padding: 4.375rem 0;
     }
   }
@@ -165,7 +160,7 @@ div {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767px){
   .padding-top-bottom-70 {
     &.blog-more-images {
       &:has(img) {
@@ -173,7 +168,7 @@ div {
       }
     }
   }
-}
+}  
 
 /*=========================
 Service Detail
@@ -256,11 +251,8 @@ Service Detail
     }
   }
 }
-
-.privacy-policy {
-
-  h5,
-  p {
+.privacy-policy{
+  h5,p{
     background-color: transparent !important;
   }
 }
@@ -350,19 +342,17 @@ ReadMore Button
 }
 
 .dataTables_wrapper {
-
   .form-control,
-  .form-select {
+  .form-select{
     padding: $input-padding-y 2rem $input-padding-y $input-padding-x;
     border-radius: $input-border-radius;
   }
-
   .dataTables_filter {
     label {
       font-size: 0;
       position: relative;
 
-      &::after {
+      &::after{
         content: "\f002";
         font-size: 1rem;
         font-weight: 900;
@@ -376,56 +366,53 @@ ReadMore Button
   }
 }
 
-@media (max-width: 767.98px) {
-  .dataTables_wrapper {
-    .dataTables_filter {
+@media (max-width: 767.98px){
+  .dataTables_wrapper{
+    .dataTables_filter{
       margin-top: 1rem;
     }
   }
 }
 
-.vc-container {
+.vc-container{
   background-color: var(--bs-body-bg) !important;
   color: var(--bs-heading-color) !important;
-
-  &.vc-bordered {
+  &.vc-bordered{
     border-color: var(--bs-border-color);
   }
 
-  .vc-pane,
-  .vc-weeks {
+  .vc-pane,.vc-weeks{
     min-width: 100%;
   }
 }
 
-.vc-header {
-  .vc-title {
+.vc-header{
+  .vc-title{
     background-color: var(--bs-light);
     color: var(--bs-heading-color) !important;
   }
-
-  .vc-arrow {
+  .vc-arrow{
     background-color: var(--bs-light);
     color: var(--bs-heading-color) !important;
   }
-}
+} 
 
-.vc-day-content {
-  .vc-disabled {
+.vc-day-content{
+  .vc-disabled{
     color: var(--bs-body-color) !important;
   }
 }
 
-.vc-day {
-  .vc-highlight-bg-solid {
+.vc-day{
+  .vc-highlight-bg-solid{
     background-color: var(--bs-primary);
   }
 }
 
-.time-slot {
-  .btn-check {
-    &:checked {
-      +.time-slot-btn {
+.time-slot{
+  .btn-check{
+    &:checked{
+      +.time-slot-btn{
         background-color: var(--bs-primary);
         color: var(--bs-white);
         border-color: transparent;
@@ -434,30 +421,30 @@ ReadMore Button
   }
 }
 
-.ratting {
-  .fa-stack {
+.ratting{
+  .fa-stack{
     color: var(--bs-primary);
   }
 }
 
-.rating-all-page {
-  .dataTables_wrapper {
-    .dataTable {
-      .row {
-        &>* {
+.rating-all-page{
+  .dataTables_wrapper{
+    .dataTable{
+      .row{
+        &>*{
           width: 100%;
         }
 
-        tr {
-          .comment-list {
-            .comment {
+        tr{
+          .comment-list{
+            .comment{
               border-bottom: 1px solid var(--bs-border-color);
             }
           }
 
-          &:last-child {
-            .comment-list {
-              .comment {
+          &:last-child{
+            .comment-list{
+              .comment{
                 border-bottom: none;
                 padding-bottom: 0 !important;
                 margin-bottom: 0 !important;
@@ -470,17 +457,17 @@ ReadMore Button
   }
 }
 
-.booking-service-form {
-  .flatpickr-wrapper {
+.booking-service-form{
+  .flatpickr-wrapper{
     width: 100%;
   }
 }
 
-#post-job-datatable_wrapper {
-  #post-job-datatable {
-    tbody {
-      tr {
-        td {
+#post-job-datatable_wrapper{
+  #post-job-datatable{
+    tbody{
+      tr{
+        td{
           padding-left: 0;
           padding-right: 0;
         }
@@ -489,26 +476,26 @@ ReadMore Button
   }
 }
 
-.post-job-service-list {
-  ul {
+.post-job-service-list{
+  ul{
     height: 330px;
     overflow-y: auto;
   }
 }
 
-.cursor-default {
+.cursor-default{
   cursor: default;
 }
 
-.form-select {
+.form-select{
   border-radius: $input-border-radius;
 }
 
-.dataTables_wrapper {
-  .row {
-    tr {
-      &.odd {
-        &:has(td.dataTables_empty) {
+.dataTables_wrapper{
+  .row{
+    tr{
+      &.odd{
+        &:has(td.dataTables_empty){
           width: 100%;
         }
       }
@@ -516,13 +503,13 @@ ReadMore Button
   }
 }
 
-.user-dropdown {
-  &:has(.location-search-dropdown) {
-    .custom-btn-close {
+.user-dropdown{
+  &:has(.location-search-dropdown){
+    .custom-btn-close{
       right: -0.8rem;
       top: -0.8rem;
 
-      svg {
+      svg{
         height: 30px;
         width: 30px;
       }
@@ -531,19 +518,18 @@ ReadMore Button
 }
 
 
-.location-search-dropdown {
+.location-search-dropdown{
   max-height: 350px;
   width: 300px;
   border-radius: .5rem;
   overflow-y: auto;
 
-  .post-img {
+  .post-img{
     gap: 1rem;
 
-    .post-img-holder {
+    .post-img-holder{
       flex-shrink: 0;
-
-      img {
+      img{
         border-radius: .25rem;
         object-fit: cover;
         height: 90px;
@@ -553,26 +539,16 @@ ReadMore Button
   }
 }
 
-@media (max-width: 479.98px) {
-  .location-search-dropdown {
+@media (max-width: 479.98px){
+  .location-search-dropdown{
     width: 255px;
-
-    .post-img {
-      .post-img-holder {
-        img {
+    .post-img{
+      .post-img-holder{
+        img{
           height: 70px;
           width: 100px;
         }
       }
     }
   }
-}
-
-.no-data-found {
-  font-size: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
 }

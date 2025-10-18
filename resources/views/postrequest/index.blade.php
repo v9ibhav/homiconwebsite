@@ -47,7 +47,7 @@
                                     data-title="{{ __('post-job', ['form' => __('post-job')]) }}"
                                     title="{{ __('post-job', ['form' => __('post-job')]) }}"
                                     data-message='{{ __('Do you want to perform this action?') }}'
-                                    >{{ __('messages.apply') }}</button>
+                                    disabled>{{ __('messages.apply') }}</button>
                         </div>
 
                         </form>

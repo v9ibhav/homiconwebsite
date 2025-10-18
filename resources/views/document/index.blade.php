@@ -62,7 +62,7 @@
                                     data-title="{{ __('document', ['form' => __('document')]) }}"
                                     title="{{ __('document', ['form' => __('document')]) }}"
                                     data-message='{{ __('Do you want to perform this action?') }}'
-                                    >{{ __('messages.apply') }}</button>
+                                    disabled>{{ __('messages.apply') }}</button>
                         </div>
 
                         </form>

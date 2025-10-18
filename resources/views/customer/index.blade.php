@@ -43,7 +43,7 @@
                                 <div class="select-status d-none quick-action-field" id="change-status-action"
                                     style="width:100%">
                                     <select name="status" class="form-select select2" id="status"
-                                        style="width:auto">
+                                        style="width:100%">
                                         <option value="1">{{ __('messages.active') }}</option>
                                         <option value="0">{{ __('messages.inactive') }}</option>
                                     </select>
@@ -53,7 +53,7 @@
                                     data-confirmation='true' data-title="{{ __('user', ['form' => __('user')]) }}"
                                     title="{{ __('user', ['form' => __('user')]) }}"
                                     data-message='{{ __('Do you want to perform this action?') }}'
-                                    >{{ __('messages.apply') }}</button>
+                                    disabled>{{ __('messages.apply') }}</button>
                         </div>
 
                         </form>

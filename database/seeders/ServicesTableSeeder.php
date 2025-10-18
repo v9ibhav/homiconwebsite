@@ -7,7 +7,6 @@ use Illuminate\Support\Arr;
 use App\Models\Service;
 use App\Models\ProviderServiceAddressMapping;
 use App\Models\User;
-use App\Models\ServiceZoneMapping;
 
 class ServicesTableSeeder extends Seeder
 {
@@ -19,13 +18,13 @@ class ServicesTableSeeder extends Seeder
      */
     public function run()
     {
-
+        
 
         // \DB::table('services')->delete();
-
+        
         // \DB::table('services')->insert(array (
-        $data = [
-            [
+            $data = [
+                [
                 'added_by' => 1,
                 'advance_payment_amount' => NULL,
                 'category_id' => 9,
@@ -47,7 +46,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 1,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-04 13:27:09',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 832,
                         'service_id' => 11,
@@ -62,8 +61,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [2]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -87,7 +85,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 1,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-04 13:31:06',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 5,
                         'service_id' => 12,
@@ -126,7 +124,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 3,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-04 13:33:12',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 11,
                         'service_id' => 13,
@@ -165,7 +163,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 3,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-05 07:25:14',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 13,
                         'service_id' => 14,
@@ -204,7 +202,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 5,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-05 08:01:22',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 107,
                         'service_id' => 15,
@@ -254,8 +252,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [7]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -279,7 +276,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 5,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-08 12:18:35',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 152,
                         'service_id' => 16,
@@ -287,8 +284,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [3]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -312,7 +308,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 6,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-05 13:57:52',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 114,
                         'service_id' => 17,
@@ -383,8 +379,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [7]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -408,7 +403,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 7,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-05 14:05:49',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 125,
                         'service_id' => 18,
@@ -475,7 +470,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 7,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-06 05:27:26',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 61,
                         'service_id' => 19,
@@ -490,8 +485,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -515,7 +509,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 8,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-06 10:18:58',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 81,
                         'service_id' => 20,
@@ -544,8 +538,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [7]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -569,7 +562,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 8,
                 'type' => 'free',
                 'updated_at' => '2023-09-06 10:42:25',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 85,
                         'service_id' => 21,
@@ -584,8 +577,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -609,7 +601,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 8,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-06 10:43:58',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 87,
                         'service_id' => 22,
@@ -638,8 +630,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [7]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -663,7 +654,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 9,
                 'type' => 'fixed',
                 'updated_at' => '2023-10-02 13:22:29',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 826,
                         'service_id' => 23,
@@ -706,8 +697,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [7]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -731,7 +721,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 9,
                 'type' => 'fixed',
                 'updated_at' => '2023-10-02 12:02:29',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 821,
                         'service_id' => 24,
@@ -763,7 +753,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 10,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-06 11:03:23',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 98,
                         'service_id' => 25,
@@ -792,8 +782,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [7]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -817,7 +806,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 10,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-06 11:05:50',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 102,
                         'service_id' => 26,
@@ -853,8 +842,7 @@ class ServicesTableSeeder extends Seeder
                     //     'created_at' => NULL,
                     //     'updated_at' => NULL,
                     // ]
-                ],
-                'provider_zone' => [7]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -878,7 +866,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 10,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-06 11:46:24',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 135,
                         'service_id' => 27,
@@ -907,8 +895,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [7]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -932,7 +919,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 11,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-06 13:48:44',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 139,
                         'service_id' => 28,
@@ -968,8 +955,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -993,7 +979,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 12,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-06 13:51:35',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 144,
                         'service_id' => 29,
@@ -1022,8 +1008,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1047,7 +1032,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 12,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-08 05:12:20',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 150,
                         'service_id' => 30,
@@ -1062,8 +1047,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1087,7 +1071,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 4,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-08 13:31:22',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 153,
                         'service_id' => 31,
@@ -1116,8 +1100,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ],
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1141,7 +1124,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 40,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-08 13:33:26',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 157,
                         'service_id' => 32,
@@ -1170,8 +1153,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ],
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1195,7 +1177,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 4,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-08 13:35:35',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 161,
                         'service_id' => 33,
@@ -1252,10 +1234,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ],
-                ],
-
-                'provider_zone' =>  [6]
-
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1279,7 +1258,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 48,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-08 13:47:56',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 181,
                         'service_id' => 34,
@@ -1322,8 +1301,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1347,7 +1325,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 47,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-08 13:45:00',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 176,
                         'service_id' => 35,
@@ -1383,8 +1361,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1408,7 +1385,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 2,
                 'type' => 'fixed',
                 'updated_at' => '2023-10-06 11:44:46',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 845,
                         'service_id' => 36,
@@ -1430,8 +1407,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1455,7 +1431,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 2,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-08 13:53:57',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 191,
                         'service_id' => 37,
@@ -1498,8 +1474,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1523,7 +1498,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 40,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-08 13:56:32',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 197,
                         'service_id' => 38,
@@ -1559,8 +1534,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1584,7 +1558,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 41,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-09 06:04:40',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 210,
                         'service_id' => 39,
@@ -1637,7 +1611,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 32,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 06:10:07',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 214,
                         'service_id' => 40,
@@ -1676,7 +1650,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 41,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 06:16:19',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 216,
                         'service_id' => 41,
@@ -1691,8 +1665,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1716,7 +1689,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 17,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 06:39:44',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 218,
                         'service_id' => 42,
@@ -1769,7 +1742,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 19,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 06:43:21',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 222,
                         'service_id' => 43,
@@ -1822,7 +1795,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 21,
                 'type' => 'fixed',
                 'updated_at' => '2023-10-06 11:46:06',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 853,
                         'service_id' => 44,
@@ -1875,7 +1848,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 26,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 06:48:26',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 240,
                         'service_id' => 45,
@@ -1935,7 +1908,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 45,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 07:00:56',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 245,
                         'service_id' => 46,
@@ -1943,8 +1916,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [1]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -1968,7 +1940,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 13,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-11 10:42:05',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 834,
                         'service_id' => 47,
@@ -1983,8 +1955,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [1]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2008,7 +1979,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 50,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 07:12:41',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 812,
                         'service_id' => 48,
@@ -2061,7 +2032,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 14,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 07:16:51',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 252,
                         'service_id' => 49,
@@ -2121,7 +2092,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 15,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 07:18:54',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 257,
                         'service_id' => 50,
@@ -2136,8 +2107,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2161,7 +2131,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 17,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 07:30:58',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 259,
                         'service_id' => 51,
@@ -2214,7 +2184,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 29,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-29 14:02:46',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 816,
                         'service_id' => 52,
@@ -2222,8 +2192,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [3]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2247,7 +2216,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 23,
                 'type' => 'free',
                 'updated_at' => '2023-10-02 12:32:00',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 822,
                         'service_id' => 53,
@@ -2300,7 +2269,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 27,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 07:49:22',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 273,
                         'service_id' => 54,
@@ -2353,7 +2322,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 29,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 07:50:42',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 288,
                         'service_id' => 55,
@@ -2431,8 +2400,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [5]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2456,7 +2424,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 31,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 07:52:40',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 303,
                         'service_id' => 56,
@@ -2485,8 +2453,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [5]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2510,7 +2477,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 33,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-09 07:54:59',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 307,
                         'service_id' => 57,
@@ -2546,8 +2513,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [5]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2571,7 +2537,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 31,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 07:58:24',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 312,
                         'service_id' => 58,
@@ -2600,8 +2566,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [5]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2625,7 +2590,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 34,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 08:01:03',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 316,
                         'service_id' => 59,
@@ -2654,8 +2619,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [5]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2679,7 +2643,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 23,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-09 08:18:27',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 325,
                         'service_id' => 60,
@@ -2739,7 +2703,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 25,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 08:20:47',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 334,
                         'service_id' => 61,
@@ -2768,8 +2732,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [5]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2793,7 +2756,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 18,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-09 08:24:11',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 338,
                         'service_id' => 62,
@@ -2822,8 +2785,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [5]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2847,7 +2809,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 19,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 09:29:46',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 352,
                         'service_id' => 63,
@@ -2883,8 +2845,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [5]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2908,7 +2869,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 15,
                 'type' => 'fixed',
                 'updated_at' => '2023-10-06 11:45:18',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 848,
                         'service_id' => 64,
@@ -2944,8 +2905,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [5]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -2969,7 +2929,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 20,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 09:36:54',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 362,
                         'service_id' => 65,
@@ -2984,8 +2944,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3009,7 +2968,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 24,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 09:39:36',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 369,
                         'service_id' => 66,
@@ -3024,10 +2983,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-
-                'provider_zone' => [5]
-
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3051,7 +3007,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 28,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-09 09:42:03',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 372,
                         'service_id' => 67,
@@ -3059,9 +3015,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-
-                'provider_zone' => [1]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3085,7 +3039,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 29,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 09:45:26',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 373,
                         'service_id' => 68,
@@ -3100,8 +3054,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [3]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3125,7 +3078,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 31,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 09:50:08',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 375,
                         'service_id' => 69,
@@ -3140,8 +3093,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3165,7 +3117,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => NULL,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 09:53:06',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 377,
                         'service_id' => 70,
@@ -3196,7 +3148,6 @@ class ServicesTableSeeder extends Seeder
                     ]
                 ],
                 'visit_type' => 'online',
-                'provider_zone' => [5]
             ],
             [
                 'added_by' => 1,
@@ -3220,7 +3171,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 42,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 09:54:45',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 381,
                         'service_id' => 71,
@@ -3277,8 +3228,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3302,7 +3252,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 27,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 09:56:45',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 389,
                         'service_id' => 72,
@@ -3331,8 +3281,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3356,7 +3305,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 22,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 09:58:19',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 393,
                         'service_id' => 73,
@@ -3395,7 +3344,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => NULL,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 09:59:46',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 396,
                         'service_id' => 74,
@@ -3403,7 +3352,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
+                    ],
                 'visit_type' => 'online',
             ],
             [
@@ -3428,7 +3377,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 16,
                 'type' => 'fixed',
                 'updated_at' => '2023-10-06 11:43:19',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 843,
                         'service_id' => 75,
@@ -3443,8 +3392,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3468,7 +3416,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 38,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:03:55',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 399,
                         'service_id' => 76,
@@ -3497,8 +3445,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3522,7 +3469,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 36,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:06:09',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 403,
                         'service_id' => 77,
@@ -3530,8 +3477,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [1]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3555,7 +3501,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 43,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:08:56',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 404,
                         'service_id' => 78,
@@ -3633,8 +3579,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3658,7 +3603,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => NULL,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:11:40',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 415,
                         'service_id' => 79,
@@ -3675,7 +3620,6 @@ class ServicesTableSeeder extends Seeder
                     ]
                 ],
                 'visit_type' => 'online',
-                'provider_zone' => [1]
             ],
             [
                 'added_by' => 1,
@@ -3699,7 +3643,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 38,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:12:43',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 417,
                         'service_id' => 80,
@@ -3742,8 +3686,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3767,7 +3710,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => NULL,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:14:24',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 423,
                         'service_id' => 81,
@@ -3811,8 +3754,7 @@ class ServicesTableSeeder extends Seeder
                         'updated_at' => NULL,
                     ]
                 ],
-                'visit_type' => 'online',
-                'provider_zone' => [4]
+                'visit_type' => 'online'
             ],
             [
                 'added_by' => 1,
@@ -3836,7 +3778,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 22,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:16:55',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 429,
                         'service_id' => 82,
@@ -3872,8 +3814,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3897,7 +3838,6 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 20,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:18:29',
-                'provider_zone' => [4]
             ],
             [
                 'added_by' => 1,
@@ -3921,7 +3861,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 18,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:19:39',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 434,
                         'service_id' => 84,
@@ -3950,8 +3890,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [2, 4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -3975,7 +3914,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 46,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:21:35',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 438,
                         'service_id' => 85,
@@ -3990,9 +3929,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-
-                'provider_zone' => [5]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4016,7 +3953,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 14,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:23:09',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 440,
                         'service_id' => 86,
@@ -4076,7 +4013,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 44,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:25:09',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 446,
                         'service_id' => 87,
@@ -4112,8 +4049,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [2, 3, 4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4137,7 +4073,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => NULL,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:27:14',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 451,
                         'service_id' => 88,
@@ -4182,7 +4118,6 @@ class ServicesTableSeeder extends Seeder
                     ]
                 ],
                 'visit_type' => 'online',
-                'provider_zone' => [3]
             ],
             [
                 'added_by' => 1,
@@ -4206,7 +4141,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 35,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:29:08',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 807,
                         'service_id' => 89,
@@ -4242,8 +4177,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [3]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4267,7 +4201,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 30,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:30:12',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 462,
                         'service_id' => 90,
@@ -4282,8 +4216,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [1]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4307,7 +4240,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 36,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:33:05',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 464,
                         'service_id' => 91,
@@ -4343,8 +4276,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [3]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4368,7 +4300,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 37,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:34:31',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 469,
                         'service_id' => 92,
@@ -4400,7 +4332,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 49,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:35:39',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 475,
                         'service_id' => 93,
@@ -4436,8 +4368,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [3]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4461,7 +4392,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 25,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:38:35',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 486,
                         'service_id' => 94,
@@ -4504,8 +4435,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [3]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4529,7 +4459,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => NULL,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:40:06',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 492,
                         'service_id' => 95,
@@ -4574,7 +4504,6 @@ class ServicesTableSeeder extends Seeder
                     ]
                 ],
                 'visit_type' => 'online',
-                'provider_zone' => [3]
             ],
             [
                 'added_by' => 1,
@@ -4598,7 +4527,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 43,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-09 10:41:21',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 503,
                         'service_id' => 96,
@@ -4634,8 +4563,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [3]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4659,7 +4587,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 49,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:43:10',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 508,
                         'service_id' => 97,
@@ -4695,8 +4623,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [3]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4720,7 +4647,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 32,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:51:33',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 513,
                         'service_id' => 98,
@@ -4735,8 +4662,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [4]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4760,7 +4686,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 46,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:55:09',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 515,
                         'service_id' => 99,
@@ -4796,9 +4722,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-
-                'provider_zone' => [2]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4822,7 +4746,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => NULL,
                 'type' => 'fixed',
                 'updated_at' => '2023-10-06 06:41:54',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 836,
                         'service_id' => 100,
@@ -4860,7 +4784,6 @@ class ServicesTableSeeder extends Seeder
                     ]
                 ],
                 'visit_type' => 'online',
-                'provider_zone' => [2]
             ],
             [
                 'added_by' => 1,
@@ -4884,7 +4807,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 23,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:57:59',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 525,
                         'service_id' => 101,
@@ -4920,8 +4843,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [2]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -4945,7 +4867,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 26,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 10:59:16',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 640,
                         'service_id' => 102,
@@ -4988,8 +4910,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [2]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -5013,7 +4934,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 32,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 12:15:16',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 638,
                         'service_id' => 103,
@@ -5028,9 +4949,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-
-                'provider_zone' => [1, 6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -5054,7 +4973,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 33,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-09 12:18:02',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 722,
                         'service_id' => 104,
@@ -5114,7 +5033,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 45,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-09 12:20:50',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 666,
                         'service_id' => 105,
@@ -5171,8 +5090,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [1]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -5196,7 +5114,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 11,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 12:22:25',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 674,
                         'service_id' => 106,
@@ -5211,8 +5129,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -5236,7 +5153,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 7,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 12:31:43',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 683,
                         'service_id' => 107,
@@ -5286,8 +5203,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [1]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -5311,7 +5227,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 24,
                 'type' => 'hourly',
                 'updated_at' => '2023-09-09 12:40:23',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 710,
                         'service_id' => 108,
@@ -5326,8 +5242,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-                'provider_zone' => [3, 6]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -5351,7 +5266,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 27,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 12:35:44',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 698,
                         'service_id' => 109,
@@ -5387,10 +5302,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-
-                'provider_zone' => [1, 2]
-
+                ]
             ],
             [
                 'added_by' => 1,
@@ -5414,7 +5326,7 @@ class ServicesTableSeeder extends Seeder
                 'subcategory_id' => 2,
                 'type' => 'fixed',
                 'updated_at' => '2023-09-09 12:38:33',
-                'provider_address_mapping' => [
+                'provider_address_mapping'=>[
                     [
                         'id' => 703,
                         'service_id' => 110,
@@ -5464,9 +5376,7 @@ class ServicesTableSeeder extends Seeder
                         'created_at' => NULL,
                         'updated_at' => NULL,
                     ]
-                ],
-
-                'provider_zone' => [1]
+                ]
             ],
             [
                 'added_by' => 1,
@@ -5745,10 +5655,10 @@ class ServicesTableSeeder extends Seeder
                 'updated_at' => '2023-10-03 05:53:21',
             ],
         ];
-
+        
         foreach ($data as $key => $val) {
             $featureImage = $val['service_attachment'] ?? null;
-            $serviceData = Arr::except($val, ['provider_address_mapping', 'service_attachment', 'provider_zone']);
+            $serviceData = Arr::except($val, ['provider_address_mapping','service_attachment']);
 
             $addedByUser = User::find($serviceData['added_by'] ?? null);
             if ($addedByUser !== null && in_array($addedByUser->user_type, ['admin', 'provider'])) {
@@ -5759,28 +5669,12 @@ class ServicesTableSeeder extends Seeder
             if (isset($featureImage)) {
                 $this->attachFeatureImage($service, $featureImage);
             }
-
+            
             if (isset($val['provider_address_mapping'])) {
                 $addresses = $val['provider_address_mapping'];
-                foreach ($addresses as $addressData) {
+                foreach($addresses as $addressData){
                     $address = new ProviderServiceAddressMapping($addressData);
                     $address->save();
-                }
-            }
-
-
-            if (isset($val['provider_zone'])) {
-
-                $provider_zone = $val['provider_zone'];
-
-                foreach ($provider_zone as $zone) {
-
-                    $zone_data = [
-                        'service_id' => $service->id,
-                        'zone_id' => $zone,
-                    ];
-
-                    ServiceZoneMapping::create($zone_data);
                 }
             }
         }
@@ -5793,5 +5687,6 @@ class ServicesTableSeeder extends Seeder
         $media = $model->addMedia($file)->preservingOriginal()->toMediaCollection('service_attachment');
 
         return $media;
+
     }
 }

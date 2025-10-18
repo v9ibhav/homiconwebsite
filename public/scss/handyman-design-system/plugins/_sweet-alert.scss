@@ -3,10 +3,6 @@ div:where(.swal2-container) div:where(.swal2-popup) {
     color: var(--bs-body-color) !important;
 }
 
-div:where(.swal2-container).swal2-center>.swal2-popup {
-    flex-direction: column;
-}
-
 .swal2-popup {
     background: var(--bs-gray-900)
 }
@@ -37,7 +33,7 @@ div:where(.swal2-container).swal2-center>.swal2-popup {
 }
 
 .swal2-styled:focus {
-    box-shadow: unset !important
+    box-shadow: unset!important
 }
 
 .swal2-styled.swal2-confirm {
@@ -69,9 +65,7 @@ div:where(.swal2-container).swal2-center>.swal2-popup {
     transition: box-shadow .1s
 }
 
-.swal2-icon .swal2-icon-content,
-.swal2-icon.swal2-info,
-.swal2-icon.swal2-warning {
+.swal2-icon .swal2-icon-content,.swal2-icon.swal2-info,.swal2-icon.swal2-warning {
     border-color: var(--bs-warning);
     color: var(--bs-warning)
 }
@@ -89,12 +83,7 @@ div:where(.swal2-container).swal2-center>.swal2-popup {
     background-color: var(--bs-success)
 }
 
-.swal2-icon.swal2-success,
-.swal2-icon.swal2-success .swal2-success-fix,
-.swal2-icon.swal2-success .swal2-success-ring,
-.swal2-icon.swal2-success [class^=swal2-success-circular-line],
-.swal2-icon.swal2-success.swal2-icon-show .swal2-success-circular-line-right,
-.swal2-icon.swal2-success:hover {
+.swal2-icon.swal2-success,.swal2-icon.swal2-success .swal2-success-fix,.swal2-icon.swal2-success .swal2-success-ring,.swal2-icon.swal2-success [class^=swal2-success-circular-line],.swal2-icon.swal2-success.swal2-icon-show .swal2-success-circular-line-right,.swal2-icon.swal2-success:hover {
     border-color: var(--bs-success);
     color: var(--bs-success)
 }

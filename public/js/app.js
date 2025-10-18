@@ -25,98 +25,98 @@ Index Of Script
 ------------------------------------------------
 Index Of Script
 ----------------------------------------------*/
-(function (jQuery) {
-  "use strict";
+(function(jQuery) {
+    "use strict";
 
-  $(document).on('change', '.datatable-filter [data-filter="select"]', function () {
-    window.renderedDataTable.ajax.reload(null, false)
-  })
+    $(document).on('change', '.datatable-filter [data-filter="select"]', function() {
+      window.renderedDataTable.ajax.reload(null, false)
+    })
 
-  $(document).on('input', '.dt-search', function () {
-    window.renderedDataTable.ajax.reload(null, false)
-  })
-  $(document).ready(function () {
-    // Get the saved theme from local storage
-    const savedTheme = localStorage.getItem('data-bs-theme');
+    $(document).on('input', '.dt-search', function() {
+      window.renderedDataTable.ajax.reload(null, false)
+    })
+    $(document).ready(function () {
+        // Get the saved theme from local storage
+        const savedTheme = localStorage.getItem('data-bs-theme');
 
-    // Set the initial theme based on saved preference or default to light
-    if (savedTheme === 'dark') {
-      $('html').attr('data-bs-theme', 'dark');
-      $('#dark-mode').prop('checked', true);
-    } else {
-      $('html').attr('data-bs-theme', 'light');
-      $('#dark-mode').prop('checked', false);
-    }
+        // Set the initial theme based on saved preference or default to light
+        if (savedTheme === 'dark') {
+            $('html').attr('data-bs-theme', 'dark');
+            $('#dark-mode').prop('checked', true);
+        } else {
+            $('html').attr('data-bs-theme', 'light');
+            $('#dark-mode').prop('checked', false);
+        }
 
-    $('#dark-mode').on('change', function () {
-      const newMode = $(this).is(':checked') ? 'dark' : 'light';
+        $('#dark-mode').on('change', function () {
+            const newMode = $(this).is(':checked') ? 'dark' : 'light';
 
-      // Update the HTML attribute and local storage
-      $('html').attr('data-bs-theme', newMode);
-      localStorage.setItem('data-bs-theme', newMode);
+            // Update the HTML attribute and local storage
+            $('html').attr('data-bs-theme', newMode);
+            localStorage.setItem('data-bs-theme', newMode);
+        });
     });
-  });
-  // confirm message box
-  const confirmSwal = async (message) => {
-    return await Swal.fire({
-      title: message,
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No'
-    }).then((result) => {
-      return result
-    })
-  }
+    // confirm message box
+    const confirmSwal = async (message) => {
+        return await Swal.fire({
+          title: message,
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          cancelButtonText:'No'
+        }).then((result) => {
+          return result
+        })
+      }
 
-  window.confirmSwal = confirmSwal
+      window.confirmSwal = confirmSwal
 
-  $('#quick-action-form').on('submit', function (e) {
-    e.preventDefault()
-    const form = $(this)
-    const url = form.attr('action')
-    console.log(url)
-    const message = form.find('button[data-ajax="true"]').data('message');
-    const rowdIds = $("#datatable_wrapper .select-table-row:checked").map(function () {
-      return $(this).val();
-    }).get();
+      $('#quick-action-form').on('submit', function(e) {
+        e.preventDefault()
+        const form = $(this)
+        const url = form.attr('action')
+        console.log(url)
+        const message = form.find('button[data-ajax="true"]').data('message');
+        const rowdIds = $("#datatable_wrapper .select-table-row:checked").map(function() {
+            return $(this).val();
+        }).get();
 
 
-    confirmSwal(message).then((result) => {
-      if (!result.isConfirmed) return
-      callActionAjax({ url: `${url}?rowIds=${rowdIds}`, body: form.serialize() })
-    })
+        confirmSwal(message).then((result) => {
+            if(!result.isConfirmed) return
+            callActionAjax({url: `${url}?rowIds=${rowdIds}`,body: form.serialize()})
+          })
 
-  })
+      })
 
-  $(document).on('change', '#datatable_wrapper .switch-status-change', function () {
+  $(document).on('change', '#datatable_wrapper .switch-status-change', function() {
     let url = $(this).attr('data-url')
     let body = {
       status: $(this).prop('checked') ? 1 : 0,
       _token: $(this).attr('data-token')
     }
-    callActionAjax({ url: url, body: body })
+    callActionAjax({url: url, body: body})
   })
 
-  $(document).on('change', '#datatable_wrapper .change-select', function () {
+  $(document).on('change', '#datatable_wrapper .change-select', function() {
     let url = $(this).attr('data-url')
     let body = {
       value: $(this).val(),
       _token: $(this).attr('data-token')
     }
-    callActionAjax({ url: url, body: body })
+    callActionAjax({url: url, body: body})
   })
 
-  function callActionAjax({ url, body }) {
+  function callActionAjax ({url, body}) {
     $.ajax({
       type: 'POST',
       url: url,
       data: body,
-      success: function (res) {
+      success: function(res) {
         if (res.status) {
           const successMessage = res.message;
           showMessage(successMessage);
           window.renderedDataTable.ajax.reload(resetActionButtons, false)
-          const event = new CustomEvent('update_quick_action', { detail: { value: true } })
+          const event = new CustomEvent('update_quick_action', {detail: {value: true}})
           document.dispatchEvent(event)
         } else {
           Swal.fire({
@@ -130,27 +130,27 @@ Index Of Script
   }
 
 
-  $(document).on('click', '#datatable_wrapper .button-status-change', function () {
+  $(document).on('click', '#datatable_wrapper .button-status-change', function() {
 
     let url = $(this).attr('data-url')
     let body = {
       status: 1,
       _token: $(this).attr('data-token')
     }
-    callActionAjax({ url: url, body: body })
+    callActionAjax({url: url, body: body})
   })
 
-  function callActionAjax({ url, body }) {
+  function callActionAjax ({url, body}) {
     $.ajax({
       type: 'POST',
       url: url,
       data: body,
-      success: function (res) {
+      success: function(res) {
         if (res.status) {
           const successMessage = res.message;
           showMessage(successMessage);
           window.renderedDataTable.ajax.reload(resetActionButtons, false)
-          const event = new CustomEvent('update_quick_action', { detail: { value: true } })
+          const event = new CustomEvent('update_quick_action', {detail: {value: true}})
           document.dispatchEvent(event)
         } else {
           Swal.fire({
@@ -165,10 +165,10 @@ Index Of Script
 
   function showMessage(message) {
     Snackbar.show({
-      text: message,
-      pos: 'bottom-center'
+        text: message,
+        pos: 'bottom-center'
     });
-  }
+}
 
 
   //select row in datatable
@@ -177,42 +177,42 @@ Index Of Script
 
     checkRow();
     if ($(".select-table-row:checked").length > 0) {
-      $("#quick-action-form").removeClass('form-disabled');
+        $("#quick-action-form").removeClass('form-disabled');
 
-      document.getElementById("select-all-table").indeterminate = true;
-      $("#quick-actions").find("input, textarea, button, select").removeAttr("disabled");
+        document.getElementById("select-all-table").indeterminate = true;
+        $("#quick-actions").find("input, textarea, button, select").removeAttr("disabled");
     } else {
 
-      document.getElementById("select-all-table").indeterminate = false;
-      $("#select-all-table").attr("checked", false);
-      resetActionButtons();
+        document.getElementById("select-all-table").indeterminate = false;
+        $("#select-all-table").attr("checked", false);
+        resetActionButtons();
     }
 
     if ($("#datatable-row-" + id).is(":checked")) {
-      $("#row-" + id).addClass("table-active");
+        $("#row-" + id).addClass("table-active");
     } else {
-      $("#row-" + id).removeClass("table-active");
+        $("#row-" + id).removeClass("table-active");
     }
 
 
-    const rowdIds = $("#datatable_wrapper .select-table-row:checked").map(function () {
-      return $(this).val();
+    const rowdIds = $("#datatable_wrapper .select-table-row:checked").map(function() {
+        return $(this).val();
     }).get();
 
     const actionDropdown = document.getElementById('quick-action-type');
-    if (dataType === 'category' || dataType === 'subcategory' || dataType === 'document' || dataType === 'notificationtemplate') {
+    if(dataType === 'category' || dataType === 'subcategory' || dataType === 'document' || dataType === 'notificationtemplate' ){
       actionDropdown.options[4].disabled = true;
       actionDropdown.options[5].disabled = true;
       actionDropdown.options[3].disabled = false;
     }
-    else if (dataType === 'booking') {
+    else if(dataType === 'booking'){
       actionDropdown.options[2].disabled = true;
       actionDropdown.options[3].disabled = true;
       actionDropdown.options[1].disabled = false;
     }
-    else if (dataType == null) {
+    else if(dataType == null){
     }
-    else {
+    else{
       actionDropdown.options[3].disabled = true; // Restore option
       actionDropdown.options[4].disabled = true; // Permanently Delete option
       actionDropdown.options[2].disabled = false;
@@ -224,27 +224,27 @@ Index Of Script
       type: 'POST',
       url: baseUrl + "/check-in-trash",
       data: { ids: rowdIds, datatype: dataType },
-      success: function (response) {
-        if (response.all_in_trash == true) {
-          if (dataType === 'category' || dataType === 'subcategory' || dataType === 'document') {
-            actionDropdown.options[4].disabled = false;
-            actionDropdown.options[5].disabled = false;
-            actionDropdown.options[3].disabled = true;
-          }
-          else if (dataType === 'booking') {
-            actionDropdown.options[2].disabled = false;
-            actionDropdown.options[3].disabled = false;
-            actionDropdown.options[1].disabled = true;
-          }
-          else if (dataType == null) {
-          }
-          else {
-            actionDropdown.options[3].disabled = false; // Restore option
-            actionDropdown.options[4].disabled = false; // Permanently Delete option
-            actionDropdown.options[2].disabled = true;
-          }
+      success: function(response) {
+          if(response.all_in_trash == true){
+            if(dataType === 'category' || dataType === 'subcategory' || dataType === 'document'){
+              actionDropdown.options[4].disabled = false;
+              actionDropdown.options[5].disabled = false;
+              actionDropdown.options[3].disabled = true;
+            }
+            else if(dataType === 'booking'){
+              actionDropdown.options[2].disabled = false;
+              actionDropdown.options[3].disabled = false;
+              actionDropdown.options[1].disabled = true;
+            }
+            else if(dataType == null){
+            }
+            else{
+              actionDropdown.options[3].disabled = false; // Restore option
+              actionDropdown.options[4].disabled = false; // Permanently Delete option
+              actionDropdown.options[2].disabled = true;
+            }
 
-        }
+          }
       }
     });
 
@@ -298,19 +298,24 @@ Index Of Script
       }
     }
 
-    if (dataType === 'category' || dataType === 'subcategory' || dataType === 'document') {
+    if(dataType === 'category' || dataType === 'subcategory' || dataType === 'document'  ){
       actionDropdown.options[4].disabled = true;
       actionDropdown.options[5].disabled = true;
       actionDropdown.options[3].disabled = false;
     }
-    else if (dataType === 'booking') {
+    else if(dataType === 'booking'){
       actionDropdown.options[2].disabled = true;
       actionDropdown.options[3].disabled = true;
       actionDropdown.options[1].disabled = false;
     }
-    else if (dataType == null) {
+    else if(dataType === 'service'){
+      if (actionDropdown.options[2]) actionDropdown.options[2].disabled = true;
+      if (actionDropdown.options[3]) actionDropdown.options[3].disabled = true;
+      if (actionDropdown.options[1]) actionDropdown.options[1].disabled = false;
+    }    
+    else if(dataType == null){
     }
-    else {
+    else{
       actionDropdown.options[3].disabled = true; // Restore option
       actionDropdown.options[4].disabled = true; // Permanently Delete option
       actionDropdown.options[2].disabled = false;
@@ -323,30 +328,30 @@ Index Of Script
       type: 'POST',
       headers: {
         'X-CSRF-Token': csrfToken,
-      },
+    },
       url: baseUrl + "/check-in-trash",
       data: { ids: selectedIds, datatype: dataType },
-      success: function (response) {
-        if (response.all_in_trash == true) {
-          if (dataType === 'category' || dataType === 'subcategory' || dataType === 'document') {
-            actionDropdown.options[4].disabled = false;
-            actionDropdown.options[5].disabled = false;
-            actionDropdown.options[3].disabled = true;
-          }
-          else if (dataType === 'booking') {
-            actionDropdown.options[2].disabled = false;
-            actionDropdown.options[3].disabled = false;
-            actionDropdown.options[1].disabled = true;
-          }
-          else if (dataType == null) {
-          }
-          else {
-            actionDropdown.options[3].disabled = false; // Restore option
-            actionDropdown.options[4].disabled = false; // Permanently Delete option
-            actionDropdown.options[2].disabled = true;
-          }
+      success: function(response) {
+          if(response.all_in_trash == true){
+            if(dataType === 'category' || dataType === 'subcategory' || dataType === 'document' || dataType === 'service'  ){
+              actionDropdown.options[4].disabled = false;
+              actionDropdown.options[5].disabled = false;
+              actionDropdown.options[3].disabled = true;
+            }
+            else if(dataType === 'booking'){
+              actionDropdown.options[2].disabled = false;
+              actionDropdown.options[3].disabled = false;
+              actionDropdown.options[1].disabled = true;
+            }
+            else if(dataType == null){
+            }
+            else{
+              actionDropdown.options[3].disabled = false; // Restore option
+              actionDropdown.options[4].disabled = false; // Permanently Delete option
+              actionDropdown.options[2].disabled = true;
+            }
 
-        }
+          }
       }
     });
 
@@ -383,17 +388,15 @@ Index Of Script
       $("#is_featured").prop('disabled', false);
 
     } else {
-      $("#quick-action-type, #status, #is_featured").prop('disabled', true);
-
-
+      $("#quick-action-type, #status, #is_featured, #quick-action-apply").prop('disabled', true);
     }
   }
 
 
-  $(document).ready(function () {
+  $(document).ready(function() {
 
     $(".select-table-row").prop('checked', false);
-    $("#quick-action-form select").prop('disabled', true);
+    $("#quick-action-form select, #quick-action-form button").prop('disabled', true);
   });
   window.checkRow = checkRow
 
@@ -403,192 +406,192 @@ Index Of Script
 
   const resetActionButtons = () => {
     checkRow()
-    if (document.getElementById("select-all-table") !== undefined && document.getElementById("select-all-table") !== null) {
+    if(document.getElementById("select-all-table") !== undefined && document.getElementById("select-all-table") !== null) {
       document.getElementById("select-all-table").checked = false;
 
       $("#quick-actions")
-        .find("input, textarea, button, select")
-        .attr("disabled", "disabled");
-      $('.quick-action-field').addClass('d-none');
-      $('.quick-action-featured').addClass('d-none');
+          .find("input, textarea, button, select")
+          .attr("disabled", "disabled");
+        $('.quick-action-field').addClass('d-none');
+        $('.quick-action-featured').addClass('d-none');
 
-      $("#quick-action-form").find("select").val(null).trigger("change");
-      $("#quick-action-form").find('.quick-action-field').find("select").val("1");
-      $("#quick-action-form").find('.quick-action-featured').find("select").val("1")
+        $("#quick-action-form").find("select").val(null).trigger("change");
+        $("#quick-action-form").find('.quick-action-field').find("select").val("1");
+        $("#quick-action-form").find('.quick-action-featured').find("select").val("1")
     }
   };
 
   window.resetActionButtons = resetActionButtons
 
-  jQuery(document).ready(function () {
+    jQuery(document).ready(function() {
 
-    /*---------------------------------------------------------------------
-    Tooltip
-    -----------------------------------------------------------------------*/
-    jQuery('[data-toggle="popover"]').popover();
-    jQuery('[data-toggle="tooltip"]').tooltip();
+        /*---------------------------------------------------------------------
+        Tooltip
+        -----------------------------------------------------------------------*/
+        jQuery('[data-toggle="popover"]').popover();
+        jQuery('[data-toggle="tooltip"]').tooltip();
 
-    /*---------------------------------------------------------------------
-    Fixed Nav
-    -----------------------------------------------------------------------*/
+        /*---------------------------------------------------------------------
+        Fixed Nav
+        -----------------------------------------------------------------------*/
 
-    $(window).on('scroll', function () {
-      if ($(window).scrollTop() > 0) {
-        $('.iq-top-navbar').addClass('fixed');
-      } else {
-        $('.iq-top-navbar').removeClass('fixed');
-      }
-    });
+        $(window).on('scroll', function () {
+            if ($(window).scrollTop() > 0) {
+                $('.iq-top-navbar').addClass('fixed');
+            } else {
+                $('.iq-top-navbar').removeClass('fixed');
+            }
+        });
 
-    $(window).on('scroll', function () {
-      if ($(window).scrollTop() > 0) {
-        $('.white-bg-menu').addClass('sticky-menu');
-      } else {
-        $('.white-bg-menu').removeClass('sticky-menu');
-      }
-    });
-
-
-    /*---------------------------------------------------------------------
-     Sidebar Widget
-     -----------------------------------------------------------------------*/
-
-    jQuery(document).on("click", '.side-menu > li > a', function () {
-      jQuery('.side-menu > li > a').parent().removeClass('active');
-      jQuery(this).parent().addClass('active');
-    });
-
-    var parents = jQuery('li.active').parents('.submenu.collapse');
-
-    parents.addClass('show');
+        $(window).on('scroll', function () {
+            if ($(window).scrollTop() > 0) {
+                $('.white-bg-menu').addClass('sticky-menu');
+            } else {
+                $('.white-bg-menu').removeClass('sticky-menu');
+            }
+        });
 
 
-    parents.parents('li').addClass('active');
-    jQuery('li.active > a[aria-expanded="false"]').attr('aria-expanded', 'true');
+       /*---------------------------------------------------------------------
+        Sidebar Widget
+        -----------------------------------------------------------------------*/
 
-    /*---------------------------------------------------------------------
-    Page Loader
-    -----------------------------------------------------------------------*/
-    jQuery("#load").fadeOut();
-    jQuery("#loading").delay().fadeOut("");
+        jQuery(document).on("click", '.side-menu > li > a', function() {
+            jQuery('.side-menu > li > a').parent().removeClass('active');
+            jQuery(this).parent().addClass('active');
+        });
 
-    /*---------------------------------------------------------------------
-    Page Menu
-    -----------------------------------------------------------------------*/
-    jQuery(document).on('click', '.wrapper-menu', function () {
-      jQuery(this).toggleClass('open');
-    });
+        var parents = jQuery('li.active').parents('.submenu.collapse');
 
-    jQuery(document).on('click', ".wrapper-menu", function () {
-      jQuery("body").toggleClass("sidebar-main");
-    });
+        parents.addClass('show');
 
 
-    /*---------------------------------------------------------------------
-     Close  navbar Toggle
-     -----------------------------------------------------------------------*/
+        parents.parents('li').addClass('active');
+        jQuery('li.active > a[aria-expanded="false"]').attr('aria-expanded', 'true');
 
-    jQuery('.close-toggle').on('click', function () {
-      jQuery('.h-collapse.navbar-collapse').collapse('hide');
-    });
+        /*---------------------------------------------------------------------
+        Page Loader
+        -----------------------------------------------------------------------*/
+        jQuery("#load").fadeOut();
+        jQuery("#loading").delay().fadeOut("");
 
-    /*---------------------------------------------------------------------
-    user toggle
-    -----------------------------------------------------------------------*/
-    jQuery(document).on('click', '.user-toggle', function () {
-      jQuery(this).parent().addClass('show-data');
-    });
+        /*---------------------------------------------------------------------
+        Page Menu
+        -----------------------------------------------------------------------*/
+        jQuery(document).on('click', '.wrapper-menu', function() {
+            jQuery(this).toggleClass('open');
+        });
 
-    jQuery(document).on('click', ".close-data", function () {
-      jQuery('.user-toggle').parent().removeClass('show-data');
-    });
-    jQuery(document).on("click", function (event) {
-      var $trigger = jQuery(".user-toggle");
-      if ($trigger !== event.target && !$trigger.has(event.target).length) {
-        jQuery(".user-toggle").parent().removeClass('show-data');
-      }
-    });
-
-    /*---------------------------------------------------------------------
-    Data tables
-    -----------------------------------------------------------------------*/
-    if ($.fn.DataTable) {
-      const table = $('.data-table').DataTable();
-    }
+        jQuery(document).on('click', ".wrapper-menu", function() {
+            jQuery("body").toggleClass("sidebar-main");
+        });
 
 
-    /*---------------------------------------------------------------------
-    Form Validation
-    -----------------------------------------------------------------------*/
+      /*---------------------------------------------------------------------
+       Close  navbar Toggle
+       -----------------------------------------------------------------------*/
+
+        jQuery('.close-toggle').on('click', function () {
+            jQuery('.h-collapse.navbar-collapse').collapse('hide');
+        });
+
+        /*---------------------------------------------------------------------
+        user toggle
+        -----------------------------------------------------------------------*/
+        jQuery(document).on('click', '.user-toggle', function() {
+            jQuery(this).parent().addClass('show-data');
+        });
+
+        jQuery(document).on('click', ".close-data", function() {
+            jQuery('.user-toggle').parent().removeClass('show-data');
+        });
+        jQuery(document).on("click", function(event){
+        var $trigger = jQuery(".user-toggle");
+        if($trigger !== event.target && !$trigger.has(event.target).length){
+            jQuery(".user-toggle").parent().removeClass('show-data');
+        }
+        });
+
+        /*---------------------------------------------------------------------
+        Data tables
+        -----------------------------------------------------------------------*/
+        if($.fn.DataTable){
+            const table = $('.data-table').DataTable();
+        }
 
 
-    window.addEventListener('load', function () {
+        /*---------------------------------------------------------------------
+        Form Validation
+        -----------------------------------------------------------------------*/
 
-      var forms = document.getElementsByClassName('needs-validation');
 
-      var validation = Array.prototype.filter.call(forms, function (form) {
-        form.addEventListener('submit', function (event) {
-          if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-          form.classList.add('was-validated');
+        window.addEventListener('load', function() {
+
+            var forms = document.getElementsByClassName('needs-validation');
+
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
         }, false);
-      });
-    }, false);
 
-    /*---------------------------------------------------------------------
-    Scrollbar
-    -----------------------------------------------------------------------*/
+        /*---------------------------------------------------------------------
+        Scrollbar
+        -----------------------------------------------------------------------*/
 
-    jQuery('.data-scrollbar').each(function () {
-      var attr = $(this).attr('data-scroll');
-      if (typeof attr !== typeof undefined && attr !== false) {
-        let Scrollbar = window.Scrollbar;
-        var a = jQuery(this).data('scroll');
-        Scrollbar.init(document.querySelector('div[data-scroll= "' + a + '"]'));
-      }
+        jQuery('.data-scrollbar').each(function () {
+            var attr = $(this).attr('data-scroll');
+            if (typeof attr !== typeof undefined && attr !== false){
+            let Scrollbar = window.Scrollbar;
+            var a = jQuery(this).data('scroll');
+            Scrollbar.init(document.querySelector('div[data-scroll= "' + a + '"]'));
+            }
+        });
+
     });
 
-  });
 
+    $(document).on('click', '[data-toggel-extra="side-nav"]', function () {
+        const pannel = $(this).attr('data-expand-extra')
+        $(pannel).addClass('active')
+    })
 
-  $(document).on('click', '[data-toggel-extra="side-nav"]', function () {
-    const pannel = $(this).attr('data-expand-extra')
-    $(pannel).addClass('active')
-  })
+    $(document).on('click', '[data-toggel-extra="side-nav-close"]', function () {
+        const pannel = $(this).attr('data-expand-extra')
+        $(pannel).removeClass('active')
+    })
 
-  $(document).on('click', '[data-toggel-extra="side-nav-close"]', function () {
-    const pannel = $(this).attr('data-expand-extra')
-    $(pannel).removeClass('active')
-  })
+    $(document).on('click', '[data-toggel-extra="right-sidenav"]', function () {
+        const target = $(this).data('target')
+        $(target).addClass('active')
+    })
 
-  $(document).on('click', '[data-toggel-extra="right-sidenav"]', function () {
-    const target = $(this).data('target')
-    $(target).addClass('active')
-  })
+    $(document).on('click', '[data-extra-dismiss="right-sidenav"]', function () {
+        $(this).closest('.right-sidenav').removeClass('active')
+    })
 
-  $(document).on('click', '[data-extra-dismiss="right-sidenav"]', function () {
-    $(this).closest('.right-sidenav').removeClass('active')
-  })
+    $(document).on('click', '[data-toggle="end-call"]', function(){
+        $(this).closest('.tab-pane').removeClass('active').removeClass('show')
+        $($(this).attr('data-target')).tab('show')
+        $('.chat-action').find('[data-toggle="tab"]').removeClass('active')
+    })
 
-  $(document).on('click', '[data-toggle="end-call"]', function () {
-    $(this).closest('.tab-pane').removeClass('active').removeClass('show')
-    $($(this).attr('data-target')).tab('show')
-    $('.chat-action').find('[data-toggle="tab"]').removeClass('active')
-  })
+    $(document).on('click', '[data-toggle-extra="tab"]', function () {
+        const target = $(this).attr('data-target-extra')
+        $('[data-toggle-extra="tab-content"]').removeClass('active')
+        $(target).addClass('active')
+        $(this).parent().find('.active').removeClass('active')
+        $(this).addClass('active')
+    })
 
-  $(document).on('click', '[data-toggle-extra="tab"]', function () {
-    const target = $(this).attr('data-target-extra')
-    $('[data-toggle-extra="tab-content"]').removeClass('active')
-    $(target).addClass('active')
-    $(this).parent().find('.active').removeClass('active')
-    $(this).addClass('active')
-  })
-
-  $('.dropdown-menu').on('click', function (event) {
-    event.stopPropagation();
-  });
+    $('.dropdown-menu').on('click', function(event){
+        event.stopPropagation();
+    });
 
 
 

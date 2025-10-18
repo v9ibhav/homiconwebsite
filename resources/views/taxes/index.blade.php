@@ -28,7 +28,7 @@
                                 class="form-disabled d-flex gap-3 align-items-center">
                                 @csrf
                                 <select name="action_type" class="form-select select2" id="quick-action-type"
-                                    style="width:auto" disabled>
+                                    style="width:100%" disabled>
                                     <option value="">{{ __('messages.no_action') }}</option>
                                     <option value="change-status">{{ __('messages.status') }}</option>
                                     <option value="delete">{{ __('messages.delete') }}</option>
@@ -37,7 +37,7 @@
                                 <div class="select-status d-none quick-action-field" id="change-status-action"
                                     style="width:100%">
                                     <select name="status" class="form-select select2" id="status"
-                                        style="width:auto">
+                                        style="width:100%">
                                         <option value="1">{{ __('messages.active') }}</option>
                                         <option value="0">{{ __('messages.inactive') }}</option>
                                     </select>
@@ -47,7 +47,7 @@
                                     data-confirmation='true' data-title="{{ __('tax', ['form' => __('tax')]) }}"
                                     title="{{ __('tax', ['form' => __('tax')]) }}"
                                     data-message='{{ __('Do you want to perform this action?') }}'
-                                    >{{ __('messages.apply') }}</button>
+                                    disabled>{{ __('messages.apply') }}</button>
                         </div>
 
                         </form>
@@ -57,7 +57,7 @@
                             <div class="d-flex justify-content-end gap-3">
                                 <div class="datatable-filter ml-auto">
                                     <select name="column_status" id="column_status" class="select2 form-select"
-                                        data-filter="select" style="width: auto">
+                                        data-filter="select" style="width: 100%">
                                         <option value="">{{ __('messages.all') }}</option>
                                         <option value="0" {{ $filter['status'] == '0' ? 'selected' : '' }}>
                                             {{ __('messages.inactive') }}</option>
@@ -85,9 +85,8 @@
         </div>
     </div>
     <script>
-        let selectedRows = [];
-        
         document.addEventListener('DOMContentLoaded', (event) => {
+
             window.renderedDataTable = $('#datatable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -105,10 +104,6 @@
                             column_status: $('#column_status').val()
                         }
                     },
-                    "dataSrc": function(json) {
-                        updateSelectAllCheckbox();
-                        return json.data;
-                    }
                 },
                 columns: [{
                         name: 'check',
@@ -153,105 +148,14 @@
                     ['1', 'desc']
                 ],
                 language: {
-                    processing: "{{ __('messages.processing') }}"
-                },
-                drawCallback: function() {
-                    const tableRows = window.renderedDataTable.rows().nodes();
-                    tableRows.each(function(row) {
-                        const rowId = $(row).find('input[name="table_checkbox"]').val();
-                        if (selectedRows.includes(rowId)) {
-                            $(row).find('input[name="table_checkbox"]').prop('checked', true);
-                        }
-                    });
-                    updateSelectAllCheckbox();
+                    processing: "{{ __('messages.processing') }}" // Set your custom processing text
                 }
-            });
-
-            // Handle select all checkbox
-            $(document).on('click', '#select-all-table', function() {
-                const isChecked = $(this).prop('checked');
-                const tableRows = window.renderedDataTable.rows().nodes();
-                
-                tableRows.each(function(row) {
-                    const checkbox = $(row).find('input[name="table_checkbox"]');
-                    checkbox.prop('checked', isChecked);
-                    
-                    const rowId = checkbox.val();
-                    const index = selectedRows.indexOf(rowId);
-                    
-                    if (isChecked && index === -1) {
-                        selectedRows.push(rowId);
-                    } else if (!isChecked && index !== -1) {
-                        selectedRows.splice(index, 1);
-                    }
-                });
-                
-                updateQuickActionButton();
-            });
-
-            // Handle individual checkboxes
-            $(document).on('click', 'input[name="table_checkbox"]', function() {
-                const rowId = $(this).val();
-                const index = selectedRows.indexOf(rowId);
-                
-                if (this.checked && index === -1) {
-                    selectedRows.push(rowId);
-                } else if (!this.checked && index !== -1) {
-                    selectedRows.splice(index, 1);
-                }
-                
-                updateSelectAllCheckbox();
-                updateQuickActionButton();
-            });
-
-            // Handle filter and search
-            $('.dt-search, #column_status').on('change keyup', function() {
-                window.renderedDataTable.draw();
             });
         });
 
-        function updateSelectAllCheckbox() {
-            const visibleCheckboxes = $('input[name="table_checkbox"]:visible');
-            const checkedVisibleCheckboxes = $('input[name="table_checkbox"]:visible:checked');
-            
-            $('#select-all-table').prop(
-                'checked',
-                visibleCheckboxes.length > 0 && visibleCheckboxes.length === checkedVisibleCheckboxes.length
-            );
-        }
-
-        function updateQuickActionButton() {
-            const hasSelectedRows = selectedRows.length > 0;
-            $('#quick-action-type').prop('disabled', !hasSelectedRows);
-            if (!hasSelectedRows) {
-                $('#quick-action-apply').prop('disabled', true);
-                $('.quick-action-field').addClass('d-none');
-            }
-        }
-
-        function selectAllTable(elem) {
-            const isChecked = $(elem).prop('checked');
-            const tableRows = window.renderedDataTable.rows().nodes();
-            
-            tableRows.each(function(row) {
-                const checkbox = $(row).find('input[name="table_checkbox"]');
-                checkbox.prop('checked', isChecked);
-                
-                const rowId = checkbox.val();
-                const index = selectedRows.indexOf(rowId);
-                
-                if (isChecked && index === -1) {
-                    selectedRows.push(rowId);
-                } else if (!isChecked && index !== -1) {
-                    selectedRows.splice(index, 1);
-                }
-            });
-            
-            updateQuickActionButton();
-        }
-
         function resetQuickAction() {
             const actionValue = $('#quick-action-type').val();
+            console.log(actionValue)
             if (actionValue != '') {
                 $('#quick-action-apply').removeAttr('disabled');
 
@@ -268,8 +172,12 @@
         }
 
         $('#quick-action-type').change(function() {
-            resetQuickAction();
+            resetQuickAction()
         });
+
+        $(document).on('update_quick_action', function() {
+
+        })
 
         $(document).on('click', '[data-ajax="true"]', function(e) {
             e.preventDefault();

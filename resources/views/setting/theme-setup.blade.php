@@ -219,16 +219,12 @@
                 $(input).val("");
                 return false;
             }
-            validateImageDimensions(input, className).then(isValid => {
-                if (isValid) {
-                    reader.onload = function(e){
-                        $(document).find('img.'+className).attr('src', e.target.result);
-                        $(document).find("label."+className).text((input.files[0].name));
-                    }
-                    
-                    reader.readAsDataURL(input.files[0]);
-                }
-            });
+            reader.onload = function(e){
+                $(document).find('img.'+className).attr('src', e.target.result);
+                $(document).find("label."+className).text((input.files[0].name));
+            }
+
+            reader.readAsDataURL(input.files[0]);
         }
     }
     $(document).ready(function (){
@@ -380,32 +376,4 @@ function updateColorClasses(primaryColor, rgbPrimaryColor, primaryBgSubtle, prim
     // This is just a placeholder function to prevent errors
     // console.log('Updating color classes with new colors');
 }
-
-// Add this function after the existing script tag
-function validateImageDimensions(input, className) {
-    return new Promise((resolve, reject) => {
-        if (input.files && input.files[0]) {
-            const img = new Image();
-            img.onload = function() {
-                const width = this.width;
-                const height = this.height;
-                
-                if (className === 'logo' && (width > 40 || height > 40)) {
-                    Snackbar.show({
-                        text: 'Logo image dimensions must be 40x40 pixels or smaller',
-                        pos: 'bottom-right',
-                        backgroundColor: '#d32f2f',
-                        actionTextColor: '#fff'
-                    });
-                    $(input).val("");
-                    resolve(false);
-                } else {
-                    resolve(true);
-                }
-            };
-            img.src = URL.createObjectURL(input.files[0]);
-        }
-    });
-}
-</script>
 

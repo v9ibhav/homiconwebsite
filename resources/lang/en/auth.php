@@ -33,8 +33,4 @@
   'designation' => 'Designation',
   'password_mismatch_error' => 'Password and Confirm password does not match',
   'assign_provider_msg' => 'Contact your admin to assign a provider to you.',
-  'login_success' => 'You have successfully logged in.',
-  'logout_success' => 'You have successfully logged out.',
-  'invalid_user_type' => 'You are not allowed to log in from here.',
-  'signup_success' => 'Your account has been created. Please login.',
 );

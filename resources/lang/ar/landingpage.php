@@ -164,6 +164,5 @@ return [
     'admin_login'=>'بوابة المشرف',
     'total_cancellation_fee' => 'إجمالي رسوم الإلغاء',
     'based_book_service' => 'بناءً على خدمتك المحجوزة',
-    'about_us'=>'معلومات عنا',
-    'available_zones' => 'المناطق المتاحة'
+    'about_us'=>'معلومات عنا'
 ];

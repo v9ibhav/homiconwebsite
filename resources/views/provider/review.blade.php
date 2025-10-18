@@ -1,5 +1,4 @@
 <x-master-layout>
-    
     {{ html()->form('DELETE', route('provider.destroy', $providerdata->id))->attribute('data--submit', 'provider' . $providerdata->id)->open()}}
     <main class="main-area">
         <div class="main-content">
@@ -130,16 +129,7 @@
             </div>
         </div>
     </main>
-
-    <!-- If you need the delete functionality, add it separately -->
-    @if(auth()->user()->can('provider-delete'))
-        {{ html()->form('DELETE', route('provider.destroy', $providerdata->id))
-            ->attribute('data--submit', 'provider' . $providerdata->id)
-            ->class('d-none')
-            ->open() }}
-        {{ html()->form()->close() }}
-    @endif
-
+    {{ html()->form()->close() }}
     @section('bottom_script')
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', (event) => {

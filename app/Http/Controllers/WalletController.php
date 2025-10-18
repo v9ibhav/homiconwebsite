@@ -209,7 +209,7 @@ class WalletController extends Controller
         })
         ->addColumn('amount', function ($history) {
             $activityData = json_decode($history->activity_data, true);
-            return isset($activityData['credit_debit_amount']) ? getPriceFormat($activityData['credit_debit_amount']) : 0;
+            return isset($activityData['amount']) ? getPriceFormat($activityData['amount']) : 0;
         })
         ->addIndexColumn()
         ->toJson();

@@ -167,7 +167,7 @@
             });
         })
         $(document).ready(function () {
-           
+            
         })
 
         $(document).on('click', '[data-toggle="tabajax"]', function(e) {
@@ -184,21 +184,8 @@
                 id = selectDiv.id || '';
 
             $.post(loadurl, function(data) {
-
-                
                 $(targ).html(data);
                 $('form').append('<input type="hidden" name="active_tab" value="'+id+'" />');
-                document.querySelectorAll('.meta-keywords-input').forEach(function(input) {
-                    new Tagify(input, {
-                        delimiters: ",",
-                        dropdown: { enabled: 0 }
-                    });
-
-                    // Prevent Enter from submitting the form
-                    input.addEventListener('keydown', function(e) {
-                        if (e.key === 'Enter') e.preventDefault();
-                    });
-                });
             });
 
             $this.tab('show');

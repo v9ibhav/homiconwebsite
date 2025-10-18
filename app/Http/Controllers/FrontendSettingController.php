@@ -52,7 +52,7 @@ class FrontendSettingController extends Controller
                 case 'heder-menu-setting':
                     $keys = ['header_setting', 'enable_language', 'enable_darknight_mode', 'service', 'provider', 'categories','bookings'];
                     foreach ($keys as $key) {
-                        $landing_page_data[$key] = property_exists($decodedata, $key) ? $decodedata->$key : null;
+                        $landing_page_data[$key] = $decodedata->$key;
                     }
                     break;
                 case 'footer-setting':
@@ -372,5 +372,4 @@ class FrontendSettingController extends Controller
 
         return response()->json($recentlyViewed);
     }
-    
 }

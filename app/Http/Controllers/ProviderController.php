@@ -18,11 +18,6 @@ use App\Models\Wallet;
 use App\Models\CommissionEarning;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AdminApproveEmail;
-use App\Models\ServiceZone;
-use App\Models\ServiceZoneMapping;
-use App\Models\ProviderZoneMapping;
-use App\Models\Service;
-
 class ProviderController extends Controller
 {
     /**
@@ -35,25 +30,22 @@ class ProviderController extends Controller
         $filter = [
             'status' => $request->status,
         ];
-        $pageTitle = __('messages.providers');
-        if ($request->status === 'pending') {
-            $pageTitle = __('messages.pending_list_form_title', ['form' => __('messages.provider')]);
+        $pageTitle = __('messages.providers' );
+        if($request->status === 'pending'){
+            $pageTitle = __('messages.pending_list_form_title',['form' => __('messages.provider')] );
         }
-        if ($request->status === 'subscribe') {
-            $pageTitle = __('messages.list_form_title', ['form' => __('messages.subscribe')]);
+        if($request->status === 'subscribe'){
+            $pageTitle = __('messages.list_form_title',['form' => __('messages.subscribe')] );
         }
 
         $auth_user = authSession();
         $assets = ['datatable'];
         $list_status = $request->status;
-        $zone_id = $request->zone_id;
-        return view('provider.index', compact('list_status', 'pageTitle', 'auth_user', 'assets', 'filter', 'zone_id'));
+        return view('provider.index', compact('list_status','pageTitle','auth_user','assets','filter'));
     }
 
-    public function index_data(DataTables $datatable, Request $request)
+    public function index_data(DataTables $datatable,Request $request)
     {
-
-
         $query = User::query();
         $filter = $request->filter;
 
@@ -62,72 +54,64 @@ class ProviderController extends Controller
                 $query->where('status', $filter['column_status']);
             }
         }
-        $query = $query->where('user_type', 'provider');
+        $query = $query->where('user_type','provider');
         if (auth()->user()->hasAnyRole(['admin'])) {
             $query->withTrashed();
         }
-        if ($request->list_status == 'pending') {
-            $query = $query->where('status', 0);
-        } else {
-            $query = $query->where('status', 1);
+        if($request->list_status == 'pending'){
+            $query = $query->where('status',0);
+        }else{
+            $query = $query->where('status',1);
         }
-        if ($request->list_status == 'subscribe') {
-            $query = $query->where('status', 1)->where('is_subscribe', 1);
+        if($request->list_status == 'subscribe'){
+            $query = $query->where('status',1)->where('is_subscribe',1);
         }
-
-        if ($request->zone_id != null) {
-
-            $query = $query->whereHas('providerZones', function ($q) use ($request) {
-                $q->where('zone_id', $request->zone_id);
-            });
-        }
-
 
         return $datatable->eloquent($query)
             ->addColumn('check', function ($row) {
-                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-' . $row->id . '"  name="datatable_ids[]" value="' . $row->id . '" data-type="user" onclick="dataTableRowCheck(' . $row->id . ',this)">';
+                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-'.$row->id.'"  name="datatable_ids[]" value="'.$row->id.'" data-type="user" onclick="dataTableRowCheck('.$row->id.',this)">';
             })
 
             ->editColumn('display_name', function ($query) {
                 return view('provider.user', compact('query'));
             })
-            ->editColumn('wallet', function ($query) {
+            ->editColumn('wallet', function ($query){
                 return view('provider.wallet', compact('query'));
             })
-            ->editColumn('status', function ($query) {
-                if ($query->status == '0') {
-                    $status = '<a class="btn-sm btn btn btn-success"  href=' . route('provider.approve', $query->id) . '><i class="fa fa-check"></i>Approve</a>';
-                } else {
-                    $status = '<span class="badge badge-active text-success bg-success-subtle">' . __('messages.active') . '</span>';
+            ->editColumn('status', function($query) {
+                if($query->status == '0'){
+                    $status = '<a class="btn-sm btn btn btn-success"  href='.route('provider.approve',$query->id).'><i class="fa fa-check"></i>Approve</a>';
+                }else{
+                    $status = '<span class="badge badge-active text-success bg-success-subtle">'.__('messages.active').'</span>';
                 }
                 return $status;
             })
-            ->editColumn('providertype_id', function ($query) {
+            ->editColumn('providertype_id', function($query) {
                 return ($query->providertype_id != null && isset($query->providertype)) ? $query->providertype->name : '-';
             })
-            ->editColumn('address', function ($query) {
+            ->editColumn('address', function($query) {
                 return ($query->address != null && isset($query->address)) ? $query->address : '-';
             })
-            ->editColumn('created_at', function ($query) {
-                $sitesetup = Setting::where('type', 'site-setup')->where('key', 'site-setup')->first();
+            ->editColumn('created_at', function($query) {
+                $sitesetup = Setting::where('type','site-setup')->where('key', 'site-setup')->first();
                 $datetime = $sitesetup ? json_decode($sitesetup->value) : null;
 
                 $formattedDate =  optional($datetime)->date_format && optional($datetime)->time_format
-                    ? date(optional($datetime)->date_format, strtotime($query->created_at)) . '  ' . date(optional($datetime)->time_format, strtotime($query->created_at))
-                    : $query->created_at;
+                ? date(optional($datetime)->date_format, strtotime($query->created_at)) .'  '. date(optional($datetime)->time_format, strtotime($query->created_at))
+                : $query->created_at;
                 return $formattedDate;
             })
 
-            ->filterColumn('providertype_id', function ($query, $keyword) {
-                $query->whereHas('providertype', function ($q) use ($keyword) {
-                    $q->where('name', 'like', '%' . $keyword . '%');
+            ->filterColumn('providertype_id',function($query,$keyword){
+                $query->whereHas('providertype',function ($q) use($keyword){
+                    $q->where('name','like','%'.$keyword.'%');
                 });
             })
-            ->addColumn('action', function ($provider) {
-                return view('provider.action', compact('provider'))->render();
+            ->addColumn('action', function($provider){
+                return view('provider.action',compact('provider'))->render();
             })
             ->addIndexColumn()
-            ->rawColumns(['check', 'display_name', 'wallet', 'action', 'status'])
+            ->rawColumns(['check','display_name','wallet','action','status'])
             ->toJson();
     }
 
@@ -177,7 +161,6 @@ class ProviderController extends Controller
      */
     public function create(Request $request)
     {
-
         if (!auth()->user()->can('provider add')) {
             return redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
         }
@@ -185,23 +168,14 @@ class ProviderController extends Controller
         $auth_user = authSession();
 
         $providerdata = User::find($id);
-        $pageTitle = __('messages.update_form_title', ['form' => __('messages.provider')]);
+        $pageTitle = __('messages.update_form_title',['form'=> __('messages.provider')]);
 
-        if ($providerdata == null) {
-            $pageTitle = __('messages.add_button_form', ['form' => __('messages.provider')]);
+        if($providerdata == null){
+            $pageTitle = __('messages.add_button_form',['form' => __('messages.provider')]);
             $providerdata = new User;
         }
 
-        // Get all active service zones
-        $serviceZones = ServiceZone::where('status', 1)->get();
-
-        // Get selected zones for existing provider
-        $selectedZones = [];
-        if ($providerdata && $providerdata->id) {
-            $selectedZones = $providerdata->serviceZones()->pluck('service_zones.id')->toArray();
-        }
-
-        return view('provider.create', compact('pageTitle', 'providerdata', 'auth_user', 'serviceZones', 'selectedZones'));
+        return view('provider.create', compact('pageTitle' ,'providerdata' ,'auth_user' ));
     }
 
     /**
@@ -213,7 +187,7 @@ class ProviderController extends Controller
     public function store(UserRequest $request)
     {
         $loginuser = \Auth::user();
-        if (demoUserPermission()) {
+        if(demoUserPermission()){
             return  redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
         }
         $data = $request->all();
@@ -221,13 +195,13 @@ class ProviderController extends Controller
         $data['user_type'] = $data['user_type'] ?? 'provider';
         $data['is_featured'] = 0;
 
-        if ($request->has('is_featured')) {
-            $data['is_featured'] = 1;
-        }
+        if($request->has('is_featured')){
+			$data['is_featured'] = 1;
+		}
 
-        $data['display_name'] = $data['first_name'] . " " . $data['last_name'];
+        $data['display_name'] = $data['first_name']." ".$data['last_name'];
 
-        if ($id == null) {
+        if($id == null){
             $data['password'] = bcrypt($data['password']);
             $user = User::create($data);
             $wallet = array(
@@ -236,68 +210,36 @@ class ProviderController extends Controller
                 'amount' => 0
             );
             $result = Wallet::create($wallet);
-        } else {
+        }else{
             $user = User::findOrFail($id);
+
             $user->fill($data)->update();
         }
-
-
-        if ($request->id && $request->id != null) {
-
-            $provider_zone = ProviderZoneMapping::where('provider_id', $request->id)->pluck('zone_id')->toArray();
-
-
-            $service_zones = $request->service_zones;
-            if (is_string($service_zones)) {
-                $decoded = json_decode($service_zones, true);
-                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                    $service_zones = $decoded;
-                } elseif (strpos($service_zones, ',') !== false) {
-                    $service_zones = explode(',', $service_zones);
-                } else {
-                    $service_zones = [$service_zones];
-                }
-            }
-            $service_zones = array_filter(array_map('intval', (array) $service_zones));
-
-            $removeZone = array_diff($provider_zone, $service_zones);
-
-            $services = Service::where('provider_id', $request->id)->pluck('id')->toArray();
-
-            ServiceZoneMapping::whereIn('service_id', $services)->whereIn('zone_id', $removeZone)->delete();
-        }
-
-        // Handle service zones
-        if ($request->has('service_zones')) {
-            $user->serviceZones()->sync($request->service_zones);
-        } else {
-            $user->serviceZones()->detach();
-        }
-
-        if ($data['status'] == 1 && auth()->user()->hasAnyRole(['admin'])) {
+        if($data['status'] == 1 && auth()->user()->hasAnyRole(['admin'])){
             try {
-                \Mail::send(
-                    'verification.verification_email',
-                    array(),
-                    function ($message) use ($user) {
-                        $message->from(env('MAIL_FROM_ADDRESS'));
-                        $message->to($user->email);
-                    }
-                );
+                \Mail::send('verification.verification_email',
+                array(), function($message) use ($user)
+                {
+                    $message->from(env('MAIL_FROM_ADDRESS'));
+                    $message->to($user->email);
+                });
             } catch (\Throwable $th) {
+
             }
+
         }
         $user->assignRole($data['user_type']);
-        storeMediaFile($user, $request->profile_image, 'profile_image');
-        $message = __('messages.update_form', ['form' => __('messages.provider')]);
-        if ($user->wasRecentlyCreated) {
-            $message = __('messages.save_form', ['form' => __('messages.provider')]);
-        }
-        if ($user->providerTaxMapping()->count() > 0) {
+        storeMediaFile($user,$request->profile_image, 'profile_image');
+        $message = __('messages.update_form',[ 'form' => __('messages.provider') ] );
+		if($user->wasRecentlyCreated){
+			$message = __('messages.save_form',[ 'form' => __('messages.provider') ] );
+		}
+        if($user->providerTaxMapping()->count() > 0)
+        {
             $user->providerTaxMapping()->delete();
         }
-        if ($request->tax_id != null) {
-            foreach ($request->tax_id as $tax) {
+        if($request->tax_id != null) {
+            foreach($request->tax_id as $tax) {
                 $provider_tax = [
                     'provider_id'   => $user->id,
                     'tax_id'   => $tax,
@@ -306,11 +248,11 @@ class ProviderController extends Controller
             }
         }
 
-        if ($request->is('api/*')) {
+        if($request->is('api/*')) {
             return comman_message_response($message);
-        }
+		}
 
-        return redirect(route('provider.index'))->withSuccess($message);
+		return redirect(route('provider.index'))->withSuccess($message);
     }
 
     /**
@@ -320,38 +262,37 @@ class ProviderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id, $withdrawAmount = 0)
-    {
-        $auth_user = authSession();
+{
+    $auth_user = authSession();
 
-        if ($id != auth()->user()->id && !auth()->user()->hasRole(['admin', 'demo_admin'])) {
-            return redirect(route('home'))->withErrors(trans('messages.demo_permission_denied'));
-        }
-        $providerdata = User::with('providerDocument', 'booking', 'commission_earning')
-            ->where('user_type', 'provider')
-            ->where('id', $id)
-            ->first();
+    if ($id != auth()->user()->id && !auth()->user()->hasRole(['admin', 'demo_admin'])) {
+        return redirect(route('home'))->withErrors(trans('messages.demo_permission_denied'));
+    }
+    $providerdata = User::with('providerDocument', 'booking','commission_earning')
+                        ->where('user_type', 'provider')
+                        ->where('id', $id)
+                        ->first();
 
-        $data = Booking::where('provider_id', $id)->selectRaw(
-            'COUNT(CASE WHEN status = "pending" THEN "pending" END) AS PendingStatusCount,
+    $data = Booking::where('provider_id', $id)->selectRaw(
+        'COUNT(CASE WHEN status = "pending" THEN "pending" END) AS PendingStatusCount,
         COUNT(CASE WHEN status = "in_progress"  THEN "InProgress" END) AS InProgressstatuscount,
         COUNT(CASE WHEN status = "completed"  THEN "Completed" END) AS Completedstatuscount,
         COUNT(CASE WHEN status = "accept"  THEN "Accepted" END) AS Acceptedstatuscount,
-        COUNT(CASE WHEN status = "on_going"  THEN "Ongoing" END) AS Ongoingstatuscount,
-        COUNT(CASE WHEN status = "cancelled"  THEN "Cancelled" END) AS CancelledStatusCount'
-        )->first()->toArray() ?? null;
-        $totalbooking = Booking::where('provider_id', $id)->count();
-        $providerPayout = ProviderPayout::where('provider_id', $id)->sum('amount') ?? 0;
-        $commissionData = null;
-        if ($providerdata !== null) {
-            $commissionData = $providerdata->commission_earning()
-                ->whereHas('getbooking', function ($query) {
-                    $query->where('status', 'completed');
-                })
-                ->where('commission_status', 'unpaid')
-                ->where('user_type', 'provider')
-                ->pluck('booking_id');
-            $ProviderEarning = 0;
-
+        COUNT(CASE WHEN status = "on_going"  THEN "Ongoing" END) AS Ongoingstatuscount'
+    )->first()->toArray() ?? null;
+   $totalbooking = Booking::where('provider_id', $id)->count();
+    $providerPayout = ProviderPayout::where('provider_id',$id)->sum('amount') ?? 0;
+    $commissionData = null;
+    if($providerdata !== null){
+        $commissionData = $providerdata->commission_earning()
+        ->whereHas('getbooking', function ($query) {
+            $query->where('status', 'completed');
+        })
+        ->where('commission_status', 'unpaid')
+        ->where('user_type', 'provider')
+        ->pluck('booking_id');
+        $ProviderEarning = 0;
+            
             if ($commissionData->isNotEmpty()) {
                 // Fetch all unpaid commissions for the relevant bookings in a single query
                 $ProviderEarning = CommissionEarning::whereIn('booking_id', $commissionData)
@@ -359,28 +300,28 @@ class ProviderController extends Controller
                     ->where('commission_status', 'unpaid')
                     ->sum('commission_amount'); // Directly sum the commission_amount
             }
-        } else {
-            $msg = __('messages.not_found_entry', ['name' => __('messages.provider')]);
-            return redirect(route('provider.index'))->withError($msg);
-        }
-
-        $commissionAmount = $ProviderEarning ? $ProviderEarning : 0;
-        $alreadyWithdrawn = $providerPayout;
-        $totalAmount = $alreadyWithdrawn + $commissionAmount;
-        $wallet = $providerdata ? optional($providerdata->wallet)->amount : 0;
-
-        $providerData = [
-            'wallet' => $wallet,
-            'providerAlreadyWithdrawAmt' => $alreadyWithdrawn,
-            'pendWithdrwan' => $commissionAmount,
-            'totalAmount' => $totalAmount,
-            'total_booking' => $totalbooking,
-        ];
-
-        $pageTitle = __('messages.view_form_title', ['form' => __('messages.provider')]);
-
-        return view('provider.view', compact('pageTitle', 'providerdata', 'auth_user', 'data',  'providerPayout', 'providerData', 'totalAmount'));
+    }else {
+        $msg = __('messages.not_found_entry', ['name' => __('messages.provider')]);
+        return redirect(route('provider.index'))->withError($msg);
     }
+
+    $commissionAmount = $ProviderEarning ? $ProviderEarning : 0;
+    $alreadyWithdrawn = $providerPayout;
+    $totalAmount = $alreadyWithdrawn + $commissionAmount;
+    $wallet = $providerdata ? optional($providerdata->wallet)->amount : 0;
+
+    $providerData = [
+        'wallet' => $wallet,
+        'providerAlreadyWithdrawAmt' => $alreadyWithdrawn,
+        'pendWithdrwan' => $commissionAmount,
+        'totalAmount' => $totalAmount,
+        'total_booking' => $totalbooking,
+    ];
+
+    $pageTitle = __('messages.view_form_title', ['form' => __('messages.provider')]);
+
+    return view('provider.view', compact('pageTitle', 'providerdata', 'auth_user', 'data',  'providerPayout', 'providerData','totalAmount'));
+}
 
 
 
@@ -415,40 +356,39 @@ class ProviderController extends Controller
      */
     public function destroy($id)
     {
-        if (demoUserPermission()) {
+        if(demoUserPermission()){
             return  redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
         }
         $provider = User::find($id);
-        $msg = __('messages.msg_fail_to_delete', ['name' => __('messages.provider')]);
+        $msg= __('messages.msg_fail_to_delete',['name' => __('messages.provider')] );
 
-        if ($provider != '') {
+        if($provider != '') {
             $provider->delete();
-            $msg = __('messages.msg_deleted', ['name' => __('messages.provider')]);
+            $msg= __('messages.msg_deleted',['name' => __('messages.provider')] );
         }
-        if (request()->is('api/*')) {
+        if(request()->is('api/*')) {
             return comman_message_response($msg);
-        }
-        return comman_custom_response(['message' => $msg, 'status' => true]);
+		}
+        return comman_custom_response(['message'=> $msg, 'status' => true]);
     }
-    public function action(Request $request)
-    {
+    public function action(Request $request){
         $id = $request->id;
 
-        $provider  = User::withTrashed()->where('id', $id)->first();
-        $msg = __('messages.not_found_entry', ['name' => __('messages.provider')]);
-        if ($request->type == 'restore') {
+        $provider  = User::withTrashed()->where('id',$id)->first();
+        $msg = __('messages.not_found_entry',['name' => __('messages.provider')] );
+        if($request->type == 'restore') {
             $provider->restore();
-            $msg = __('messages.msg_restored', ['name' => __('messages.provider')]);
+            $msg = __('messages.msg_restored',['name' => __('messages.provider')] );
         }
 
-        if ($request->type === 'forcedelete') {
+        if($request->type === 'forcedelete'){
             $provider->forceDelete();
-            $msg = __('messages.msg_forcedelete', ['name' => __('messages.provider')]);
+            $msg = __('messages.msg_forcedelete',['name' => __('messages.provider')] );
         }
-        if (request()->is('api/*')) {
+        if(request()->is('api/*')) {
             return comman_message_response($msg);
-        }
-        return comman_custom_response(['message' => $msg, 'status' => true]);
+		}
+        return comman_custom_response(['message'=> $msg , 'status' => true]);
     }
     public function bankDetails(ServiceDataTable $dataTable, Request $request)
     {
@@ -472,7 +412,7 @@ class ProviderController extends Controller
         }
         $providerdata = User::with('getServiceRating')->where('user_type', 'provider')->where('id', $id)->first();
         $earningData = array();
-        $time_zone = getTimeZone();
+        $time_zone=getTimeZone();
 
         foreach ($providerdata->getServiceRating as $bookingreview) {
 
@@ -482,9 +422,9 @@ class ProviderController extends Controller
             $updated_at = $bookingreview->updated_at;
             $rating = $bookingreview->rating;
             $review = $bookingreview->review;
-            $user_name = optional($bookingreview->customer)->first_name . ' ' . optional($bookingreview->customer)->last_name;
+            $user_name = optional($bookingreview->customer)->first_name .' '. optional($bookingreview->customer)->last_name;
             $earningData[] = [
-                'booking_id' => $booking_id,
+                'booking_id'=>$booking_id,
                 'date' => $date,
                 'rating' => $rating,
                 'review' => $review ?? '-',
@@ -506,8 +446,8 @@ class ProviderController extends Controller
                         $datetime = $sitesetup ? json_decode($sitesetup->value) : null;
 
                         $date = optional($datetime)->date_format && optional($datetime)->time_format
-                            ? date(optional($datetime)->date_format, strtotime($startAt)) . '  ' . date(optional($datetime)->time_format, strtotime($startAt))
-                            : $startAt;
+                        ? date(optional($datetime)->date_format, strtotime($startAt)) .'  '. date(optional($datetime)->time_format, strtotime($startAt))
+                        : $startAt;
                         return $date;
                     }
                     return null;
@@ -521,7 +461,7 @@ class ProviderController extends Controller
             return redirect(route('provider.index'))->withError($msg);
         }
         $pageTitle = __('messages.view_form_title', ['form' => __('messages.provider')]);
-        return view('provider.review', compact('pageTitle', 'earningData', 'auth_user', 'providerdata'));
+        return view('provider.review', compact('pageTitle','earningData', 'auth_user', 'providerdata'));
     }
     public function providerDetail(Request $request)
     {
@@ -534,49 +474,48 @@ class ProviderController extends Controller
         $earningData = array();
         $payment_data = PaymentGateway::where('type', $tabpage)->first();
         $provideId = $request->providerId;
-        $plandata = ProviderSubscription::where('user_id', $request->providerid)->orderBy('id', 'desc');
-        if ($request->tabpage == 'subscribe-plan') {
-            $plandata = $plandata->where('plan_type', 'subscribe');
-        }
-        if ($request->tabpage == 'unsubscribe-plan') {
-            $plandata = $plandata->where('plan_type', 'unsubscribe');
+        $plandata = ProviderSubscription::where('user_id',$request->providerid)->orderBy('id', 'desc');
+        if($request->tabpage == 'subscribe-plan'){
+            $plandata = $plandata->where('plan_type','subscribe');
+        }if($request->tabpage == 'unsubscribe-plan'){
+            $plandata = $plandata->where('plan_type','unsubscribe');
         }
         switch ($tabpage) {
             case 'all-plan':
 
                 if ($request->ajax() && $request->type == 'tbl') {
-                    return  Datatables::of($plandata)
-                        ->addColumn('provider_name', function ($row) {
-                            if ($row->provider) {
-                                return $row->provider->first_name . ' ' . $row->provider->last_name;
-                            }
-                            return '-';
-                        })
-                        ->addIndexColumn()
-                        ->rawColumns([])
-                        ->make(true);
+                 return  Datatables::of($plandata)
+                 ->addColumn('provider_name', function ($row) {
+                    if ($row->provider) {
+                        return $row->provider->first_name . ' ' . $row->provider->last_name;
+                    }
+                    return '-';
+                })
+                   ->addIndexColumn()
+                   ->rawColumns([])
+                   ->make(true);
                 }
 
-                return view('providerdetail.all-plan', compact('user_data', 'earningData', 'tabpage', 'auth_user', 'payment_data', 'provideId'));
+               return view('providerdetail.all-plan', compact('user_data', 'earningData', 'tabpage', 'auth_user', 'payment_data','provideId'));
                 break;
             case 'subscribe-plan':
                 if ($request->ajax() && $request->type == 'tbl') {
                     return  Datatables::of($plandata)
-                        ->addIndexColumn()
-                        ->rawColumns([])
-                        ->make(true);
-                }
-                return view('providerdetail.subscribe-plan', compact('user_data', 'earningData', 'tabpage', 'auth_user', 'payment_data', 'provideId'));
+                      ->addIndexColumn()
+                      ->rawColumns([])
+                      ->make(true);
+                   }
+                   return view('providerdetail.subscribe-plan', compact('user_data', 'earningData', 'tabpage', 'auth_user', 'payment_data','provideId'));
 
                 break;
             case 'unsubscribe-plan':
                 if ($request->ajax() && $request->type == 'tbl') {
                     return  Datatables::of($plandata)
-                        ->addIndexColumn()
-                        ->rawColumns([])
-                        ->make(true);
-                }
-                return view('providerdetail.unsubscribe-plan', compact('user_data', 'earningData', 'tabpage', 'auth_user', 'payment_data', 'provideId'));
+                      ->addIndexColumn()
+                      ->rawColumns([])
+                      ->make(true);
+                   }
+                   return view('providerdetail.unsubscribe-plan', compact('user_data', 'earningData', 'tabpage', 'auth_user', 'payment_data','provideId'));
 
                 break;
             default:
@@ -584,29 +523,27 @@ class ProviderController extends Controller
                 break;
         }
 
-        return response()->json($data);
+       return response()->json($data);
     }
 
-    public function approve($id)
-    {
+    public function approve($id){
         $provider = User::find($id);
         $provider->status = 1;
         $provider->save();
         $id = $provider->id;
-        $verificationLink = route('verify', ['id' => $id]);
+        $verificationLink = route('verify',['id' => $id]);
         Mail::to($provider->email)->send(new AdminApproveEmail($verificationLink));
         $msg = __('messages.approve_successfully');
         return redirect()->back()->withSuccess($msg);
     }
 
-    public function getChangePassword(Request $request)
-    {
+    public function getChangePassword(Request $request){
         $id = $request->id;
         $auth_user = authSession();
 
         $providerdata = User::find($id);
-        $pageTitle = __('messages.change_password', ['form' => __('messages.change_password')]);
-        return view('provider.changepassword', compact('pageTitle', 'providerdata', 'auth_user'));
+        $pageTitle = __('messages.change_password',['form'=> __('messages.change_password')]);
+        return view('provider.changepassword', compact('pageTitle' ,'providerdata' ,'auth_user'));
     }
 
     public function changePassword(Request $request)
@@ -628,7 +565,7 @@ class ProviderController extends Controller
 
         if ($validator->fails()) {
             if ($validator->errors()->has('password')) {
-                $message = __('messages.confirmed', ['name' => __('messages.password')]);
+                $message = __('messages.confirmed',['name' => __('messages.password')]);
                 return redirect()->route('provider.changepassword', ['id' => $user->id])->with('error', $message);
             }
             return redirect()->route('provider.changepassword', ['id' => $user->id])->with('errors', $validator->errors());
@@ -642,7 +579,7 @@ class ProviderController extends Controller
         if ($match) {
             if ($same_exits) {
                 $message = __('messages.old_new_pass_same');
-                return redirect()->route('provider.changepassword', ['id' => $user->id])->with('error', $message);
+                return redirect()->route('provider.changepassword',['id' => $user->id])->with('error', $message);
             }
 
             $user->fill([
@@ -652,17 +589,16 @@ class ProviderController extends Controller
             return redirect()->route('provider.index')->withSuccess($message);
         } else {
             $message = __('messages.valid_password');
-            return redirect()->route('provider.changepassword', ['id' => $user->id])->with('error', $message);
+            return redirect()->route('provider.changepassword',['id' => $user->id])->with('error', $message);
         }
     }
-    public function getProviderTimeSlot(Request $request)
-    {
+    public function getProviderTimeSlot(Request $request){
         $auth_user = authSession();
         $id = $request->id;
         if ($id != auth()->user()->id && !auth()->user()->hasRole(['admin', 'demo_admin'])) {
             return redirect(route('home'))->withErrors(trans('messages.demo_permission_denied'));
         }
-        $providerdata = User::with('providerslotsmapping')->where('user_type', 'provider')->where('id', $id)->first();
+        $providerdata = User::with('providerslotsmapping')->where('user_type','provider')->where('id',$id)->first();
         date_default_timezone_set($admin->time_zone ?? 'UTC');
 
         $current_time = \Carbon\Carbon::now();
@@ -675,13 +611,13 @@ class ProviderController extends Controller
         $days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
         $slotsArray = ['days' => $days];
-        $activeDay = 'mon';
+        $activeDay ='mon';
         foreach ($days as $value) {
             $slot = ProviderSlotMapping::where('provider_id', $provider_id)
-                ->where('days', $value)
-                ->orderBy('start_at', 'asc')
-                ->pluck('start_at')
-                ->toArray();
+            ->where('days', $value)
+            ->orderBy('start_at', 'asc')
+            ->pluck('start_at')
+            ->toArray();
 
             $obj = [
                 "day" => $value,
@@ -689,19 +625,18 @@ class ProviderController extends Controller
             ];
             $slotsArray[] = $obj;
         }
-
+        
         $pageTitle = __('messages.slot', ['form' => __('messages.slot')]);
-        return view('provider.timeslot', compact('auth_user', 'slotsArray', 'pageTitle', 'activeDay', 'provider_id', 'providerdata'));
+        return view('provider.timeslot', compact('auth_user','slotsArray', 'pageTitle', 'activeDay','provider_id','providerdata'));
     }
 
-    public function editProviderTimeSlot(Request $request)
-    {
+    public function editProviderTimeSlot(Request $request){
         $auth_user = authSession();
         $id = $request->id;
         if ($id != auth()->user()->id && !auth()->user()->hasRole(['admin', 'demo_admin'])) {
-            return redirect(route('provider.time-slot', auth()->user()->id))->withErrors(trans('messages.demo_permission_denied'));
+            return redirect(route('provider.time-slot',auth()->user()->id))->withErrors(trans('messages.demo_permission_denied'));
         }
-        $providerdata = User::with('providerslotsmapping')->where('user_type', 'provider')->where('id', $id)->first();
+        $providerdata = User::with('providerslotsmapping')->where('user_type','provider')->where('id',$id)->first();
         date_default_timezone_set($admin->time_zone ?? 'UTC');
 
         $current_time = \Carbon\Carbon::now();
@@ -719,11 +654,11 @@ class ProviderController extends Controller
 
         foreach ($days as $value) {
             $slot = ProviderSlotMapping::where('provider_id', $provider_id)
-                ->where('days', $value)
-                ->orderBy('start_at', 'asc')
-                ->selectRaw("SUBSTRING(start_at, 1, 5) as start_at")
-                ->pluck('start_at')
-                ->toArray();
+            ->where('days', $value)
+            ->orderBy('start_at', 'asc')
+            ->selectRaw("SUBSTRING(start_at, 1, 5) as start_at")
+            ->pluck('start_at')
+            ->toArray();
 
             $obj = [
                 "day" => $value,
@@ -731,9 +666,13 @@ class ProviderController extends Controller
             ];
             $slotsArray[] = $obj;
             $activeSlots[$value] = $slot;
+
         }
         $pageTitle = __('messages.slot', ['form' => __('messages.slot')]);
 
-        return view('provider.edittimeslot', compact('auth_user', 'slotsArray', 'pageTitle', 'activeDay', 'provider_id', 'activeSlots', 'providerdata'));
+            return view('provider.edittimeslot', compact('auth_user','slotsArray', 'pageTitle', 'activeDay', 'provider_id', 'activeSlots','providerdata'));
+
+
+
     }
 }

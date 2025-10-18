@@ -24,11 +24,7 @@ class ProviderDocumentController extends Controller
     public function index_data(DataTables $datatable,Request $request)
     {
         $providerdata = $request->providerdocument;
-        if(auth()->user()->hasAnyRole(['admin','demo_admin'])){
-            $query = ProviderDocument::withTrashed()->myDocument()->where('provider_id',$providerdata);
-        }else{
-            $query = ProviderDocument::myDocument()->where('provider_id',$providerdata);
-        }
+        $query = ProviderDocument::withTrashed()->myDocument()->where('provider_id',$providerdata);
 
         $filter = $request->filter;
 
@@ -50,7 +46,7 @@ class ProviderDocumentController extends Controller
                 $disabled = $query->trashed() ? 'disabled': '';
                 if(auth()->user()->hasAnyRole(['provider','demo_provider'])){
                     if($query->is_verified == 0){
-                        $status = '<span class="badge badge-danger">'.__('messages.not_verified').'</span>';
+                        $status = '<span class="badge badge-danger">'.__('messages.unverified').'</span>';
                     }else{
                         $status = '<span class="badge badge-success">'.__('messages.verified').'</span>';
                     }
@@ -75,12 +71,7 @@ class ProviderDocumentController extends Controller
             ->orderColumn('document_id', function ($query, $order) {
                 $query->select('provider_documents.*')
                       ->join('documents', 'documents.id', '=', 'provider_documents.document_id')
-                      ->orderBy('documents.name', $order);
-            })
-            ->filterColumn('document_id', function($query, $keyword) {
-                $query->whereHas('document', function($q) use ($keyword) {
-                    $q->where('name', 'like', "%{$keyword}%");
-                });
+                      ->orderBy('documents.name', $order);   
             })
             ->filterColumn('provider_id',function($query,$keyword){
                 $query->whereHas('providers',function ($q) use($keyword){
@@ -161,7 +152,7 @@ class ProviderDocumentController extends Controller
                 return redirect(route('providerdocument.show',$providerdocument ))->withErrors(trans('messages.demo_permission_denied'));
             }
         }
-        // dd($provider_document);
+
         return view('providerdocument.create', compact('pageTitle' ,'provider_document' ,'auth_user','providerdata' ));
     }
 
@@ -208,7 +199,6 @@ class ProviderDocumentController extends Controller
     public function show(Request $request, $id)
     {
         $auth_user = authSession();
-        // dd($auth_user);
         if ($id != auth()->user()->id && !auth()->user()->hasRole(['admin', 'demo_admin'])) {
             return redirect(route('home'))->withErrors(trans('messages.demo_permission_denied'));
         }

@@ -26,7 +26,7 @@
                 :modules="modules"
                 :slides-per-view="2"
                 :space-between="30"
-                :loop="banners.length >= 3"
+                :loop="true"
                 :autoplay="{ delay: 3000, disableOnInteraction: false }"
                 :pagination="{
                     clickable: true,

@@ -17,8 +17,7 @@ class Service extends Model implements  HasMedia
     protected $fillable = [
         'name', 'category_id', 'provider_id' , 'type' , 'is_slot','discount' , 'duration' ,'description',
         'is_featured', 'status' , 'price' , 'added_by','service_request_status','is_service_request','subcategory_id','service_type','visit_type',
-        'is_enable_advance_payment','advance_payment_amount',
-        'meta_title', 'meta_description', 'meta_keywords', 'canonical_url', 'slug', 'seo_enabled'
+        'is_enable_advance_payment','advance_payment_amount'
     ];
 
     protected $casts = [
@@ -33,8 +32,6 @@ class Service extends Model implements  HasMedia
         'is_slot'                   => 'integer',
         'is_enable_advance_payment' => 'integer',
         'advance_payment_amount'    => 'double',
-        'meta_keywords'             => 'array',
-        'seo_enabled'               => 'boolean',
     ];
 
     public function translations()
@@ -88,16 +85,6 @@ class Service extends Model implements  HasMedia
 
     public function providerServiceAddress(){
         return $this->hasMany(ProviderServiceAddressMapping::class, 'service_id','id')->with('providerAddressMapping');
-    }
-
-    public function serviceZoneMapping()
-    {
-        return $this->hasMany(ServiceZoneMapping::class, 'service_id');
-    }
-
-    public function zones()
-    {
-        return $this->belongsToMany(ServiceZone::class, 'service_zone_mappings', 'service_id', 'zone_id');
     }
 
     protected static function boot()
@@ -158,7 +145,7 @@ class Service extends Model implements  HasMedia
                 ) AS distance")
         ->where('status',1)
         ->whereIn('provider_id',$provider)
-        // ->having("distance", "<=", $radius)
+        ->having("distance", "<=", $radius)
         ->orderBy("distance",'asc')
         ->get()->pluck('id');
         return $near_location_id;
@@ -175,11 +162,5 @@ class Service extends Model implements  HasMedia
     }
     public function serviceAddon(){
         return $this->hasMany(ServiceAddon::class, 'service_id','id');
-    }
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('service_attachment')->singleFile();
-        $this->addMediaCollection('seo_image')->singleFile();
     }
 }

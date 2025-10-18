@@ -6,7 +6,7 @@
                 <div class="col-lg-12">
                     <div class="card card-block card-stretch">
                         <div class="card-body">
-                        <h5 class="card-title">{{__('messages.handyman_earning')}}</h5>
+                        <h5 class="card-title">{{__('messages.earning')}}</h5>
                             <div class="table-responsive">
                                 <table class="table handydata-table mb-0">
                                     <thead class="table-color-heading">

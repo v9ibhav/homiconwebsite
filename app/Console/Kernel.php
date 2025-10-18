@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
         //
         '\App\Console\Commands\CheckSubscription',
         '\App\Console\Commands\CheckPostJobRequest',
-      
+        '\App\Console\Commands\SeederCommand',
     ];
 
     /**
@@ -34,6 +34,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('check:postjobrequest')->daily();
 
+        $schedule->command('seeder:notify')->everyTwoHours()->withoutOverlapping();
     }
 
     /**

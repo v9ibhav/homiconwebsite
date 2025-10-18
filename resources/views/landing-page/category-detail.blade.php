@@ -10,16 +10,8 @@
                 <div class="col-lg-4">
                     <h4 class="mb-2 text-capitalize">{{ $category->name ?? '-'}}</h4>
                     <p class="readmore-text m-0">{{ $category->description ?? '-' }}</p>
-                    @if($category->description !='')
                     <a href="javascript:void(0);" class="readmore-btn">{{__('landingpage.read_more')}}</a>
-                    @endif
-
-                    @if(count($sub_category) > 0)
-
-                    <h4 class="mb-2 text-capitalize mt-5">{{ __('landingpage.subcatgory')}}</h4>
-
                     <ul class="nav nav-tabs align-items-start gap-5 bg-transparent pb-0 mt-5 mb-0">
-
                         <li class="nav-item">
                             <a class="nav-link rounded-3 active" data-bs-toggle="tab" href="#all">
                                 <div class="category-tabs-image">
@@ -28,8 +20,6 @@
                                 <span class="category-title d-block mt-2 font-size-14">{{__('landingpage.all')}}</span>
                             </a>
                         </li>
-
-                        
     
                         @foreach($sub_category as $subCategory)
                             <li class="nav-item">
@@ -54,11 +44,9 @@
                         </li>
                         @endif
                     </ul>
-
-                    @endif
                 </div>
                 <div class="col-lg-8 mt-lg-0 mt-5">
-                    <div class="tab-content h-100">
+                    <div class="tab-content">
                         @php 
                             if(!empty(auth()->user()) && auth()->user()->hasRole('user')){
                                 $auth_user_id=auth()->user()->id;
@@ -72,37 +60,11 @@
                             $serviceData = array_slice($service, 0, 6); 
                         @endphp
 
-                      
-                           @php
-
-                            $user_lat= session('user_lat') ?? null;
-                            $user_lng= session('user_lng') ?? null;
-                        @endphp
-
-                        <div class="tab-pane active show h-100" id="all">
-
                        @if( $serviceData )
-
-                                @if(isset( $user_lat ) && isset( $user_lng ) && $user_lat  !=null && $user_lng !=null )
-                                <service-list-section :user_id="{{json_encode($auth_user_id)}}" :service="{{ json_encode($serviceData) }}" :favourite="{{json_encode($favourite)}}"  :user_lat={{ $user_lat ?? '' }} :user_lng={{  $user_lng ?? '' }}  ></service-list-section>
-                                @else
-
-                                 <service-list-section :user_id="{{json_encode($auth_user_id)}}" :service="{{ json_encode($serviceData) }}" :favourite="{{json_encode($favourite)}}"   ></service-list-section>
-
-                                 @endif
-                        
-                        @else
-                        @if(isset( $user_lat ) && isset( $user_lng ) && $user_lat  !=null && $user_lng !=null )
-                          
-                             <p class="text-center no-data-found"  >{{ __('messages.no_data_in_zone') }} </p>
-                        @else
-
-                           <p class="text-center no-data-found" >  {{ __('messages.nodata') }}</p>
-                        @endif
-
-                        @endif
-
+                        <div class="tab-pane active show" id="all">
+                                <service-list-section :user_id="{{json_encode($auth_user_id)}}" :service="{{ json_encode($serviceData) }}" :favourite="{{json_encode($favourite)}}" ></service-list-section>
                         </div>
+                        @endif
                         @foreach($sub_category as $subCategory)
                             @php
                                 $filteredServices = array_filter($service, function ($item) use ($subCategory) {
@@ -110,17 +72,8 @@
                                 });
                             @endphp
         
-                            <div class="tab-pane h-100" id="id-{{ $subCategory->id }}">
-
-                                @if(isset( $user_lat ) && isset( $user_lng ) && $user_lat  !=null && $user_lng !=null )
-
-                                <service-list-section :user_id="{{json_encode($auth_user_id)}}" :service="{{ json_encode(array_values($filteredServices)) }}" :favourite="{{json_encode($favourite)}}" :user_lat={{ $user_lat ?? '' }} :user_lng={{  $user_lng ?? '' }} ></service-list-section>
-
-                                @else
-
-                                 <service-list-section :user_id="{{json_encode($auth_user_id)}}" :service="{{ json_encode(array_values($filteredServices)) }}" :favourite="{{json_encode($favourite)}}"  ></service-list-section>
-
-                                @endif
+                            <div class="tab-pane" id="id-{{ $subCategory->id }}">
+                                <service-list-section :user_id="{{json_encode($auth_user_id)}}" :service="{{ json_encode(array_values($filteredServices)) }}" :favourite="{{json_encode($favourite)}}"></service-list-section>
                             </div>
                         @endforeach
         

@@ -288,6 +288,10 @@ class PaymentController extends Controller
 
         $message = 'Bulk Action Updated';
         switch ($actionType) {
+            case 'change-status':
+                $branches = Payment::whereIn('id', $ids)->update(['status' => $request->status]);
+                $message = 'Bulk Payment Status Updated';
+                break;
 
             case 'delete':
                 Payment::whereIn('id', $ids)->delete();

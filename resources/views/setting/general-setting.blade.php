@@ -29,14 +29,7 @@
         <div class="form-group">
             <label for="" class="col-sm-6 form-control-label">{{ __('messages.phone') }}</label>
             <div class="col-sm-12">
-                <div class="input-group phone-input-group">
-                    {{ html()->text('helpline_number', $generalsetting->helpline_number ?? '')
-                        ->class('form-control phone_number')
-                        ->attribute('id', 'phone_number')
-                        ->placeholder(__('messages.helpline_number')) }}
-                    <input type="hidden" name="country_code" id="country_code" value="{{ $generalsetting->country_code ?? '' }}">
-                </div>
-                <small id="phone-error" class="help-block with-errors text-danger"></small>
+                {{ html()->text('helpline_number', $generalsetting->helpline_number ?? '')->class('form-control helpline_number')->placeholder(__('messages.helpline_number')) }}
             </div>
         </div>
 
@@ -94,174 +87,41 @@
     </div>
 </div>
 {{ html()->form()->close() }}
-
-<!-- Include necessary CSS and JS files -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"></script>
-
-<style>
-.iti {
-    width: 100%;
-}
-.iti__flag-container {
-    overflow: visible;
-}
-.phone-input-group .iti--separate-dial-code .iti__selected-flag {
-    background-color: #f8f9fa;
-    border: 1px solid #ced4da;
-    border-right: none;
-}
-.phone-input-group .form-control {
-    border-left: none;
-}
-.iti--separate-dial-code .iti__selected-dial-code {
-    color: #212529;
-}
-</style>
-
 <script>
-$(document).ready(function() {
-    // Existing country loading code
-    loadCountry();
-    var state_id = "{{ isset($generalsetting->state_id) ? $generalsetting->state_id : '' }}";
-    var city_id = "{{ isset($generalsetting->city_id) ? $generalsetting->city_id : '' }}";
-
-    // Initialize phone input
-    var phoneInput = document.querySelector("#phone_number");
-    var phoneError = document.querySelector("#phone-error");
-    var countryCodeInput = document.querySelector("#country_code");
-    
-    // Initialize intlTelInput with India as default
-    var iti = window.intlTelInput(phoneInput, {
-        initialCountry: "in",
-        separateDialCode: true,
-        preferredCountries: ["in", "us", "gb"],
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
-        customContainer: "w-100",
-        onlyCountries: ["in", "us", "gb", "ca", "au", "de", "fr", "it", "es", "pt", "nl", "be", "ch", "at", "dk", "se", "no", "fi", "ie", "nz"]
-    });
-
-    // If there's an existing phone number, format it
-    if (phoneInput.value && phoneInput.value.startsWith('+')) {
-    iti.setNumber(phoneInput.value);
-}
-
-    // Store the country code when changed
-    phoneInput.addEventListener('countrychange', function() {
-        var countryData = iti.getSelectedCountryData();
-        countryCodeInput.value = countryData.dialCode;
-        
-        // Clear the input and update placeholder
-        phoneInput.value = '';
-        phoneInput.placeholder = intlTelInputUtils.getExampleNumber(countryData.iso2, true, intlTelInputUtils.numberFormat.NATIONAL);
-        phoneError.style.display = 'none';
-    });
-
-    // Handle keypress - only allow digits
-    phoneInput.addEventListener('keypress', function(e) {
-        var charCode = (e.which) ? e.which : e.keyCode;
-        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-            e.preventDefault();
-            return false;
+    $(document).on('keyup', '.helpline_number', function() {
+        var contactNumberInput = document.getElementById('helpline_number');
+        var inputValue = contactNumberInput.value;
+        inputValue = inputValue.replace(/[^0-9+\- ]/g, '');
+        if (inputValue.length > 15) {
+            inputValue = inputValue.substring(0, 15);
         }
-        return true;
-    });
-
-    // Handle paste - only allow digits
-    phoneInput.addEventListener('paste', function(e) {
-        e.preventDefault();
-        var pastedText = (e.clipboardData || window.clipboardData).getData('text');
-        var numbersOnly = pastedText.replace(/\D/g, '');
-        
-        // Get current cursor position
-        var cursorPos = this.selectionStart;
-        var textBefore = this.value.substring(0, cursorPos);
-        var textAfter = this.value.substring(this.selectionEnd);
-        
-        // Combine the text with the pasted numbers
-        this.value = textBefore + numbersOnly + textAfter;
-        
-        // Set cursor position after pasted text
-        this.selectionStart = this.selectionEnd = cursorPos + numbersOnly.length;
-        
-        // Trigger input event for validation
-        this.dispatchEvent(new Event('input'));
-    });
-
-    // Validate on input
-    phoneInput.addEventListener('input', function(e) {
-        // Remove any non-digit characters that might have been added
-        var numbersOnly = this.value.replace(/\D/g, '');
-        
-        // Limit to 15 digits
-        if (numbersOnly.length > 15) {
-            numbersOnly = numbersOnly.substring(0, 15);
-            phoneError.textContent = 'Phone number cannot exceed 15 digits';
-            phoneError.style.display = 'block';
+        contactNumberInput.value = inputValue;
+        if (inputValue.match(/^[0-9+\- ]+$/)) {
+            $('.helpline_number').text('');
         } else {
-            phoneError.style.display = 'none';
-        }
-
-        // Update the input value with only numbers
-        this.value = numbersOnly;
-    });
-
-    // Format number on blur
-    phoneInput.addEventListener('blur', function() {
-        if (this.value.trim()) {
-            if (iti.isValidNumber()) {
-                this.value = iti.getNumber(intlTelInputUtils.numberFormat.NATIONAL);
-                phoneError.style.display = 'none';
-            } else {
-                phoneError.textContent = 'Invalid phone number for selected country';
-                phoneError.style.display = 'block';
-            }
+            $('.helpline_number').text('Please enter a valid mobile number');
         }
     });
 
-    // Form validation
-    $('form').on('submit', function(e) {
-        if (!phoneInput.value.trim()) {
-            return true; // Allow empty phone number
-        }
+    $(document).ready(function() {
+        loadCountry();
+        var state_id = "{{ isset($generalsetting->state_id) ? $generalsetting->state_id : '' }}";
+        var city_id = "{{ isset($generalsetting->city_id) ? $generalsetting->city_id : '' }}";
 
-        if (!iti.isValidNumber()) {
-            e.preventDefault();
-            phoneError.textContent = 'Please enter a valid phone number';
-            phoneError.style.display = 'block';
-            return false;
-        }
-
-        // Set the final formatted number and country code
-        phoneInput.value = iti.getNumber(intlTelInputUtils.numberFormat.E164);
-        countryCodeInput.value = iti.getSelectedCountryData().dialCode;
-        return true;
-    });
-
-    // Set initial country code and placeholder for India
-    countryCodeInput.value = '91'; // India's country code
-    setTimeout(function() {
-        phoneInput.placeholder = intlTelInputUtils.getExampleNumber('in', true, intlTelInputUtils.numberFormat.NATIONAL);
-    }, 100);
-
-    // Existing state and city code
         stateName(country_id, state_id);
         $(document).on('change', '#country_id', function() {
             var country = $(this).val();
             $('#state_id').empty();
             $('#city_id').empty();
             stateName(country, state_id);
-    });
-    
+        })
         $(document).on('change', '#state_id', function() {
             var state = $(this).val();
             $('#city_id').empty();
             cityName(state, city_id);
-    });
-});
+        })
+    })
 
-// Keep existing loadCountry, stateName, and cityName functions
     function loadCountry() {
         var country_id = "{{ isset($generalsetting->country_id) ? $generalsetting->country_id : '' }}";
         var country_route = "{{ route('ajax-list', ['type' => 'country']) }}";

@@ -29,7 +29,7 @@
                                  @php
                                     $verifiedDisplayed = true; // Set the flag to true after displaying the icon
                                  @endphp
-                                 <svg width="24" height="25" viewBox="0 0 24 25" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
+                                 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path
                                        d="M21.1871 10.507C20.8623 10.3182 20.5705 10.0777 20.3231 9.795C20.3481 9.40141 20.4418 9.01525 20.6001 8.654C20.8911 7.833 21.2201 6.903 20.6921 6.18C20.1641 5.457 19.1671 5.48 18.2921 5.5C17.9054 5.53978 17.5148 5.5134 17.1371 5.422C16.9358 5.09451 16.7921 4.73498 16.7121 4.359C16.4641 3.514 16.1811 2.559 15.3121 2.273C14.4741 2.003 13.6981 2.597 13.0121 3.119C12.7161 3.38932 12.3731 3.60317 12.0001 3.75C11.6232 3.60437 11.2764 3.39046 10.9771 3.119C10.2931 2.6 9.52007 2 8.67807 2.274C7.81107 2.556 7.52807 3.514 7.27807 4.359C7.1982 4.73376 7.05588 5.09243 6.85707 5.42C6.47859 5.51116 6.0875 5.5382 5.70007 5.5C4.82207 5.476 3.83307 5.45 3.30007 6.18C2.76707 6.91 3.10007 7.833 3.39207 8.653C3.55251 9.01371 3.64765 9.40003 3.67307 9.794C3.42615 10.0771 3.13464 10.3179 2.81007 10.507C2.07807 11.007 1.24707 11.576 1.24707 12.5C1.24707 13.424 2.07807 13.991 2.81007 14.493C3.13457 14.6818 3.42607 14.9223 3.67307 15.205C3.65033 15.5988 3.55789 15.9855 3.40007 16.347C3.11007 17.167 2.78207 18.097 3.30907 18.82C3.83607 19.543 4.83007 19.52 5.70907 19.5C6.09604 19.4602 6.48696 19.4866 6.86507 19.578C7.06545 19.9058 7.20881 20.2653 7.28907 20.641C7.53707 21.486 7.82007 22.441 8.68907 22.727C8.82839 22.7717 8.97376 22.7946 9.12007 22.795C9.82328 22.6941 10.4769 22.3743 10.9881 21.881C11.2841 21.6107 11.6271 21.3968 12.0001 21.25C12.377 21.3956 12.7238 21.6095 13.0231 21.881C13.7081 22.404 14.4841 23.001 15.3231 22.726C16.1901 22.444 16.4731 21.486 16.7231 20.642C16.8032 20.2665 16.9466 19.9074 17.1471 19.58C17.5241 19.4882 17.914 19.4612 18.3001 19.5C19.1781 19.521 20.1671 19.55 20.7001 18.82C21.2331 18.09 20.9001 17.167 20.6081 16.346C20.4487 15.9856 20.3536 15.6001 20.3271 15.207C20.5741 14.9237 20.866 14.6828 21.1911 14.494C21.9231 13.994 22.7541 13.424 22.7541 12.5C22.7541 11.576 21.9201 11.008 21.1871 10.507Z"
                                        fill="#EFEFF8" />
@@ -43,39 +43,15 @@
                         </span>
                      </div>
                      <div class="d-flex align-items-center justify-content-center gap-1 mt-2">
-                     
-                      @if($providerData['data']['total_service_rating'] > 0)
-    <div>
-        @php
-            $rating = $providerData['data']['providers_service_rating'];
-        @endphp
-        @for ($i = 0; $i < 5; $i++)
-            <span class="fa-stack" style="width:1em">
-                <i class="far fa-star fa-stack-1x text-white"></i>
-                @if($rating > 0)
-                    @if($rating > 0.5)
-                        <i class="fas fa-star fa-stack-1x text-white"></i>
-                    @else
-                        <i class="fas fa-star-half fa-stack-1x text-white"></i>
-                    @endif
-                @endif
-                @php $rating--; @endphp
-            </span>
-        @endfor
-    </div>
-    <span class="h6 text-white">({{ $providerData['data']['total_service_rating'] }} {{ __('messages.reviews') }})</span>
-@else
-    {{-- Show empty white stars if no ratings --}}
-    <div>
-        @for ($i = 0; $i < 5; $i++)
-            <span class="fa-stack" style="width:1em">
-                <i class="far fa-star fa-stack-1x text-white"></i>
-            </span>
-        @endfor
-    </div>
-    <span class="h6 text-white">({{ $providerData['data']['total_service_rating'] }} {{ __('messages.reviews') }})</span>
-@endif
-
+                        <div>
+                           <rating-component :readonly="true" :showrating="false" :ratingvalue="{{ $providerData['data']['providers_service_rating'] }}" />
+                        </div>
+                        <h6 class="text-white">{{ round($providerData['data']['providers_service_rating'],1) }}</h6>
+                        @if($providerData['data']['total_service_rating']>1)
+                        <span class="h6 text-white">({{ $providerData['data']['total_service_rating'] }} {{__('messages.reviews')}})</span>
+                        @else
+                         <span class="h6 text-white">({{ $providerData['data']['total_service_rating'] }} {{__('messages.review')}})</span>
+                       @endif
                      </div>
                      @if(isset($why_choose_me))
                      @if(isset($why_choose_me['about_description'])|| isset($why_choose_me['reason']))
@@ -171,21 +147,12 @@
                         </div>
                   </div>
 
-                       @php
-
-                            $user_lat= session('user_lat') ?? null;
-                            $user_lng= session('user_lng') ?? null;
-                        @endphp
-
-
                   <service-list-section 
                         :user_id="{{ json_encode($auth_user_id) }}" 
                         :service="{{ json_encode($providerData['service']) }}" 
                         :is_provider_detail="true" 
                         :max_records="6" 
-                        :favourite="{{ json_encode($favourite) }}"
-                        :user_lat="{{ $user_lat }}"
-                        :user_lng="{{ $user_lng }}">
+                        :favourite="{{ json_encode($favourite) }}">
                   </service-list-section>
                @endif
             @endif

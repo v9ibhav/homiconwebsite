@@ -22,15 +22,15 @@ class PlanController extends Controller
         $filter = [
             'status' => $request->status,
         ];
-        $pageTitle = trans('messages.list_form_title', ['form' => trans('messages.plan')]);
+        $pageTitle = trans('messages.list_form_title',['form' => trans('messages.plan')] );
         $auth_user = authSession();
         $assets = ['datatable'];
-        return view('plan.index', compact('pageTitle', 'auth_user', 'assets', 'filter'));
+        return view('plan.index', compact('pageTitle','auth_user','assets','filter'));
     }
 
 
 
-    public function index_data(DataTables $datatable, Request $request)
+    public function index_data(DataTables $datatable,Request $request)
     {
         $query = Plans::query()->list();
         $filter = $request->filter;
@@ -43,39 +43,39 @@ class PlanController extends Controller
         if (auth()->user()->hasAnyRole(['admin'])) {
             $query->newQuery();
         }
-
+        
         return $datatable->eloquent($query)
             ->addColumn('check', function ($row) {
-                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-' . $row->id . '"  name="datatable_ids[]" value="' . $row->id . '" onclick="dataTableRowCheck(' . $row->id . ')">';
+                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-'.$row->id.'"  name="datatable_ids[]" value="'.$row->id.'" onclick="dataTableRowCheck('.$row->id.')">';
             })
-
-            ->editColumn('title', function ($query) {
+           
+            ->editColumn('title', function($query){                
                 if (auth()->user()->can('plan edit')) {
-                    $link = '<a class="btn-link btn-link-hover" href=' . route('plans.create', ['id' => $query->id]) . '>' . $query->title . '</a>';
+                    $link = '<a class="btn-link btn-link-hover" href='.route('plans.create', ['id' => $query->id]).'>'.$query->title.'</a>';
                 } else {
-                    $link = $query->title;
+                    $link = $query->title; 
                 }
                 return $link;
             })
 
 
-            ->editColumn('status', function ($query) {
+            ->editColumn('status' , function ($query){
                 return '<div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
                     <div class="custom-switch-inner">
-                        <input type="checkbox" class="custom-control-input  change_status" data-type="plan_status" ' . ($query->status ? "checked" : "") . '   value="' . $query->id . '" id="' . $query->id . '" data-id="' . $query->id . '">
-                        <label class="custom-control-label" for="' . $query->id . '" data-on-label="" data-off-label=""></label>
+                        <input type="checkbox" class="custom-control-input  change_status" data-type="plan_status" '.($query->status ? "checked" : "").'   value="'.$query->id.'" id="'.$query->id.'" data-id="'.$query->id.'">
+                        <label class="custom-control-label" for="'.$query->id.'" data-on-label="" data-off-label=""></label>
                     </div>
                 </div>';
             })
-            ->editColumn('amount', function ($query) {
-                $price = !empty($query->amount) ? getPriceFormat($query->amount) : '-';
+            ->editColumn('amount' , function ($query){
+                $price = !empty($query->amount)? getPriceFormat($query->amount) : '-'; 
                 return $price;
             })
-            ->addColumn('action', function ($plan) {
-                return view('plan.action', compact('plan'))->render();
+            ->addColumn('action', function($plan){
+                return view('plan.action',compact('plan'))->render();
             })
             ->addIndexColumn()
-            ->rawColumns(['title', 'action', 'status', 'check'])
+            ->rawColumns(['title','action','status','check'])
             ->toJson();
     }
 
@@ -121,17 +121,17 @@ class PlanController extends Controller
         $auth_user = authSession();
 
         $plan = Plans::with('planlimit')->find($id);
-        $plan_type = StaticData::where('type', 'plan_type')->get();
-        $plan_limit = StaticData::where('type', 'plan_limit_type')->get();
-        $pageTitle = trans('messages.update_form_title', ['form' => trans('messages.plan')]);
-
-        if ($plan == null) {
-            $pageTitle = trans('messages.add_button_form', ['form' => trans('messages.plan')]);
+        $plan_type = StaticData::where('type','plan_type')->get();
+        $plan_limit = StaticData::where('type','plan_limit_type')->get();
+        $pageTitle = trans('messages.update_form_title',['form'=>trans('messages.plan')]);
+        
+        if($plan == null){
+            $pageTitle = trans('messages.add_button_form',['form' => trans('messages.plan')]);
             $plan = new Plans;
         }
         $is_in_app_purchase_enable = optional(json_decode(Setting::where('type', 'OTHER_SETTING')->where('key', 'OTHER_SETTING')->value('value'), true))['is_in_app_purchase_enable'] ?? 0;
-
-        return view('plan.create', compact('pageTitle', 'plan', 'auth_user', 'plan_type', 'plan_limit', 'is_in_app_purchase_enable'));
+      
+        return view('plan.create', compact('pageTitle' ,'plan' ,'auth_user','plan_type','plan_limit','is_in_app_purchase_enable' ));
     }
 
     /**
@@ -142,24 +142,18 @@ class PlanController extends Controller
      */
     public function store(Request $request)
     {
-        if (demoUserPermission()) {
-            return redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
+        if(demoUserPermission()){
+            return  redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
         }
-
         $requestData = $request->all();
-
-        // Ensure duration always has a value
-        if (empty($requestData['duration'])) {
+        if($requestData['duration'] == null){
             $requestData['duration'] = 1;
         }
-
-        // Check for duplicate title if creating new
         $plans = Plans::where('title', '=', $requestData['title'])->first();
-        if ($plans !== null && empty($request->id)) {
-            return redirect()->back()->withErrors(__('validation.unique', ['attribute' => __('messages.plan')]));
+        if ($plans !== null && $request->id == null) {
+            return  redirect()->back()->withErrors(__('validation.unique',['attribute'=>__('messages.plan')]));
         }
 
-        // Safely get optional fields
         $planData = [
             'title' => $requestData['title'],
             'amount' => $requestData['amount'],
@@ -167,40 +161,34 @@ class PlanController extends Controller
             'duration' => $requestData['duration'],
             'description' => $requestData['description'],
             'plan_type' => $requestData['plan_type'],
-            'type' => $requestData['type'],
-            'playstore_identifier' => $requestData['playstore_identifier'] ?? null,
-            'appstore_identifier' => $requestData['appstore_identifier'] ?? null,
+            'type'=> $requestData['type'],
+            'playstore_identifier'=> $requestData['playstore_identifier'],
+            'appstore_identifier'=> $requestData['appstore_identifier'],
         ];
-
-        if (empty($request->id)) {
+        if(empty($request->id) && $request->id == null){
             $planData['identifier'] = strtolower($requestData['title']);
         }
-
-        $result = Plans::updateOrCreate(['id' => $requestData['id']], $planData);
-
-        if ($result) {
-            // Clear and insert plan limits
-            if ($result->planlimit()->count() > 0) {
+        $result = Plans::updateOrCreate(['id' => $requestData['id'] ],$planData);
+        if($result){
+            if($result->planlimit()->count() > 0)
+            {
                 $result->planlimit()->delete();
             }
+            $limitdata = [
+                'plan_id' =>  $result->id,
+                'plan_limitation' => $requestData['plan_limitation']
+            ];
+            PlanLimit::updateOrCreate(['id' => $requestData['id'] ],$limitdata);            
+        }
+        
+        $message = trans('messages.update_form',['form' => trans('messages.plan')]);
 
-            if (!empty($requestData['plan_limitation'])) {
-                $limitdata = [
-                    'plan_id' => $result->id,
-                    'plan_limitation' => $requestData['plan_limitation']
-                ];
-                PlanLimit::create($limitdata);
-            }
+        if($result->wasRecentlyCreated){
+            $message = trans('messages.save_form',['form' => trans('messages.plan')]);
         }
 
-        $message = trans('messages.update_form', ['form' => trans('messages.plan')]);
-        if ($result->wasRecentlyCreated) {
-            $message = trans('messages.save_form', ['form' => trans('messages.plan')]);
-        }
-
-        return redirect(route('plans.index'))->withSuccess($message);
+        return redirect(route('plans.index'))->withSuccess($message);        
     }
-
 
     /**
      * Display the specified resource.
@@ -244,19 +232,20 @@ class PlanController extends Controller
      */
     public function destroy($id)
     {
-        if (demoUserPermission()) {
+        if(demoUserPermission()){
             return  redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
         }
         $plan = Plans::find($id);
-        $msg = __('messages.msg_fail_to_delete', ['item' => __('messages.plan')]);
-
-        if ($plan != '') {
-            if ($plan->planlimit()->count() > 0) {
+        $msg= __('messages.msg_fail_to_delete',['item' => __('messages.plan')] );
+        
+        if($plan!='') {
+            if($plan->planlimit()->count() > 0)
+            {
                 $plan->planlimit()->delete();
             }
             $plan->delete();
-            $msg = __('messages.msg_deleted', ['name' => __('messages.plan')]);
+            $msg= __('messages.msg_deleted',['name' => __('messages.plan')] );
         }
-        return comman_custom_response(['message' => $msg, 'status' => true]);
+        return comman_custom_response(['message'=> $msg, 'status' => true]);
     }
 }

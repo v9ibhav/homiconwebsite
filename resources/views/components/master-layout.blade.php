@@ -1,43 +1,14 @@
 <!DOCTYPE html>
-<!-- Critical Dark Mode Handling -->
-<script>
-    (function() {
-        if (localStorage.getItem('dark') === 'true') {
-            document.write('<style>html { background: #1a1a1a !important; }</style>');
-        }
-    })();
-</script>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
     dir="{{ session()->has('dir') ? session()->get('dir') : 'ltr' }}">
 
 <head>
-    <!-- Immediate Dark Mode Styles -->
-    <style>
-        html[data-bs-theme="dark"] {
-            background-color: #1a1a1a !important;
-            color: #ffffff !important;
-        }
-        html[data-bs-theme="dark"] body {
-            background-color: #1a1a1a !important;
-            color: #ffffff !important;
-        }
-    </style>
-    <script>
-        if (localStorage.getItem('dark') === 'true') {
-            document.documentElement.setAttribute('data-bs-theme', 'dark');
-        }
-    </script>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="baseUrl" content="{{ env('APP_URL') }}" />
 
     <title>{{ config('app.name', 'Laravel') }}</title>
-    <script>
-        const storedTheme = localStorage.getItem('data-bs-theme') || 'light';
-        document.documentElement.setAttribute('data-bs-theme', storedTheme);
-    </script>
 
     <!-- Dynamic Theme Colors -->
     <script>

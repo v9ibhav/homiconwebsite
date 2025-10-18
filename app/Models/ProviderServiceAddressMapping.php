@@ -19,5 +19,4 @@ class ProviderServiceAddressMapping extends Model
     public function providerAddressMapping(){
         return $this->belongsTo(ProviderAddressMapping::class,'provider_address_id', 'id');
     }
-    
 }

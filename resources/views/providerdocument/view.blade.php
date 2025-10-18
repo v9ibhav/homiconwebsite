@@ -30,19 +30,15 @@
                 @csrf
                 <select name="action_type" class="form-select select2" id="quick-action-type" style="width:100%" disabled>
                   <option value="">{{ __('messages.no_action') }}</option>
-                  @if(isset($auth_user) && $auth_user->user_type !== 'provider')
-                      <option value="change-featured">{{ __('messages.verified') }}</option>
-                  @endif
+                  <option value="change-featured">{{ __('messages.verified') }}</option>
                   <option value="delete">{{ __('messages.delete') }}</option>
-                  @if(isset($auth_user) && $auth_user->user_type !== 'provider')
                   <option value="restore">{{ __('messages.restore') }}</option>
                   <option value="permanently-delete">{{ __('messages.permanent_dlt') }}</option>
-                  @endif
                 </select>
                 <div class="select-status d-none quick-action-featured" id="change-featured-action" style="width:100%">
                   <select name="is_verified" class="form-select select2" id="status">
                     <option value="1">{{ __('messages.verified') }}</option>
-                    <option value="0">{{ __('messages.not_verified') }}</option>
+                    <option value="0">{{ __('messages.unverified') }}</option>
                   </select>
                 </div>
 
@@ -51,7 +47,7 @@
                   data-datatable="reload" data-confirmation='true'
                   data-title="{{ __('providerdocument',['form'=>  __('providerdocument') ]) }}"
                   title="{{ __('providerdocument',['form'=>  __('providerdocument') ]) }}"
-                  data-message='{{ __("Do you want to perform this action?") }}' >{{ __('messages.apply') }}</button>
+                  data-message='{{ __("Do you want to perform this action?") }}' disabled>{{ __('messages.apply') }}</button>
               </form>
             </div>
 
@@ -63,7 +59,7 @@
                 <div class="datatable-filter ml-auto">
                   <select name="column_status" id="column_status" class="select2 form-select" data-filter="select" style="width: 100%">
                     <option value="">{{__('messages.all')}}</option>
-                    <option value="0" {{$filter['is_verified'] == '0' ? "selected" : ''}}>{{__('messages.not_verified')}}</option>
+                    <option value="0" {{$filter['is_verified'] == '0' ? "selected" : ''}}>{{__('messages.unverified')}}</option>
                     <option value="1" {{$filter['is_verified'] == '1' ? "selected" : ''}}>{{__('messages.verified')}}</option>
                   </select>
                 </div>
@@ -205,5 +201,5 @@
       }
     });
   </script>
-
+  
 </x-master-layout>

@@ -55,7 +55,7 @@
                                         <label>{{__('landingpage.email')}} <span class="text-danger">*</span></label>
                                         <div class="input-group icon-right mb-5 custom-form-field">
                                             <input type="text" id="email" name="email" class="form-control" placeholder="{{__('placeholder.email')}}"
-                                                aria-label="Username" aria-describedby="basic-addon1" required autofocus>
+                                                aria-label="Username" aria-describedby="basic-addon1" required>
                                                 <small class="help-block with-errors text-danger"></small>
                                         </div>
 
@@ -79,10 +79,3 @@
 </div>
 
 @endsection
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        setTimeout(() => {
-            document.getElementById('email')?.focus();
-        }, 100);
-    });
-</script>

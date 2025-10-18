@@ -63,11 +63,11 @@
                             name: 'message',
                             title: "{{ __('messages.messages') }}"
                         },
-                        // {
-                        //     data: 'created_at',
-                        //     name: 'created_at',
-                        //     title: "{{ __('messages.created_at') }}"
-                        // },
+                        {
+                            data: 'created_at',
+                            name: 'created_at',
+                            title: "{{ __('messages.created_at') }}"
+                        },
                         {
                             data: 'updated_at',
                             name: 'updated_at',

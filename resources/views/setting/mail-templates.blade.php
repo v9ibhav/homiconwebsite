@@ -42,7 +42,7 @@
                 data-datatable="reload" data-confirmation='true'
                 data-title="{{ __('mailtemplate',['form'=>  __('mailtemplate') ]) }}"
                 title="{{ __('mailtemplate',['form'=>  __('mailtemplate') ]) }}"
-                data-message='{{ __("Do you want to perform this action?") }}' >{{ __('messages.apply') }}</button>
+                data-message='{{ __("Do you want to perform this action?") }}' disabled>{{ __('messages.apply') }}</button>
             
           
               </form>

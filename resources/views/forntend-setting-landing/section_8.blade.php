@@ -5,7 +5,7 @@
         <div class="row">
             <div class="form-group col-md-12 d-flex justify-content-between">
                 <div class="form-control d-flex align-items-center justify-content-between">
-                    <label for="enable_section_8" class="mb-0">{{__('messages.recently_viewed_services')}}</label>
+                    <label for="enable_section_8" class="mb-0">{{__('messages.enable_section_8')}}</label>
                     <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
                         <input type="checkbox" class="custom-control-input section_8" name="status" id="section_8" data-type="section_8"  {{!empty($landing_page) && $landing_page->status == 1 ? 'checked' : ''}}>
                         <label class="custom-control-label" for="section_8"></label>

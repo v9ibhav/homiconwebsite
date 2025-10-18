@@ -51,13 +51,10 @@
                                     aria-label="Search" aria-describedby="addon-wrapping"
                                     aria-controls="dataTableBuilder">
                             </div>
-                            <button class="btn btn-primary d-flex align-items-center gap-1 btn-group position-relative"
+                            <button class="btn btn-primary d-flex align-items-center gap-1 btn-group"
                                 data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
                                 aria-controls="offcanvasExample">
                                 <i class="ph ph-funnel"></i>{{ __('messages.filter') }}
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger filter-count" style="display: none;">
-                                    0
-                                </span>
                             </button>
                         </div>
 
@@ -145,15 +142,12 @@
                 <label class="form-label" for="payment_status">{{ __('messages.payment_status_label') }}</label>
                 <div class="btn-group d-flex flex-wrap gap-3">
 
-                @foreach ($advanceFilter['paymentStatus'] as $status)
-    {{-- Convert to match DB --}}
-    <button type="button" class="btn filter-button"
-        data-filter="payment_status"
-        data-value="{{ strtolower($status) }}" 
-        data-multiple="true">
-        {{ __( 'messages.' . str_replace(' ', '_', $status) ) }}
-    </button>
-@endforeach
+                    @foreach ($advanceFilter['paymentStatus'] as $type => $title)
+                        <button type="button" class="btn filter-button" data-filter="payment_status"
+                            data-value="{{ $title }}" data-multiple="true">
+                            {{ formatString($title) }}
+                        </button>
+                    @endforeach
                 </div>
             </div>
 
@@ -310,7 +304,7 @@
         </div>
 
     </div>
-    <!-- <script src="{{ asset('js/bootstrap.bundle.js') }}"></script> -->
+    <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
     <script>
         let selectedFilters = {
             booking_status: [],
@@ -331,9 +325,6 @@
                     "type": "GET",
                     "url": '{{ route('booking.index_data') }}',
                     "data": function(d) {
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const providerIdFromUrl = urlParams.get('provider_id');
-                        d.provider_id = providerIdFromUrl; 
                         d.search = {
                             value: $('.dt-search').val()
                         };
@@ -690,101 +681,74 @@ console.log(data);
 
                 return html;
             }
+        });
 
-            // Add reset functionality for Export modal
-            function resetExportModal() {
-                // Reset file type radio buttons - set PDF as default
-                document.querySelectorAll('input[name="fileType"]').forEach(radio => {
-                    radio.checked = radio.value === 'pdf';
-                });
+        document.getElementById('downloadButton').addEventListener('click', function() {
+            // Get selected file type
+            const fileType = document.querySelector('input[name="fileType"]:checked').value;
 
-                // Reset all column checkboxes to checked
-                document.querySelectorAll('.form-check-input').forEach(checkbox => {
-                    checkbox.checked = true;
-                });
-
-                // Reset button state
-                const downloadButton = document.getElementById('downloadButton');
-                const spinner = document.querySelector('.spinner-border');
-                const buttonText = document.querySelector('.button-text');
-                
-                downloadButton.disabled = false;
-                spinner.classList.add('d-none');
-                buttonText.textContent = "{{ __('messages.export') }}";
-            }
-
-            // Reset modal when clicking the close button or cancel button
-            document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
-                button.addEventListener('click', resetExportModal);
+            // Get selected columns (checkboxes that are checked)
+            const selectedColumns = [];
+            document.querySelectorAll('.form-check-input:checked').forEach((checkbox) => {
+                selectedColumns.push(checkbox.id); // Store checkbox ID
             });
 
-            // Reset modal when clicking outside the modal (backdrop click)
-            $('#Export').on('hidden.bs.modal', function () {
-                resetExportModal();
-            });
+            // Create FormData to send to the backend
+            const formData = new FormData();
+            formData.append('format', fileType);
+            formData.append('columns', JSON.stringify(selectedColumns)); // Send selected columns as a JSON array
 
-            // Export button click handler
-            document.getElementById('downloadButton').addEventListener('click', function() {
-                // Get selected file type
-                const fileType = document.querySelector('input[name="fileType"]:checked').value;
-
-                // Get selected columns (checkboxes that are checked)
-                const selectedColumns = [];
-                document.querySelectorAll('.form-check-input:checked').forEach((checkbox) => {
-                    selectedColumns.push(checkbox.id);
-                });
-
-                // Create FormData to send to the backend
-                const formData = new FormData();
-                formData.append('format', fileType);
-                formData.append('columns', JSON.stringify(selectedColumns));
-
-                // Disable the button and show the loading spinner
-                const buttonText = document.querySelector('.button-text');
-                const spinner = document.querySelector('.spinner-border');
-                const downloadButton = this;
-                downloadButton.disabled = true;
-                spinner.classList.remove('d-none');
-                buttonText.textContent = "Loading...";
-
-                var baseUrl = $('meta[name="baseUrl"]').attr('content');
-
-                // Fetch request to export data
-                fetch(baseUrl+'/export', {
+            // Disable the button and show the loading spinner
+            const buttonText = document.querySelector('.button-text');
+            const spinner = document.querySelector('.spinner-border');
+            downloadButton.disabled = true;
+            spinner.classList.remove('d-none');
+            buttonText.textContent = "Loading..."; // Change button text
+            var baseUrl = $('meta[name="baseUrl"]').attr('content');
+            // Fetch request to export data
+            fetch(baseUrl+'/export', {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content'),
                     },
                     body: formData,
                 })
                 .then(response => {
                     if (!response.ok) {
-                        return response.json();
+                        return response.json(); // Parse the JSON response if not OK
                     }
                     return response.blob();
                 })
                 .then(data => {
                     if (data.error) {
+                        // If an error message exists in the response, show it in the Snackbar
                         Snackbar.show({
-                            text: data.error,
+                            text: data.error, // Display the error message from the response
                             pos: 'bottom-right',
                             backgroundColor: '#d32f2f',
                             actionTextColor: '#fff'
                         });
-                        resetExportModal();
+
+                        // Reset the button state on error
+                        downloadButton.disabled = false;
+                        spinner.classList.add('d-none');
+                        buttonText.textContent = "Export";
                         return;
                     }
 
-                    // Download the file
+                    // If there's no error, download the file
                     const url = window.URL.createObjectURL(data);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `Bookings.${fileType}`;
+                    a.download = `Bookings.${fileType}`; // Dynamically name the file
                     a.click();
                     window.URL.revokeObjectURL(url);
 
-                    // Close the modal after successful download
-                    $('#Export').modal('hide');
+                    // Reset the button state
+                    downloadButton.disabled = false;
+                    spinner.classList.add('d-none');
+                    buttonText.textContent = "Export";
                 })
                 .catch(error => {
                     console.error('Export error:', error);
@@ -794,63 +758,12 @@ console.log(data);
                         backgroundColor: '#d32f2f',
                         actionTextColor: '#fff'
                     });
-                    resetExportModal();
+
+                    // Reset the button state on error
+                    downloadButton.disabled = false;
+                    spinner.classList.add('d-none');
+                    buttonText.textContent = "Export";
                 });
-            });
-        });
-
-        function updateFilterCount() {
-            let count = 0;
-             count += selectedFilters.booking_status.length;
-            count += selectedFilters.payment_status.length;
-            count += selectedFilters.payment_type.length;
-            if (selectedFilters.date_range) {
-                count++;
-            }
-            const serviceIds = $('#service_id').val();
-            if (serviceIds && serviceIds.length > 0) {
-                count += 1;
-            }
-            const customerIds = $('#customer_id').val();
-            if (customerIds && customerIds.length > 0) {
-                count += 1;
-            }
-            
-            const providerIds = $('#provider_id').val();
-            if (providerIds && providerIds.length > 0) {
-                count += 1;
-            }
-            
-            const handymanIds = $('#handyman_id').val();
-            if (handymanIds && handymanIds.length > 0) {
-                count += 1;
-            }
-
-            const filterCountBadge = document.querySelector('.filter-count');
-            if (count > 0) {
-                filterCountBadge.style.display = 'block';
-                filterCountBadge.textContent = count;
-            } else {
-                filterCountBadge.style.display = 'none';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.filter-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    updateFilterCount();
-                });
-            });
-
-            $('#service_id, #customer_id, #provider_id, #handyman_id').on('change', function() {
-                updateFilterCount();
-            });
-
-            $("#datepicker1").on('change', function() {
-                updateFilterCount();
-            });
-
-            updateFilterCount();
         });
 
         // Add this after the filter for total earnings
@@ -905,21 +818,6 @@ console.log(data);
             }
             updateTotalEarnings();
         });
-        document.addEventListener('DOMContentLoaded', function() {
-        // Handle export file type button group (Bootstrap 5 compatibility)
-        document.querySelectorAll('.export-type .btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            // Remove 'active' from all buttons
-            document.querySelectorAll('.export-type .btn').forEach(function(b) {
-                b.classList.remove('active');
-            });
-            // Add 'active' to the clicked button
-            btn.classList.add('active');
-            // Set the radio input as checked
-            btn.querySelector('input[type="radio"]').checked = true;
-        });
-    });
-});
     </script>
 
 

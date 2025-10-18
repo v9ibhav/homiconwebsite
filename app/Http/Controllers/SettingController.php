@@ -15,11 +15,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
 use App\Traits\TranslationTrait;
 use Illuminate\Support\Facades\Artisan;
-use App\Models\ProviderZoneMapping;
-use App\Models\ServiceZoneMapping;
-use App\Http\Requests\SeoSettingRequest;
-use App\Models\SeoSetting;
-
 class SettingController extends Controller
 {
     use TranslationTrait;
@@ -30,12 +25,11 @@ class SettingController extends Controller
 
     public function settings(Request $request)
     {
-        // dd('hello');
         $auth_user = authSession();
 
         $pageTitle = __('messages.Settings');
         $page = $request->page;
-        // dd($page);
+// dd($page);
         if ($page == '') {
             if ($auth_user->hasAnyRole(['admin', 'demo_admin'])) {
                 $page = 'general-setting';
@@ -131,29 +125,31 @@ class SettingController extends Controller
                 if (!empty($serviceconfig['value'])) {
 
                     $decodedata = json_decode($serviceconfig['value']);
-                    $keys = ['advance_payment', 'slot_service', 'digital_services', 'service_packages', 'service_addons', 'post_services', 'global_advance_payment', 'advance_paynment_percantage', 'cancellation_charge', 'cancellation_charge_amount', 'cancellation_charge_hours'];
+                    $keys = ['advance_payment', 'slot_service', 'digital_services', 'service_packages', 'service_addons', 'post_services','global_advance_payment','advance_paynment_percantage','cancellation_charge','cancellation_charge_amount','cancellation_charge_hours'];
                     foreach ($keys as $key) {
                         $serviceconfig[$key] = $decodedata->$key ?? null;
                     }
+
                 }
 
                 $data = view('setting.' . $page, compact('page', 'serviceconfig'))->render();
                 break;
 
-            case 'provider-banner':
-                $promotionconfig   = Setting::where('type', '=', 'provider-banner')->first();
-
-                if (!empty($promotionconfig['value'])) {
-
-                    $decodedata = json_decode($promotionconfig['value']);
-                    $keys = ['promotion_enable', 'promotion_price'];
-                    foreach ($keys as $key) {
-                        $promotionconfig[$key] = $decodedata->$key ?? null;
+                case 'provider-banner':
+                    $promotionconfig   = Setting::where('type', '=', 'provider-banner')->first();
+    
+                    if (!empty($promotionconfig['value'])) {
+    
+                        $decodedata = json_decode($promotionconfig['value']);
+                        $keys = ['promotion_enable', 'promotion_price'];
+                        foreach ($keys as $key) {
+                            $promotionconfig[$key] = $decodedata->$key ?? null;
+                        }
+    
                     }
-                }
-
-                $data = view('setting.' . $page, compact('page', 'promotionconfig',))->render();
-                break;
+    
+                    $data = view('setting.' . $page, compact('page', 'promotionconfig',))->render();
+                    break;
 
             case 'social-media':
                 $socialmedia   = Setting::where('type', '=', 'social-media')->first();
@@ -202,12 +198,7 @@ class SettingController extends Controller
                     $user_data['reason'] =  null;
                 }
 
-                // Get all active service zones
-                $serviceZones = \App\Models\ServiceZone::where('status', 1)
-                    ->orderBy('name', 'asc')
-                    ->get();
-
-                $data  = view('setting.' . $page, compact('user_data', 'page', 'serviceZones'))->render();
+                $data  = view('setting.' . $page, compact('user_data', 'page'))->render();
                 break;
             case 'mail-setting':
                 $data  = view('setting.' . $page, compact('page'))->render();
@@ -217,6 +208,7 @@ class SettingController extends Controller
                 $tabpage = 'cash';
                 $data  = view('setting.' . $page, compact('tabpage', 'page'))->render();
                 break;
+
 
             case 'notification-setting':
                 $query_data = NotificationTemplate::with('defaultNotificationTemplateMap', 'constant')->get();
@@ -254,67 +246,35 @@ class SettingController extends Controller
                 if (!empty($othersetting['value'])) {
                     $decodedata = json_decode($othersetting['value']);
 
-                    // Keys expected to be 0 or 1
-                    $booleanKeys = [
-                        'social_login',
-                        'google_login',
-                        'apple_login',
-                        'otp_login',
-                        'demo_login',
-                        'online_payment',
-                        'blog',
-                        'maintenance_mode',
-                        'wallet',
-                        'force_update_user_app',
-                        'force_update_provider_app',
-                        'force_update_admin_app',
-                        'is_in_app_purchase_enable',
-                        'auto_assign_provider',
-                        'enable_chat_gpt',
-                        'test_without_key',
-                        'firebase_notification',
-                        'whatsapp_notification',
-                        'sms_notification',
-                        'promotion_enable',
-                        'promotion_price',
-                        'enable_chat'
-                    ];
+                        // Keys expected to be 0 or 1
+                        $booleanKeys = [
+                            'social_login', 'google_login', 'apple_login', 'otp_login', 'online_payment', 'blog', 'maintenance_mode',
+                            'wallet','force_update_user_app','force_update_provider_app', 'force_update_admin_app',
+                            'is_in_app_purchase_enable', 'auto_assign_provider', 'enable_chat_gpt','test_without_key', 'firebase_notification', 'whatsapp_notification', 'sms_notification', 'promotion_enable', 'promotion_price',
+                            'enable_chat'
+                        ];
 
-                    // Other keys
-                    $otherKeys = [
-                        'chat_gpt_key',
-                        'user_app_minimum_version',
-                        'user_app_latest_version',
-                        'provider_app_minimum_version',
-                        'provider_app_latest_version',
-                        'admin_app_minimum_version',
-                        'admin_app_latest_version',
-                        'entitlement_id',
-                        'google_public_api_key',
-                        'apple_public_api_key',
-                        'project_id',
-                        'dashboard_type',
-                        'twilio_auth_token_whatsapp',
-                        'twilio_sid_whatsapp',
-                        'twilio_sid_sms',
-                        'twilio_auth_token_sms',
-                        'twilio_phone_number_sms',
-                        'twilio_whatsapp_number',
-                        'promotion_enable',
-                        'promotion_price',
-                        'enable_chat',
-                        'chat_api_key'
-                    ];
+                        // Other keys
+                        $otherKeys = [
+                             'chat_gpt_key',  'user_app_minimum_version', 'user_app_latest_version',
+                             'provider_app_minimum_version', 'provider_app_latest_version', 
+                             'admin_app_minimum_version', 'admin_app_latest_version', 
+                             'entitlement_id', 'google_public_api_key', 'apple_public_api_key', 
+                            'project_id',  'dashboard_type', 
+                            'twilio_auth_token_whatsapp', 'twilio_sid_whatsapp', 'twilio_sid_sms', 
+                            'twilio_auth_token_sms', 'twilio_phone_number_sms', 'twilio_whatsapp_number',
+                            'promotion_enable', 'promotion_price','enable_chat','chat_api_key'
+                        ];
 
-                    // Process boolean keys
-                    foreach ($booleanKeys as $key) {
-                        $othersetting[$key] = isset($decodedata->$key) ? (int)$decodedata->$key : 0; // Default to 0
-                    }
+                        // Process boolean keys
+                        foreach ($booleanKeys as $key) {
+                            $othersetting[$key] = isset($decodedata->$key) ? (int)$decodedata->$key : 0; // Default to 0
+                        }
 
-                    // Process other keys
-                    foreach ($otherKeys as $key) {
-                        $othersetting[$key] = isset($decodedata->$key) ? $decodedata->$key : null; // Default to null
-                    }
+                        // Process other keys
+                        foreach ($otherKeys as $key) {
+                            $othersetting[$key] = isset($decodedata->$key) ? $decodedata->$key : null; // Default to null
+                        }
                 }
                 $data = view('setting.' . $page, compact('page', 'othersetting'))->render();
                 break;
@@ -334,24 +294,20 @@ class SettingController extends Controller
 
             case 'mail-templates':
 
-                $module_action = 'List';
+                    $module_action = 'List';
 
-                $filter = [
-                    'status' => request()->status,
-                ];
+                    $filter = [
+                        'status' => request()->status,
+                    ];
 
-                $pageTitle = trans('messages.mail_templates');
+                    $pageTitle = trans('messages.mail_templates');
 
 
-                $data = view('setting.' . $page, compact('page', 'module_action', 'filter', 'pageTitle'))->render();
-                break;
+                    $data = view('setting.' . $page, compact('page', 'module_action', 'filter', 'pageTitle'))->render();
+                    break;
             case 'earning-setting':
                 $earningsetting   = Setting::where('type', '=', 'earning-setting')->first();
                 $data  = view('setting.' . $page, compact('earningsetting', 'page'))->render();
-                break;
-            case 'seo-setting':
-                $seosetting = \App\Models\SeoSetting::first();
-                $data = view('setting.' . $page, compact('page', 'seosetting'))->render();
                 break;
             case 'data-reset':
                 $earningsetting   = Setting::where('type', '=', 'earning-setting')->first();
@@ -385,7 +341,6 @@ class SettingController extends Controller
 
     public function updateProfile(UserRequest $request)
     {
-        // dd('hello');
         if (demoUserPermission()) {
             return  redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
         }
@@ -395,34 +350,19 @@ class SettingController extends Controller
         $data = $request->all();
 
         $why_choose_me = [
+
             'title' => $request->title,
             'about_description' => $request->about_description,
             'reason' => isset($request->reason) ? array_filter($request->reason, function ($value) {
                 return $value !== null;
             }) : null,
+
         ];
 
         $data['why_choose_me'] = json_encode($why_choose_me);
 
         $user->fill($data)->update();
         storeMediaFile($user, $request->profile_image, 'profile_image');
-
-        $provider_zone = ProviderZoneMapping::where('provider_id', $request->id)->pluck('zone_id')->toArray();
-        $service_zones = is_array($request->service_zones) ? $request->service_zones : [];
-
-        $removeZone = array_diff($provider_zone, $service_zones);
-
-        $services = Service::where('provider_id', $request->id)->pluck('id')->toArray();
-
-        ServiceZoneMapping::whereIn('service_id', $services)->whereIn('zone_id', $removeZone)->delete();
-
-
-        // Handle service zones for providers
-        if ($user->user_type === 'provider'  && $request->has('service_zones')) {
-
-            $user->serviceZones()->sync($request->service_zones);
-        }
-
 
         return redirect()->route('setting.index', ['page' => 'profile_form'])->withSuccess(__('messages.profile') . ' ' . __('messages.updated'));
     }
@@ -489,7 +429,7 @@ class SettingController extends Controller
         $pageTitle = __('messages.terms_condition');
         $assets = ['textarea'];
         // return view('setting.term_condition_form', compact('setting_data', 'terms_condition', 'status', 'pageTitle', 'assets'));
-        return view('setting.term_condition_form', compact('setting_data', 'terms_condition', 'status', 'pageTitle', 'assets', 'language_array'));
+        return view('setting.term_condition_form', compact('setting_data','terms_condition', 'status', 'pageTitle', 'assets','language_array'));
     }
 
     public function saveTermAndCondition(Request $request)
@@ -512,7 +452,7 @@ class SettingController extends Controller
         //     ['id' => $request->input('id')],
         //     $setting_data
         // );
-        $language_option = sitesetupSession('get')->language_option ?? ["ar", "nl", "en", "fr", "de", "hi", "it"];
+        $language_option = sitesetupSession('get')->language_option ?? ["ar","nl","en","fr","de","hi","it"];
         $primary_locale = app()->getLocale() ?? 'en';
         $translatableAttributes = ['value'];
         $result = Setting::updateOrCreate(['id' => $request->id], $setting_data);
@@ -550,7 +490,7 @@ class SettingController extends Controller
 
         $pageTitle = __('messages.about_us');
         $assets = ['textarea'];
-        return view('setting.about_us_form', compact('setting_data', 'about_us', 'status', 'pageTitle', 'assets', 'language_array'));
+        return view('setting.about_us_form', compact('setting_data', 'about_us', 'status', 'pageTitle', 'assets','language_array'));
     }
 
 
@@ -571,7 +511,7 @@ class SettingController extends Controller
             ]),
         ];
 
-        $language_option = sitesetupSession('get')->language_option ?? ["ar", "nl", "en", "fr", "de", "hi", "it"];
+        $language_option = sitesetupSession('get')->language_option ?? ["ar","nl","en","fr","de","hi","it"];
         $primary_locale = app()->getLocale() ?? 'en';
         $translatableAttributes = ['value'];
         $result = Setting::updateOrCreate(['id' => $request->id], $setting_data);
@@ -613,7 +553,7 @@ class SettingController extends Controller
         $assets = ['textarea'];
 
         // return view('setting.privacy_policy_form', compact('setting_data', 'privacy_policy', 'status', 'pageTitle', 'assets'));
-        return view('setting.privacy_policy_form', compact('setting_data', 'privacy_policy', 'status', 'pageTitle', 'assets', 'language_array'));
+        return view('setting.privacy_policy_form', compact('setting_data','privacy_policy', 'status', 'pageTitle', 'assets','language_array'));
     }
 
     public function savePrivacyPolicy(Request $request)
@@ -636,7 +576,7 @@ class SettingController extends Controller
         //     ['id' => $request->input('id')],
         //     $setting_data
         // );
-        $language_option = sitesetupSession('get')->language_option ?? ["ar", "nl", "en", "fr", "de", "hi", "it"];
+        $language_option = sitesetupSession('get')->language_option ?? ["ar","nl","en","fr","de","hi","it"];
         $primary_locale = app()->getLocale() ?? 'en';
         $translatableAttributes = ['value'];
         $result = Setting::updateOrCreate(['id' => $request->id], $setting_data);
@@ -674,7 +614,7 @@ class SettingController extends Controller
         $pageTitle = __('messages.help_support');
         $assets = ['textarea'];
         // return view('setting.help_support_form', compact('setting_data', 'help_support', 'status', 'pageTitle', 'assets'));
-        return view('setting.help_support_form', compact('setting_data', 'help_support', 'status', 'pageTitle', 'assets', 'language_array'));
+        return view('setting.help_support_form', compact('setting_data', 'help_support', 'status', 'pageTitle', 'assets','language_array'));
     }
 
     public function saveHelpAndSupport(Request $request)
@@ -694,7 +634,7 @@ class SettingController extends Controller
             ]),
         ];
         // $result = Setting::updateOrCreate(['id' => $request->input('id')], $setting_data);
-        $language_option = sitesetupSession('get')->language_option ?? ["ar", "nl", "en", "fr", "de", "hi", "it"];
+        $language_option = sitesetupSession('get')->language_option ?? ["ar","nl","en","fr","de","hi","it"];
         $primary_locale = app()->getLocale() ?? 'en';
         $translatableAttributes = ['value'];
         $result = Setting::updateOrCreate(['id' => $request->id], $setting_data);
@@ -732,7 +672,7 @@ class SettingController extends Controller
         $pageTitle = __('messages.refund_cancellation_policy');
         $assets = ['textarea'];
         //return view('setting.refund_cancellation_policy_form', compact('setting_data', 'refund_cancellation_policy', 'status', 'pageTitle', 'assets'));
-        return view('setting.refund_cancellation_policy_form', compact('setting_data', 'refund_cancellation_policy', 'status', 'pageTitle', 'assets', 'language_array'));
+        return view('setting.refund_cancellation_policy_form', compact('setting_data','refund_cancellation_policy', 'status', 'pageTitle', 'assets','language_array'));
     }
 
     public function saveRefundCancellationPolicy(Request $request)
@@ -755,7 +695,7 @@ class SettingController extends Controller
         //     ['id' => $request->input('id')],
         //     $setting_data
         // );
-        $language_option = sitesetupSession('get')->language_option ?? ["ar", "nl", "en", "fr", "de", "hi", "it"];
+        $language_option = sitesetupSession('get')->language_option ?? ["ar","nl","en","fr","de","hi","it"];
         $primary_locale = app()->getLocale() ?? 'en';
         $translatableAttributes = ['value'];
         $result = Setting::updateOrCreate(['id' => $request->id], $setting_data);
@@ -793,7 +733,7 @@ class SettingController extends Controller
         $assets = ['textarea'];
 
         // return view('setting.data_deletion_form', compact('setting_data', 'data_deletion_request', 'status', 'pageTitle', 'assets'));
-        return view('setting.data_deletion_form', compact('setting_data', 'data_deletion_request', 'status', 'pageTitle', 'assets', 'language_array'));
+        return view('setting.data_deletion_form', compact('setting_data','data_deletion_request', 'status', 'pageTitle', 'assets','language_array'));
     }
 
     public function saveDataDeletion(Request $request)
@@ -811,7 +751,7 @@ class SettingController extends Controller
             ]),
         ];
         //$result = Setting::updateOrCreate(['id' => $request->input('id')], $setting_data);
-        $language_option = sitesetupSession('get')->language_option ?? ["ar", "nl", "en", "fr", "de", "hi", "it"];
+        $language_option = sitesetupSession('get')->language_option ?? ["ar","nl","en","fr","de","hi","it"];
         $primary_locale = app()->getLocale() ?? 'en';
         $translatableAttributes = ['value'];
         $result = Setting::updateOrCreate(['id' => $request->id], $setting_data);
@@ -971,7 +911,7 @@ class SettingController extends Controller
     {
         $data = $request->all();
 
-        if ($request->has('json_file')) {
+        if($request->has('json_file')){
 
             $file = $request->file('json_file');
 
@@ -991,6 +931,7 @@ class SettingController extends Controller
                 }
             }
             $file->move($directoryPath, $fileName);
+
         }
 
 
@@ -1001,7 +942,6 @@ class SettingController extends Controller
             'google_login' => (isset($data['google_login']) && $data['google_login'] == 'on') ? 1 : 0,
             'apple_login' => (isset($data['apple_login']) && $data['apple_login'] == 'on') ? 1 : 0,
             'otp_login' => (isset($data['otp_login']) && $data['otp_login'] == 'on') ? 1 : 0,
-            'demo_login' => (isset($data['demo_login']) && $data['demo_login'] == 'on') ? 1 : 0,
             'online_payment' => (isset($data['online_payment']) && $data['online_payment'] == 'on') ? 1 : 0,
             'blog' => (isset($data['blog']) && $data['blog'] == 'on') ? 1 : 0,
             'maintenance_mode' => (isset($data['maintenance_mode']) && $data['maintenance_mode'] == 'on') ? 1 : 0,
@@ -1040,29 +980,29 @@ class SettingController extends Controller
 
 
         ];
-        // dd($other_setting_data);
-        // Only add Twilio settings if the respective notification toggle is on
-        if ($other_setting_data['sms_notification']) {
-            $other_setting_data['twilio_sid_sms'] = $data['twilio_sid_sms'] ?? null; // Ensure this is set for SMS
-            $other_setting_data['twilio_auth_token_sms'] = $data['twilio_auth_token_sms'] ?? null; // Ensure this is set for SMS
-            $other_setting_data['twilio_phone_number_sms'] = $data['twilio_phone_number_sms'] ?? null; // Ensure this is set for SMS
-        } else {
-            // If SMS is off, clear the Twilio SMS settings
-            $other_setting_data['twilio_sid_sms'] = null;
-            $other_setting_data['twilio_auth_token_sms'] = null;
-            $other_setting_data['twilio_phone_number_sms'] = null;
-        }
+// dd($other_setting_data);
+    // Only add Twilio settings if the respective notification toggle is on
+    if ($other_setting_data['sms_notification']) {
+        $other_setting_data['twilio_sid_sms'] = $data['twilio_sid_sms'] ?? null; // Ensure this is set for SMS
+        $other_setting_data['twilio_auth_token_sms'] = $data['twilio_auth_token_sms'] ?? null; // Ensure this is set for SMS
+        $other_setting_data['twilio_phone_number_sms'] = $data['twilio_phone_number_sms'] ?? null; // Ensure this is set for SMS
+    } else {
+        // If SMS is off, clear the Twilio SMS settings
+        $other_setting_data['twilio_sid_sms'] = null;
+        $other_setting_data['twilio_auth_token_sms'] = null;
+        $other_setting_data['twilio_phone_number_sms'] = null;
+    }
 
-        if ($other_setting_data['whatsapp_notification']) {
-            $other_setting_data['twilio_whatsapp_number'] = $data['twilio_whatsapp_number'] ?? null; // Ensure this is set for WhatsApp
-            $other_setting_data['twilio_sid_whatsapp'] = $data['twilio_sid_whatsapp'] ?? null; // Ensure this is set for WhatsApp
-            $other_setting_data['twilio_auth_token_whatsapp'] = $data['twilio_auth_token_whatsapp'] ?? null; // Ensure this is set for WhatsApp
-        } else {
-            // If WhatsApp is off, clear the Twilio WhatsApp settings
-            $other_setting_data['twilio_whatsapp_number'] = null;
-            $other_setting_data['twilio_sid_whatsapp'] = null; // Clear if not needed
-            $other_setting_data['twilio_auth_token_whatsapp'] = null; // Clear if not needed
-        }
+    if ($other_setting_data['whatsapp_notification']) {
+        $other_setting_data['twilio_whatsapp_number'] = $data['twilio_whatsapp_number'] ?? null; // Ensure this is set for WhatsApp
+        $other_setting_data['twilio_sid_whatsapp'] = $data['twilio_sid_whatsapp'] ?? null; // Ensure this is set for WhatsApp
+        $other_setting_data['twilio_auth_token_whatsapp'] = $data['twilio_auth_token_whatsapp'] ?? null; // Ensure this is set for WhatsApp
+    } else {
+        // If WhatsApp is off, clear the Twilio WhatsApp settings
+        $other_setting_data['twilio_whatsapp_number'] = null;
+        $other_setting_data['twilio_sid_whatsapp'] = null; // Clear if not needed
+        $other_setting_data['twilio_auth_token_whatsapp'] = null; // Clear if not needed
+    }
 
 
         // Update or create the settings
@@ -1071,14 +1011,14 @@ class SettingController extends Controller
             ['value' => json_encode($other_setting_data)]
         );
 
-        // Handle success or failure
-        if ($res) {
-            $message = trans('messages.update_form', ['form' => trans('messages.other_setting')]);
-        } else {
-            $message = trans('messages.failed');
-        }
+    // Handle success or failure
+    if ($res) {
+        $message = trans('messages.update_form', ['form' => trans('messages.other_setting')]);
+    } else {
+        $message = trans('messages.failed');
+    }
 
-        // dd($other_setting_data);
+    // dd($other_setting_data);
         $data = [
             'type'  => 'OTHER_SETTING',
             'key'   => 'OTHER_SETTING',
@@ -1127,76 +1067,6 @@ class SettingController extends Controller
 
         // Handle success or failure
         return redirect()->route('setting.index')->withSuccess(trans('messages.settings_updated'));
-    }
-
-    public function seoSetting(SeoSettingRequest $request)
-    {
-        if (demoUserPermission()) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json(['success' => false, 'message' => trans('messages.demo_permission_denied')]);
-            }
-            return redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
-        }
-
-        try {
-            $data = $request->all();
-
-            // Always define $meta_keywords as array
-            $meta_keywords = [];
-            if (isset($data['meta_keywords']) && !empty($data['meta_keywords'])) {
-                $decoded = json_decode($data['meta_keywords'], true);
-                if (is_array($decoded)) {
-                    $meta_keywords = array_column($decoded, 'value');
-                }
-            }
-
-            $seosetting = [
-                'meta_title' => $data['meta_title'] ?? null,
-                'meta_description' => $data['meta_description'] ?? null,
-                'meta_keywords' => $meta_keywords, // Save as array, not json
-                'global_canonical_url' => $data['global_canonical_url'] ?? null,
-                'google_site_verification' => $data['google_site_verification'] ?? null,
-            ];
-
-            $seoSetting = SeoSetting::updateOrCreate(
-                ['id' => $request->id],
-                $seosetting
-            );
-
-            // Handle image upload
-            if ($request->hasFile('seo_image')) {
-                storeMediaFile($seoSetting, $request->file('seo_image'), 'seo_image');
-            }
-
-            // Handle success or failure
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => __('messages.seo_settings_updated')
-                ]);
-            }
-
-            return redirect()->route('setting.index', ['page' => 'seo-setting'])->withSuccess(__('messages.seo_settings_updated'));
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $e->errors()
-                ], 422);
-            }
-
-            return redirect()->back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'An error occurred while saving the settings.'
-                ], 500);
-            }
-
-            return redirect()->back()->withErrors('An error occurred while saving the settings.')->withInput();
-        }
     }
 
     public function themeSetup(Request $request)
@@ -1310,7 +1180,7 @@ class SettingController extends Controller
         $data = $request->all();
         // dd($data);
 
-        if (isset($data['global_advance_payment']) && $data['global_advance_payment'] == 'on' && !isset($data['advance_paynment_percantage']) && $data['advance_paynment_percantage'] == '') {
+        if(isset($data['global_advance_payment']) && $data['global_advance_payment'] =='on' && !isset($data['advance_paynment_percantage']) && $data['advance_paynment_percantage'] == '' ){
 
             return  redirect()->back()->withErrors(trans('messages.advance_payment_percetage_required'));
         }
@@ -1344,7 +1214,7 @@ class SettingController extends Controller
 
         return redirect()->route('setting.index', ['page' => $page])->withSuccess($message);
     }
-
+    
     public function socialMedia(Request $request)
     {
         if (demoUserPermission()) {
@@ -1418,7 +1288,7 @@ class SettingController extends Controller
 
         $data = $request->all();
 
-        if (isset($data['promotion_enable']) && $data['promotion_enable'] == 'on' && !isset($data['promotion_price']) && $data['promotion_price'] == '') {
+        if(isset($data['promotion_enable']) && $data['promotion_enable'] =='on' && !isset($data['promotion_price']) && $data['promotion_price'] == ''){
             return  redirect()->back()->withErrors(trans('messages.advance_payment_percetage_required'));
         }
         $page = $request->type;
@@ -1426,7 +1296,7 @@ class SettingController extends Controller
             'promotion_enable' => (isset($data['promotion_enable']) && $data['promotion_enable'] == 'on') ? 1 : 0,
             'promotion_price' => (isset($data['promotion_price'])) ? $data['promotion_price'] : null,
         ];
-        // dd($data);
+// dd($data);
         $res = Setting::updateOrCreate(
             ['id' => $request->id],
             ['type' => 'provider-banner', 'key' => 'provider-banner', 'value' => json_encode($promotionconfig)]
@@ -1439,4 +1309,5 @@ class SettingController extends Controller
 
         return redirect()->route('setting.index', ['page' => $page])->withSuccess($message);
     }
+
 }

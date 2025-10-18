@@ -34,11 +34,9 @@
                                     <option value="">{{ __('messages.no_action') }}</option>
                                     <option value="change-status">{{ __('messages.status') }}</option>
                                     <option value="change-featured">{{ __('messages.featured') }}</option>
-                                    @if($auth_user->can('category delete'))
-                                        <option value="delete">{{ __('messages.delete') }}</option>
-                                        <option value="restore">{{ __('messages.restore') }}</option>
-                                        <option value="permanently-delete">{{ __('messages.permanent_dlt') }}</option>
-                                    @endif
+                                    <option value="delete">{{ __('messages.delete') }}</option>
+                                    <option value="restore">{{ __('messages.restore') }}</option>
+                                    <option value="permanently-delete">{{ __('messages.permanent_dlt') }}</option>
                                 </select>
 
                                 <div class="select-status d-none quick-action-field" id="change-status-action"
@@ -61,7 +59,7 @@
                                     data-title="{{ __('category', ['form' => __('category')]) }}"
                                     title="{{ __('category', ['form' => __('category')]) }}"
                                     data-message='{{ __('Do you want to perform this action?') }}'
-                                    >{{ __('messages.apply') }}</button>
+                                    disabled>{{ __('messages.apply') }}</button>
                         </div>
 
                         </form>
@@ -211,13 +209,9 @@
             e.preventDefault();
             const button = $(this);
             const confirmation = button.data('confirmation');
-            const actionType = $('#quick-action-type').val();
 
             if (confirmation === 'true') {
-                let message = button.data('message');
-                if (actionType === 'delete' || actionType === 'permanently-delete') {
-                    message = "{{ __('messages.delete_warning') }}";
-                }
+                const message = button.data('message');
                 if (confirm(message)) {
                     const submitUrl = button.data('submit');
                     const form = button.closest('form');

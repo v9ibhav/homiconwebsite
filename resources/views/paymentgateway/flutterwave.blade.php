@@ -32,37 +32,22 @@
     {{ html()->text('title', old('title'))->id('title')->placeholder(trans('messages.title'))->class('form-control')}}
     <small class="help-block with-errors text-danger"></small>
 </div>
-@php
-    $isAdmin = auth()->user()->hasRole('admin'); // or use your own logic like auth()->user()->type == 'admin'
-@endphp
-
 <div class="form-group col-md-12">
     {{ html()->label(trans('messages.flutterwave_public') . ' <span class="text-danger">*</span>', 'flutterwave_public', ['class' => 'form-control-label'], false) }}
-    {{ html()->{$isAdmin ? 'text' : 'password'}('flutterwave_public', old('flutterwave_public'))
-        ->id('flutterwave_public')
-        ->placeholder(trans('messages.flutterwave_public'))
-        ->class('form-control') }}
+    {{ html()->text('flutterwave_public', old('flutterwave_public'))->id('flutterwave_public')->placeholder(trans('messages.flutterwave_public'))->class('form-control')}}
     <small class="help-block with-errors text-danger"></small>
 </div>
-
 <div class="form-group col-md-12">
     {{ html()->label(trans('messages.flutterwave_secret') . ' <span class="text-danger">*</span>', 'flutterwave_secret', ['class' => 'form-control-label'], false) }}
-    {{ html()->{$isAdmin ? 'text' : 'password'}('flutterwave_secret', old('flutterwave_secret'))
-        ->id('flutterwave_secret')
-        ->placeholder(trans('messages.flutterwave_secret'))
-        ->class('form-control') }}
+    {{ html()->text('flutterwave_secret',old('flutterwave_secret'))->id('flutterwave_secret')->placeholder(trans('messages.flutterwave_secret'))->class('form-control')}}
     <small class="help-block with-errors text-danger"></small>
 </div>
-
 <div class="form-group col-md-12">
     {{ html()->label(trans('messages.flutterwave_encryption') . ' <span class="text-danger">*</span>', 'flutterwave_encryption', ['class' => 'form-control-label'], false) }}
-    {{ html()->{$isAdmin ? 'text' : 'password'}('flutterwave_encryption', old('flutterwave_encryption'))
-        ->id('flutterwave_encryption')
-        ->placeholder(trans('messages.flutterwave_encryption'))
-        ->class('form-control') }}
+    {{ html()->text('flutterwave_encryption',old('flutterwave_encryption'))->id('flutterwave_encryption')->placeholder(trans('messages.flutterwave_encryption'))->class('form-control')}}
     <small class="help-block with-errors text-danger"></small>
+    </div>
 </div>
-
 {{ html()->submit(__('messages.save'))->class('btn btn-md btn-primary float-md-end') }}
 {{ html()->form()->close() }}
 <script>

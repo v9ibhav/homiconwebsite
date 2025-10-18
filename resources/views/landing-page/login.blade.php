@@ -35,7 +35,6 @@
                     </div>
                 </div>
             </div>
-            
             <div class="col-xl-4 col-lg-5 mh-100">
                 <div class="py-5 px-3 bg-light d-flex flex-column justify-content-center h-100">
                     <div class="row justify-content-center">
@@ -49,19 +48,12 @@
                                     <div class="alert alert-danger d-none" role="alert"  id="error">
 
                                     </div>
-                                     {{-- ✅ Show success message --}}
-                     @if (session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                           {{ session('success') }}
-                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                     @endif
                                     <form id="loginForm" data-toggle="validator" method="post">
                                         {{csrf_field()}}
                                         <div class="form-group icon-right mb-5 custom-form-field">
                                             <label>{{__('landingpage.email')}} <span class="text-danger">*</span></label>
                                             <input type="email" id="email" name="email" class="form-control" placeholder="{{__('placeholder.email')}}"
-                                                aria-label="Username" aria-describedby="basic-addon1" required autofocus>
+                                                aria-label="Username" aria-describedby="basic-addon1" required>
                                             <small class="help-block with-errors text-danger"></small>
                                         </div>
 
@@ -70,7 +62,7 @@
                                         <label>{{__('landingpage.your')}} {{__('auth.login_password')}} <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="password" id="password" name="password" class="form-control" placeholder="{{__('placeholder.login_password')}}"
-                                                        required> 
+                                                       aria-label="Password" aria-describedby="togglePassword" required>
                                                 <span class="input-group-text" id="togglePassword">
                                                     <i class="fa fa-eye-slash" aria-hidden="true" onclick="togglePassword()"></i>
                                                 </span>
@@ -134,79 +126,57 @@
 @endsection
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
-    $(document).ready(function () {
-        // CSRF Token and Base URL
-        const csrfToken = $('meta[name="csrf-token"]').attr('content');
-        const baseUrl = $('meta[name="baseUrl"]').attr('content');
-        const successMessage = "Login successful!";
 
-        // Login form submission
-        $('#loginForm').submit(function (e) {
-            e.preventDefault(); // Prevent default form submission
-            const formData = $(this).serialize();
+
+    $(document).ready(function() {
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        const baseUrl = document.querySelector('meta[name="baseUrl"]').getAttribute('content');
+        $('#loginForm').submit(function(e) {
+
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+            const urlParams = new URLSearchParams(window.location.search);
+            const serviceId = urlParams.get('service_id');
+            const Favservice = urlParams.get('favorite_service');
 
             $.ajax({
-                method: 'POST',
-                url: `${baseUrl}/api/login`,
+                method: 'post',
+                url: baseUrl+'/api/login',
                 data: formData,
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
                 dataType: 'json',
-                success: function (response) {
-                    if (response.data) {
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const serviceId = urlParams.get('service_id');
-                        const Favservice = urlParams.get('favorite_service');
+                success: function(response) {
+                    if(response.data){
+                       if(serviceId !=null){
+                        window.location.href = baseUrl + '/book-service?id=' + serviceId;
+                       }else if(Favservice != null){
+                        window.location.href = baseUrl + '/service-detail/' + Favservice;
+                       }else{
+                        window.location.href = baseUrl+'/';
+                       }
 
-                        if (serviceId) {
-                            window.location.href = `${baseUrl}/book-service?id=${serviceId}`;
-                        } else if (Favservice) {
-                            window.location.href = `${baseUrl}/service-detail/${Favservice}`;
-                        } else {
-                            // Store success message in localStorage and redirect to homepage
-                            localStorage.setItem('login_success_message', successMessage);
-                            window.location.href = baseUrl + '/';
-                        }
                     }
                 },
-                error: function (xhr) {
-                    // Display error message
-                    const errorMessage = xhr.responseJSON?.message || 'An error occurred. Please try again.';
-                    $('#error').removeClass('d-none').text(errorMessage);
+                error: function(xhr, status, error) {
+
+                     $('#error').removeClass('d-none')
+
+                     $('#error').text(xhr.responseJSON.message)
+
                 }
             });
         });
-
-        // Show success message if available
-        const storedMessage = localStorage.getItem('login_success_message');
-        if (storedMessage) {
-            showMessage(storedMessage);
-            localStorage.removeItem('login_success_message'); // Remove after showing
-        }
-
-        // Function to display alert messages
-        function showMessage(message) {
-            const alertDiv = `
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>`;
-            $('body').prepend(alertDiv);
-        }
-
-        // Autofocus on email field
-        setTimeout(() => {
-            $('#email').focus();
-        }, 100);
-
-        // Toggle password visibility
-        $('#togglePassword').click(function () {
-            const passwordInput = $('#password');
-            const icon = $(this).find('i');
-            const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
-            passwordInput.attr('type', type);
-            icon.toggleClass('fa-eye-slash fa-eye');
-        });
     });
+
+
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const icon = document.querySelector('#togglePassword i');
+
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Change the eye icon based on the password visibility
+        icon.className = type === 'password' ? 'fa fa-eye-slash' : 'fa fa-eye';
+    }
 </script>

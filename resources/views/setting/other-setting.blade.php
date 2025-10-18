@@ -52,19 +52,7 @@
             </div>
         </div>
     </div>
-    
-    <!-- Demo Login Section -->
-    <div class="" id='demo_login_section'>
-        <div class="form-group">
-            <div class="form-control d-flex align-items-center justify-content-between">
-                <label for="demo_login" class="mb-0">{{ __('messages.demo_login') }}</label>
-                <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="demo_login" id="demo_login" {{ !empty($othersetting->demo_login) ? 'checked' : '' }}>
-                    <label class="custom-control-label" for="demo_login"></label>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <div class="form-group">
         <div class="form-control d-flex align-items-center justify-content-between">
@@ -388,22 +376,25 @@
         <label class="custom-control-label" for="whatsapp_notification"></label>
     </div>
 </div>
-<div class="form-padding-box mb-3" class="{{ empty($othersetting->whatsapp_notification) || $othersetting->whatsapp_notification != 1 ? 'd-none' : '' }}" id="whatsapp-settings">
+<div id="whatsapp-settings" class="{{ empty($othersetting->whatsapp_notification) || $othersetting->whatsapp_notification != 1 ? 'd-none' : '' }}">
      <!-- WhatsApp Configuration -->
-    <div class="row">
-        <div class="form-group col-sm-6 mb-0">
-            <label for="twilio_sid_whatsapp" class="col-sm-6 form-control-label">{{ __('messages.twilio_sid') }} (WhatsApp)</label>
+    <div class="form-group">
+        <label for="twilio_sid_whatsapp" class="col-sm-6 form-control-label">{{ __('messages.twilio_sid') }} (WhatsApp)</label>
+        <div class="col-sm-12">
             {{ html()->text('twilio_sid_whatsapp', $othersetting->twilio_sid_whatsapp ?? '')->class('form-control')->id('twilio_sid_whatsapp')->placeholder(__('messages.twilio_sid')) }}
         </div>
+    </div>
 
-
-        <div class="form-group col-sm-6 mb-0">
-            <label for="twilio_auth_token_whatsapp" class="col-sm-6 form-control-label">{{ __('messages.twilio_auth_token') }} (WhatsApp)</label>
+    <div class="form-group">
+        <label for="twilio_auth_token_whatsapp" class="col-sm-6 form-control-label">{{ __('messages.twilio_auth_token') }} (WhatsApp)</label>
+        <div class="col-sm-12">
             {{ html()->text('twilio_auth_token_whatsapp', $othersetting->twilio_auth_token_whatsapp ?? '')->class('form-control')->id('twilio_auth_token_whatsapp')->placeholder(__('messages.twilio_auth_token')) }}
         </div>
+    </div>
 
-        <div class="form-group col-sm-6  mt-3 mb-0">
-            <label for="twilio_whatsapp_number" class="col-sm-6 form-control-label">{{ __('messages.twilio_whatsapp_number') }} (WhatsApp)</label>
+    <div class="form-group">
+        <label for="twilio_whatsapp_number" class="col-sm-6 form-control-label">{{ __('messages.twilio_whatsapp_number') }} (WhatsApp)</label>
+        <div class="col-sm-12">
             {{ html()->number('twilio_whatsapp_number', $othersetting->twilio_whatsapp_number ?? '')->class('form-control')->id('twilio_whatsapp_number')->placeholder(__('messages.twilio_whatsapp_number')) }}
         </div>
     </div>
@@ -416,28 +407,29 @@
             <label class="custom-control-label" for="sms_notification"></label>
         </div>
     </div>
-    <div class="form-padding-box mb-3" id="sms-settings" class="{{ empty($othersetting->sms_notification) || $othersetting->sms_notification != 1 ? 'd-none' : '' }}">
+    <div id="sms-settings" class="{{ empty($othersetting->sms_notification) || $othersetting->sms_notification != 1 ? 'd-none' : '' }}">
         <!-- SMS Configuration -->
-        <div class="row">
-            <div class="form-group col-sm-6 mb-0">
-               <label for="twilio_sid_sms" class="col-sm-6 form-control-label">{{ __('messages.twilio_sid') }} (SMS)</label>
+        <div class="form-group">
+            <label for="twilio_sid_sms" class="col-sm-6 form-control-label">{{ __('messages.twilio_sid') }} (SMS)</label>
+            <div class="col-sm-12">
                 {{ html()->text('twilio_sid_sms', $othersetting->twilio_sid_sms ?? '')->class('form-control')->id('twilio_sid_sms')->placeholder(__('messages.twilio_sid')) }}
             </div>
-
-
-            <div class="form-group col-sm-6 mb-0">
-                <label for="twilio_auth_token_sms" class="col-sm-6 form-control-label">{{ __('messages.twilio_auth_token') }} (SMS)</label>
+        </div>
+    
+        <div class="form-group">
+            <label for="twilio_auth_token_sms" class="col-sm-6 form-control-label">{{ __('messages.twilio_auth_token') }} (SMS)</label>
+            <div class="col-sm-12">
                 {{ html()->text('twilio_auth_token_sms', $othersetting->twilio_auth_token_sms ?? '')->class('form-control')->id('twilio_auth_token_sms')->placeholder(__('messages.twilio_auth_token')) }}
             </div>
-
-
-            <div class="form-group col-sm-6 mt-3 mb-0">
-                <label for="twilio_phone_number_sms" class="col-sm-6 form-control-label">{{ __('messages.twilio_phone_number') }} (SMS)</label>
+        </div>
+    
+        <div class="form-group">
+            <label for="twilio_phone_number_sms" class="col-sm-6 form-control-label">{{ __('messages.twilio_phone_number') }} (SMS)</label>
+            <div class="col-sm-12">
                 {{ html()->number('twilio_phone_number_sms', $othersetting->twilio_phone_number_sms ?? '')->class('form-control')->id('twilio_phone_number_sms')->placeholder(__('messages.twilio_phone_number')) }}
             </div>
         </div>
-    </div>
-    </div>
+    </div>  
 
 
 <div class="row">

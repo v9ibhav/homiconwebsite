@@ -36,9 +36,8 @@ class BookingController extends Controller
 {
     use NotificationTrait;
     use EarningTrait;
-    public function getBookingList(Request $request)
-    {
-        $booking = Booking::myBooking()->with('customer', 'provider', 'service', 'payment', 'handymanAdded');
+    public function getBookingList(Request $request){
+        $booking = Booking::myBooking()->with('customer','provider','service','payment','handymanAdded');
 
         if ($request->has('provider_id') && !empty($request->provider_id)) {
             $provider_ids = is_array($request->provider_id) ? $request->provider_id : explode(',', $request->provider_id);
@@ -47,7 +46,7 @@ class BookingController extends Controller
 
         if ($request->has('handyman_id') && !empty($request->handyman_id)) {
             $handyman_ids = is_array($request->handyman_id) ? $request->handyman_id : explode(',', $request->handyman_id);
-            $booking->whereHas('handymanAdded', function ($query) use ($handyman_ids) {
+            $booking->whereHas('handymanAdded', function($query) use ($handyman_ids) {
                 $query->whereIn('handyman_id', $handyman_ids);
             });
         }
@@ -73,23 +72,24 @@ class BookingController extends Controller
 
             $status = explode(',', $request->status);
             $booking->whereIn('status', $status);
-        }
 
-        if ($request->has('payment_status') && isset($request->payment_status)) {
+         }
+
+         if ($request->has('payment_status') && isset($request->payment_status)) {
             $payment_status = explode(',', $request->payment_status);
-            $booking->whereHas('payment', function ($query) use ($payment_status) {
+            $booking->whereHas('payment', function($query) use ($payment_status) {
                 $query->whereIn('payment_status', $payment_status);
             });
-        }
+         }
 
-        if ($request->has('payment_type') && isset($request->payment_type)) {
+         if ($request->has('payment_type') && isset($request->payment_type)) {
             $payment_type = explode(',', $request->payment_type);
-            $booking->whereHas('payment', function ($query) use ($payment_type) {
+            $booking->whereHas('payment', function($query) use ($payment_type) {
                 $query->whereIn('payment_type', $payment_type);
             });
-        }
+         }
 
-        if ($request->has('search') && !empty($request->search)) {
+         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
             $booking->where(function ($query) use ($search) {
                 $query->where('id', 'LIKE', "%$search%")
@@ -103,9 +103,9 @@ class BookingController extends Controller
                             $nameQuery->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
                                 ->orWhere('email', 'LIKE', "%$search");
                         });
-                    })
+                     })
 
-                    ->orWhereHas('customer', function ($userQuery) use ($search) {
+                     ->orWhereHas('customer', function ($userQuery) use ($search) {
                         $userQuery->where(function ($nameQuery) use ($search) {
                             $nameQuery->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
                                 ->orWhere('email', 'LIKE', "%$search");
@@ -117,20 +117,20 @@ class BookingController extends Controller
 
 
         $per_page = config('constant.PER_PAGE_LIMIT');
-        if ($request->has('per_page') && !empty($request->per_page)) {
-            if (is_numeric($request->per_page)) {
+        if( $request->has('per_page') && !empty($request->per_page)){
+            if(is_numeric($request->per_page)){
                 $per_page = $request->per_page;
             }
-            if ($request->per_page === 'all') {
+            if($request->per_page === 'all' ){
                 $per_page = $booking->count();
             }
         }
         $orderBy = 'desc';
-        if ($request->has('orderby') && !empty($request->orderby)) {
+        if( $request->has('orderby') && !empty($request->orderby)){
             $orderBy = $request->orderby;
         }
 
-        $booking = $booking->orderBy('updated_at', $orderBy)->paginate($per_page);
+        $booking = $booking->orderBy('updated_at',$orderBy)->paginate($per_page);
         $items = BookingResource::collection($booking);
 
         // Initialize total earning
@@ -150,7 +150,7 @@ class BookingController extends Controller
         // Calculate totals from the booking items
         foreach ($items as $booking) {
 
-            if ($booking->status != 'cancelled' && $booking->handymanAdded->count() > 0) {
+            if($booking->status != 'cancelled' && $booking->handymanAdded->count() > 0){
 
                 $total_earning += $booking->total_amount ?? 0;
 
@@ -158,8 +158,8 @@ class BookingController extends Controller
                 if ($booking->commissionsdata) {
                     foreach ($booking->commissionsdata as $commission) {
                         switch ($commission->user_type) {
-                            case 'admin':
-                            case 'demo_admin':
+                              case 'admin':
+                              case 'demo_admin':
                                 $payment_breakdown['admin_earned'] += $commission->commission_amount ?? 0;
                                 break;
                             case 'provider':
@@ -174,12 +174,15 @@ class BookingController extends Controller
 
                 $payment_breakdown['tax'] += $booking->final_total_tax ?? 0;
                 $payment_breakdown['discount'] += ($booking->final_discount_amount) ?? 0;
+
             }
+
+
         }
 
         // Format all numbers to 2 decimal places
         $total_earning = number_format($total_earning, 2, '.', '');
-        array_walk($payment_breakdown, function (&$value) {
+        array_walk($payment_breakdown, function(&$value) {
             $value = number_format($value, 2, '.', '');
         });
 
@@ -203,19 +206,15 @@ class BookingController extends Controller
     }
 
 
-    public function getBookingDetail(Request $request)
-    {
+    public function getBookingDetail(Request $request){
 
         $id = $request->booking_id;
 
-        $booking_data = Booking::with('customer', 'handymanAdded', 'provider', 'service', 'bookingRating', 'bookingPostJob', 'bookingAddonService', 'bookingPackage', 'payment')->where('id', $id)->first();
+        $booking_data = Booking::with('customer','handymanAdded','provider','service','bookingRating','bookingPostJob','bookingAddonService','bookingPackage','payment')->where('id',$id)->first();
 
-        $latest_payment = Payment::where('booking_id', $id)->orderBy('id', 'desc')->first();
-        $booking_data->payment = $latest_payment ?? null;
-
-        if ($booking_data == null) {
+        if($booking_data == null){
             $message = __('messages.booking_not_found');
-            return comman_message_response($message, 400);
+            return comman_message_response($message,400);
         }
         $booking_detail = new BookingDetailResource($booking_data);
 
@@ -226,9 +225,10 @@ class BookingController extends Controller
         $handyman_data = HandymanResource::collection($booking_detail->handymanAdded);
 
         $customer_review = null;
-        if ($request->customer_id != null) {
-            $customer_review = BookingRating::where('customer_id', $request->customer_id)->where('service_id', $booking_detail->service_id)->where('booking_id', $id)->first();
-            if (!empty($customer_review)) {
+        if($request->customer_id != null){
+            $customer_review = BookingRating::where('customer_id',$request->customer_id)->where('service_id',$booking_detail->service_id)->where('booking_id',$id)->first();
+            if (!empty($customer_review))
+            {
                 $customer_review = new BookingRatingResource($customer_review);
             }
         }
@@ -241,15 +241,15 @@ class BookingController extends Controller
         } else {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
-        $booking_activity = BookingActivity::where('booking_id', $id)->orderBy('id', 'asc')->get();
-        $serviceProof = ServiceProofResource::collection(ServiceProof::with('service', 'handyman', 'booking')->where('booking_id', $id)->get());
+        $booking_activity = BookingActivity::where('booking_id',$id)->orderBy('id', 'asc')->get();
+        $serviceProof = ServiceProofResource::collection(ServiceProof::with('service','handyman','booking')->where('booking_id',$id)->get());
         $post_job_object = null;
-        if ($booking_data->type == 'user_post_job') {
+        if($booking_data->type == 'user_post_job'){
             $post_job_object = new PostJobRequestResource($booking_data->bookingPostJob);
         }
 
         $bookingpackage = $booking_data->bookingPackage;
-        if ($bookingpackage !== null) {
+        if($bookingpackage !== null){
             $mediaUrl = $bookingpackage->package->getFirstMedia('package_attachment')?->getUrl();
             $bookingpackage->package_image = $mediaUrl ?? asset('images/default.png');
         }
@@ -277,10 +277,10 @@ class BookingController extends Controller
         $rating_data = $request->all();
         $result = BookingRating::updateOrCreate(['id' => $request->id], $rating_data);
 
-        $message = __('messages.update_form', ['form' => __('messages.rating')]);
-        if ($result->wasRecentlyCreated) {
-            $message = __('messages.save_form', ['form' => __('messages.rating')]);
-        }
+        $message = __('messages.update_form',[ 'form' => __('messages.rating') ] );
+		if($result->wasRecentlyCreated){
+			$message = __('messages.save_form',[ 'form' => __('messages.rating') ] );
+		}
 
         return comman_message_response($message);
     }
@@ -289,9 +289,9 @@ class BookingController extends Controller
     {
         $user = \Auth::user();
 
-        $book_rating = BookingRating::where('id', $request->id)->where('customer_id', $user->id)->delete();
+        $book_rating = BookingRating::where('id',$request->id)->where('customer_id',$user->id)->delete();
 
-        $message = __('messages.delete_form', ['form' => __('messages.rating')]);
+        $message = __('messages.delete_form',[ 'form' => __('messages.rating') ] );
 
         return comman_message_response($message);
     }
@@ -304,127 +304,128 @@ class BookingController extends Controller
 
     public function bookingUpdate(Request $request)
     {
-        $setting = Setting::getValueByKey('site-setup', 'site-setup');
+        $setting = Setting::getValueByKey('site-setup','site-setup');
         $digitafter_decimal_point = $setting ? $setting->digitafter_decimal_point : "2";
         $data = $request->all();
 
         $id = $request->id;
-        $data['start_at'] = isset($request->start_at) ? date('Y-m-d H:i:s', strtotime($request->start_at)) : null;
-        $data['end_at'] = isset($request->end_at) ? date('Y-m-d H:i:s', strtotime($request->end_at)) : null;
+        $data['start_at'] = isset($request->start_at) ? date('Y-m-d H:i:s',strtotime($request->start_at)) : null;
+        $data['end_at'] = isset($request->end_at) ? date('Y-m-d H:i:s',strtotime($request->end_at)) : null;
         $data['cancellation_charge'] = isset($request->cancellation_charge) ? $request->cancellation_charge : 0;
         $data['cancellation_charge_amount'] = isset($request->cancellation_charge_amount) ? $request->cancellation_charge_amount : 0;
 
         $bookingdata = Booking::find($id);
-        $paymentdata = Payment::where('booking_id', $id)->first();
+        $paymentdata = Payment::where('booking_id',$id)->first();
         $user_wallet = Wallet::where('user_id', $bookingdata->customer_id)->first();
         $wallet_amount = $user_wallet ? $user_wallet->amount : 0;
-        if ($request->type == 'service_addon') {
-            if ($request->has('service_addon') && $request->service_addon != null) {
-                foreach ($request->service_addon as $serviceaddon) {
-                    $get_addon = BookingServiceAddonMapping::where('id', $serviceaddon)->first();
+        if($request->type == 'service_addon'){
+            if($request->has('service_addon') && $request->service_addon != null ){
+                foreach($request->service_addon as $serviceaddon){
+                    $get_addon = BookingServiceAddonMapping::where('id',$serviceaddon)->first();
                     $get_addon->status = 1;
                     $get_addon->update();
                 }
-                $message = __('messages.update_form', ['form' => __('messages.booking')]);
+                $message = __('messages.update_form',[ 'form' => __('messages.booking') ] );
 
-                if ($request->is('api/*')) {
+                if($request->is('api/*')) {
                     return comman_message_response($message);
                 }
             }
         }
-        if ($request->has('service_addon') && $request->service_addon != null) {
-            foreach ($request->service_addon as $serviceaddon) {
-                $get_addon = BookingServiceAddonMapping::where('id', $serviceaddon)->first();
+        if($request->has('service_addon') && $request->service_addon != null ){
+            foreach($request->service_addon as $serviceaddon){
+                $get_addon = BookingServiceAddonMapping::where('id',$serviceaddon)->first();
                 $get_addon->status = 1;
                 $get_addon->update();
             }
         }
-        if ($data['status'] === 'hold') {
-            if ($bookingdata->start_at == null && $bookingdata->end_at == null) {
+        if($data['status'] === 'hold'){
+            if($bookingdata->start_at == null && $bookingdata->end_at == null){
                 $duration_diff = $data['duration_diff'];
                 $data['duration_diff'] = $duration_diff;
-            } else {
-                if ($bookingdata->status == $data['status']) {
+            }else{
+                if($bookingdata->status == $data['status']){
                     $booking_start_date = $bookingdata->start_at;
                     $request_start_date = $data['start_at'];
-                    if ($request_start_date > $booking_start_date) {
-                        $msg = __('messages.already_in_status', ['status' => $data['status']]);
+                    if($request_start_date > $booking_start_date){
+                        $msg = __('messages.already_in_status',[ 'status' => $data['status'] ] );
                         return comman_message_response($msg);
                     }
-                } else {
+                }else{
                     $duration_diff = $bookingdata->duration_diff;
-                    if ($bookingdata->start_at != null && $bookingdata->end_at != null) {
+                    if($bookingdata->start_at != null && $bookingdata->end_at != null){
                         $new_diff = $data['duration_diff'];
-                    } else {
+                    }else{
                         $new_diff = $data['duration_diff'];
                     }
                     $data['duration_diff'] = $duration_diff + $new_diff;
                     $bookingdata['duration_diff'] = $data['duration_diff'];
-                    $data['final_total_service_price'] = round($bookingdata->getServiceTotalPrice(), $digitafter_decimal_point);
-                    $data['final_discount_amount'] = round($bookingdata->getDiscountValue(), $digitafter_decimal_point);
-                    $data['final_coupon_discount_amount'] = round($bookingdata->getCouponDiscountValue(), $digitafter_decimal_point);
+                    $data['final_total_service_price'] = round($bookingdata->getServiceTotalPrice(),$digitafter_decimal_point);
+                    $data['final_discount_amount'] = round($bookingdata->getDiscountValue(),$digitafter_decimal_point);
+                    $data['final_coupon_discount_amount'] = round($bookingdata->getCouponDiscountValue(),$digitafter_decimal_point);
                     $subtotal = $bookingdata->getSubTotalValue() + $bookingdata->getServiceAddonValue();;
                     $data['final_sub_total'] = $subtotal;
-                    $tax = round($bookingdata->getTaxesValue(), $digitafter_decimal_point);
+                    $tax = round($bookingdata->getTaxesValue(),$digitafter_decimal_point);
                     $data['final_total_tax'] = $tax;
-                    // without include extrachage tax caculation
+                        // without include extrachage tax caculation
                     $totalamount =   $subtotal + $tax;;
-                    $data['total_amount'] = round($totalamount, $digitafter_decimal_point);
+                    $data['total_amount'] =round($totalamount,$digitafter_decimal_point);
                 }
             }
         }
-        if ($data['status'] === 'pending_approval') {
+        if($data['status'] === 'pending_approval'){
             $duration_diff = $bookingdata->duration_diff;
             $new_diff = $data['duration_diff'];
 
             $data['duration_diff'] = $duration_diff + $new_diff;
             $bookingdata['duration_diff'] = $data['duration_diff'];
-            $data['final_total_service_price'] = round($bookingdata->getServiceTotalPrice(), $digitafter_decimal_point);
-            $data['final_discount_amount'] = round($bookingdata->getDiscountValue(), $digitafter_decimal_point);
-            $data['final_coupon_discount_amount'] = round($bookingdata->getCouponDiscountValue(), $digitafter_decimal_point);
+            $data['final_total_service_price'] = round($bookingdata->getServiceTotalPrice(),$digitafter_decimal_point);
+            $data['final_discount_amount'] = round($bookingdata->getDiscountValue(),$digitafter_decimal_point);
+            $data['final_coupon_discount_amount'] = round($bookingdata->getCouponDiscountValue(),$digitafter_decimal_point);
             $subtotal = $bookingdata->getSubTotalValue() + $bookingdata->getServiceAddonValue();
             $data['final_sub_total'] = $subtotal;
-            $tax = round($bookingdata->getTaxesValue(), $digitafter_decimal_point);
+            $tax = round($bookingdata->getTaxesValue(),$digitafter_decimal_point);
             $data['final_total_tax'] = $tax;
-            // without include extrachage tax caculation
+                // without include extrachage tax caculation
             $totalamount =   $subtotal + $tax;;
-            $data['total_amount'] = round($totalamount, $digitafter_decimal_point);
+            $data['total_amount'] =round($totalamount,$digitafter_decimal_point);
+
         }
-        if ($bookingdata->status != $data['status']) {
+        if($bookingdata->status != $data['status']) {
             $activity_type = 'update_booking_status';
         }
-        if ($data['status'] == 'cancelled') {
+        if($data['status'] == 'cancelled'){
             $activity_type = 'cancel_booking';
         }
 
-        if ($data['status'] == 'rejected') {
-            if ($bookingdata->handymanAdded()->count() > 0) {
+        if($data['status'] == 'rejected'){
+            if($bookingdata->handymanAdded()->count() > 0){
                 $assigned_handyman_ids = $bookingdata->handymanAdded()->pluck('handyman_id')->toArray();
                 $bookingdata->handymanAdded()->delete();
                 $data['status'] = 'accept';
             }
         }
-        if ($data['status'] == 'pending') {
-            if ($bookingdata->handymanAdded()->count() > 0) {
+        if($data['status'] == 'pending'){
+            if($bookingdata->handymanAdded()->count() > 0){
                 $bookingdata->handymanAdded()->delete();
                 $data['status'] = 'accept';
             }
         }
 
-        if (($data['status'] == 'rejected' || $data['status'] == 'cancelled') && $data['payment_status'] == 'advanced_paid') {
+        if(($data['status'] == 'rejected' || $data['status'] == 'cancelled') && $data['payment_status'] =='advanced_paid'){
             $advance_paid_amount = $bookingdata->advance_paid_amount;
             $cancellation_charges = $data['cancellation_charge_amount'] ?? 0;
 
 
-            if ($cancellation_charges > 0) {
+            if($cancellation_charges > 0 ){
                 $user_wallet->amount = ($wallet_amount + $advance_paid_amount) - $cancellation_charges;
                 $cancellation_charge = $advance_paid_amount > $cancellation_charges ? $advance_paid_amount - $cancellation_charges : $cancellation_charges - $advance_paid_amount;
-            } else {
+            }else{
                 $user_wallet->amount = $wallet_amount + $advance_paid_amount;
             }
 
             $user_wallet->update();
-            if ($advance_paid_amount > $cancellation_charges) {
+            if($advance_paid_amount > $cancellation_charges){
                 $paymentData = Payment::where('booking_id', $bookingdata->id)->first();
                 $paymentData->payment_status = 'Advanced Refund';
                 $paymentData->update();
@@ -432,44 +433,47 @@ class BookingController extends Controller
                     'activity_type' => 'wallet_refund',
                     'payment_status' => 'Advance Payment',
                     'wallet' => $user_wallet,
-                    'booking_id' => $id,
-                    'refund_amount' => $advance_paid_amount,
+                    'booking_id'=> $id,
+                    'refund_amount'=> $advance_paid_amount,
                 ];
                 $this->sendNotification($activity_data);
             }
             $activity_data = [
                 'activity_type' => 'cancellation_charges',
                 'wallet' => $user_wallet,
-                'booking_id' => $id,
-                'paid_amount' => $cancellation_charge ?? 0,
+                'booking_id'=> $id,
+                'paid_amount'=> $cancellation_charge ?? 0,
             ];
             $this->sendNotification($activity_data);
+            
+
         }
         $data['reason'] = isset($data['reason']) ? $data['reason'] : null;
 
-        if ($data['status'] == 'cancelled' && $data['cancellation_charge_amount'] > 0 && $data['payment_status'] !== 'advanced_paid') {
+        if($data['status'] == 'cancelled' && $data['cancellation_charge_amount'] > 0 && $data['payment_status'] !=='advanced_paid'){
             $cancellation_charges = $data['cancellation_charge_amount'];
             $user_wallet->amount = $wallet_amount - $cancellation_charges;
             $user_wallet->update();
             $activity_data = [
                 'activity_type' => 'cancellation_charges',
                 'wallet' => $user_wallet,
-                'booking_id' => $id,
-                'paid_amount' => $cancellation_charges,
+                'booking_id'=> $id,
+                'paid_amount'=> $cancellation_charges,
             ];
             $this->sendNotification($activity_data);
         }
         $old_status = $bookingdata->status;
-        if (!empty($request->extra_charges)) {
-            if ($bookingdata->bookingExtraCharge()->count() > 0) {
+        if(!empty($request->extra_charges)){
+            if($bookingdata->bookingExtraCharge()->count() > 0)
+            {
                 $bookingdata->bookingExtraCharge()->delete();
             }
-            foreach ($request->extra_charges as $extra) {
+            foreach($request->extra_charges as $extra) {
                 $extra_charge = [
                     'title'   => $extra['title'],
                     'price'   => $extra['price'],
                     'qty'   => $extra['qty'],
-                    'booking_id'   => $bookingdata->id,
+                    'booking_id'   =>$bookingdata->id,
                 ];
                 $bookingdata->bookingExtraCharge()->insert($extra_charge);
             }
@@ -478,9 +482,9 @@ class BookingController extends Controller
             // without include extrachage tax caculation
             $data['final_sub_total'] = $subtotal;
             $tax = $bookingdata->getTaxesValue();
-            $data['final_total_tax'] = round($tax, $digitafter_decimal_point);
+            $data['final_total_tax'] = round($tax,$digitafter_decimal_point);
             $totalamount =   $subtotal + $tax;
-            $data['total_amount'] = round($totalamount, $digitafter_decimal_point);
+            $data['total_amount'] =round($totalamount,$digitafter_decimal_point);
 
             // with include extracharge tax caculation
             // $totalamount =   $subtotal + $bookingdata->getExtraChargeValue() + $tax;
@@ -490,11 +494,11 @@ class BookingController extends Controller
 
 
         $bookingdata->update($data);
-        if ($bookingdata && $bookingdata->status === 'completed') {
+        if($bookingdata && $bookingdata->status === 'completed'){
             $this->addBookingCommission($bookingdata);
         }
 
-        if ($old_status != $data['status']) {
+        if($old_status != $data['status'] ){
             $bookingdata->old_status = $old_status;
             $activity_data = [
                 'activity_type' => $activity_type,
@@ -502,16 +506,17 @@ class BookingController extends Controller
                 'booking' => $bookingdata,
             ];
             $this->sendNotification($activity_data);
+
         }
 
-        if ($bookingdata->payment_id != null) {
+        if($bookingdata->payment_id != null){
             $payment_status = isset($data['payment_status']) ? $data['payment_status'] : 'pending';
             $paymentdata->update(['payment_status' => $payment_status]);
         }
 
-        if ($data['status'] == 'completed' && $data['payment_status'] == 'pending_by_admin') {
-            $handyman = BookingHandymanMapping::where('booking_id', $bookingdata->id)->first();
-            $user = User::where('id', $handyman->handyman_id)->first();
+        if($data['status'] == 'completed' && $data['payment_status'] == 'pending_by_admin'){
+            $handyman = BookingHandymanMapping::where('booking_id',$bookingdata->id)->first();
+            $user = User::where('id',$handyman->handyman_id)->first();
             $payment_history = [
                 'payment_id' => $paymentdata->id,
                 'booking_id' => $paymentdata->booking_id,
@@ -520,34 +525,31 @@ class BookingController extends Controller
                 'receiver_id' => $handyman->handyman_id,
                 'total_amount' => $paymentdata->total_amount,
                 'datetime' => date('Y-m-d H:i:s'),
-                'text' =>  __('messages.payment_transfer', [
-                    'from' => get_user_name($bookingdata->customer_id),
-                    'to' => get_user_name($handyman->handyman_id),
-                    'amount' => getPriceFormat((float)$paymentdata->total_amount)
-                ]),
+                'text' =>  __('messages.payment_transfer',['from' => get_user_name($bookingdata->customer_id),'to' => get_user_name($handyman->handyman_id),
+                'amount' => getPriceFormat((float)$paymentdata->total_amount) ]),
             ];
-            if ($user->user_type == 'provider') {
+            if($user->user_type == 'provider'){
                 $payment_history['status'] = config('constant.PAYMENT_HISTORY_STATUS.APPROVED_PROVIDER');
-                $payment_history['action'] = config('constant.PAYMENT_HISTORY_ACTION.PROVIDER_APPROVED_CASH');
-            } else {
+                $payment_history['action']= config('constant.PAYMENT_HISTORY_ACTION.PROVIDER_APPROVED_CASH');
+            }else{
                 $payment_history['status'] = config('constant.PAYMENT_HISTORY_STATUS.APPRVOED_HANDYMAN');
                 $payment_history['action'] = config('constant.PAYMENT_HISTORY_ACTION.HANDYMAN_APPROVED_CASH');
             }
-            if (!empty($paymentdata->txn_id)) {
-                $payment_history['txn_id'] = $paymentdata->txn_id;
+            if(!empty($paymentdata->txn_id)){
+                $payment_history['txn_id'] =$paymentdata->txn_id;
             }
-            if (!empty($paymentdata->other_transaction_detail)) {
-                $payment_history['other_transaction_detail'] = $paymentdata->other_transaction_detail;
+            if(!empty($paymentdata->other_transaction_detail)){
+                $payment_history['other_transaction_detail'] =$paymentdata->other_transaction_detail;
             }
-            $res =  PaymentHistory::create($payment_history);
-            $res->parent_id = $res->id;
-            $res->update();
+           $res =  PaymentHistory::create($payment_history);
+           $res->parent_id = $res->id;
+           $res->update();
         }
-        $message = __('messages.update_form', ['form' => __('messages.booking')]);
+        $message = __('messages.update_form',[ 'form' => __('messages.booking') ] );
 
-        if ($request->is('api/*')) {
+        if($request->is('api/*')) {
             return comman_message_response($message);
-        }
+		}
     }
 
     public function saveHandymanRating(Request $request)
@@ -557,25 +559,24 @@ class BookingController extends Controller
         $rating_data['customer_id'] = $user->id;
         $result = HandymanRating::updateOrCreate(['id' => $request->id], $rating_data);
 
-        $message = __('messages.update_form', ['form' => __('messages.rating')]);
-        if ($result->wasRecentlyCreated) {
-            $message = __('messages.save_form', ['form' => __('messages.rating')]);
-        }
+        $message = __('messages.update_form',[ 'form' => __('messages.rating') ] );
+		if($result->wasRecentlyCreated){
+			$message = __('messages.save_form',[ 'form' => __('messages.rating') ] );
+		}
 
         return comman_message_response($message);
     }
 
-    public function getHandymanRatingList(Request $request)
-    {
+    public function getHandymanRatingList(Request $request){
 
-        $handymanratings = HandymanRating::orderBy('id', 'desc');
+        $handymanratings = HandymanRating::orderBy('id','desc');
 
         $per_page = config('constant.PER_PAGE_LIMIT');
-        if ($request->has('per_page') && !empty($request->per_page)) {
-            if (is_numeric($request->per_page)) {
+        if($request->has('per_page') && !empty($request->per_page)){
+            if(is_numeric($request->per_page)){
                 $per_page = $request->per_page;
             }
-            if ($request->per_page === 'all') {
+            if($request->per_page === 'all'){
                 $per_page = $handymanratings->count();
             }
         }
@@ -583,7 +584,7 @@ class BookingController extends Controller
         $handymanratings = $handymanratings->paginate($per_page);
         $data = HandymanRatingResource::collection($handymanratings);
 
-        return response([
+        return response ([
             'pagination' => [
                 'total_ratings' => $data->total(),
                 'per_page' => $data->perPage(5),
@@ -602,62 +603,62 @@ class BookingController extends Controller
     {
         $user = auth()->user();
 
-        $book_rating = HandymanRating::where('id', $request->id)->where('customer_id', $user->id)->delete();
+        $book_rating = HandymanRating::where('id',$request->id)->where('customer_id',$user->id)->delete();
 
-        $message = __('messages.delete_form', ['form' => __('messages.rating')]);
+        $message = __('messages.delete_form',[ 'form' => __('messages.rating') ] );
 
         return comman_message_response($message);
     }
-    public function bookingRatingByCustomer(Request $request)
-    {
+    public function bookingRatingByCustomer(Request $request){
         $customer_review = null;
-        if ($request->customer_id != null) {
-            $customer_review = BookingRating::where('customer_id', $request->customer_id)->where('service_id', $request->service_id)->where('booking_id', $request->booking_id)->first();
-            if (!empty($customer_review)) {
+        if($request->customer_id != null){
+            $customer_review = BookingRating::where('customer_id',$request->customer_id)->where('service_id',$request->service_id)->where('booking_id',$request->booking_id)->first();
+            if (!empty($customer_review))
+            {
                 $customer_review = new BookingRatingResource($customer_review);
             }
         }
         return comman_custom_response($customer_review);
+
     }
-    public function uploadServiceProof(Request $request)
-    {
+    public function uploadServiceProof(Request $request){
         $booking = $request->all();
         $result = ServiceProof::create($booking);
-        if ($request->has('attachment_count')) {
-            for ($i = 0; $i < $request->attachment_count; $i++) {
-                $attachment = "booking_attachment_" . $i;
-                if ($request->$attachment != null) {
+        if($request->has('attachment_count')) {
+            for($i = 0 ; $i < $request->attachment_count ; $i++){
+                $attachment = "booking_attachment_".$i;
+                if($request->$attachment != null){
                     $file[] = $request->$attachment;
                 }
             }
-            storeMediaFile($result, $file, 'booking_attachment');
+            storeMediaFile($result,$file, 'booking_attachment');
         }
-        if ($result->wasRecentlyCreated) {
-            $message = __('messages.save_form', ['form' => __('messages.attachments')]);
-        }
+		if($result->wasRecentlyCreated){
+			$message = __('messages.save_form',[ 'form' => __('messages.attachments') ] );
+		}
         return comman_message_response($message);
     }
 
-    public function getUserRatings(Request $request)
-    {
+    public function getUserRatings(Request $request){
         $user = auth()->user();
 
-        if (auth()->user() !== null) {
+        if(auth()->user() !== null){
 
-            if (auth()->user()->hasRole('admin')) {
-                $ratings = BookingRating::orderBy('id', 'desc');
-            } else {
+            if(auth()->user()->hasRole('admin')){
+                $ratings = BookingRating::orderBy('id','desc');
+            }
+            else{
                 $ratings = BookingRating::where('customer_id', $user->id);
             }
         }
 
 
         $per_page = config('constant.PER_PAGE_LIMIT');
-        if ($request->has('per_page') && !empty($request->per_page)) {
-            if (is_numeric($request->per_page)) {
+        if($request->has('per_page') && !empty($request->per_page)){
+            if(is_numeric($request->per_page)){
                 $per_page = $request->per_page;
             }
-            if ($request->per_page === 'all') {
+            if($request->per_page === 'all'){
                 $per_page = $ratings->count();
             }
         }
@@ -665,7 +666,7 @@ class BookingController extends Controller
         $ratings = $ratings->paginate($per_page);
         $data = BookingRatingResource::collection($ratings);
 
-        return response([
+        return response ([
             'pagination' => [
                 'total_ratings' => $data->total(),
                 'per_page' => $data->perPage(5),
@@ -679,33 +680,33 @@ class BookingController extends Controller
             'data' => $data,
         ]);
     }
-    public function getRatingsList(Request $request)
-    {
+    public function getRatingsList(Request $request){
         $type = $request->type;
 
         if ($type === 'user_service_rating') {
             $user = auth()->user();
 
-            if (auth()->user() !== null) {
+            if(auth()->user() !== null){
 
-                if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('demo_admin')) {
-                    $ratings = BookingRating::orderBy('id', 'desc');
-                } else {
-                    $ratings = BookingRating::where('customer_id', $user->id)->orderBy('id', 'desc');
+                if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('demo_admin')){
+                    $ratings = BookingRating::orderBy('id','desc');
+                }
+                else{
+                    $ratings = BookingRating::where('customer_id', $user->id)->orderBy('id','desc');
                 }
             }
-        } elseif ($type === 'handyman_rating') {
-            $ratings = HandymanRating::orderBy('id', 'desc');
-        } else {
-            return response()->json(['message' => 'Invalid type parameter'], 400);
+        }elseif ($type === 'handyman_rating') {
+                $ratings = HandymanRating::orderBy('id','desc');
+        }else {
+                return response()->json(['message' => 'Invalid type parameter'], 400);
         }
 
         $per_page = config('constant.PER_PAGE_LIMIT');
-        if ($request->has('per_page') && !empty($request->per_page)) {
-            if (is_numeric($request->per_page)) {
+        if($request->has('per_page') && !empty($request->per_page)){
+            if(is_numeric($request->per_page)){
                 $per_page = $request->per_page;
             }
-            if ($request->per_page === 'all') {
+            if($request->per_page === 'all'){
                 $per_page = $ratings->count();
             }
         }
@@ -713,7 +714,7 @@ class BookingController extends Controller
         $ratings = $ratings->paginate($per_page);
         $data = HandymanRatingResource::collection($ratings);
 
-        return response([
+        return response ([
             'pagination' => [
                 'total_ratings' => $data->total(),
                 'per_page' => $data->perPage(5),
@@ -727,40 +728,38 @@ class BookingController extends Controller
             'data' => $data,
         ]);
     }
-    public function deleteRatingsList($id, Request $request)
-    {
+    public function deleteRatingsList($id,Request $request){
         $type = $request->type;
 
-        if (demoUserPermission()) {
+        if(demoUserPermission()){
             $message = __('messages.demo.permission.denied');
             return comman_message_response($message);
         }
         if ($type === 'user_service_rating') {
             $bookingrating = BookingRating::find($id);
-            $msg = __('messages.msg_fail_to_delete', ['name' => __('messages.user_ratings')]);
+            $msg= __('messages.msg_fail_to_delete',['name' => __('messages.user_ratings')] );
 
-            if ($bookingrating != '') {
+            if($bookingrating != ''){
                 $bookingrating->delete();
-                $msg = __('messages.msg_deleted', ['name' => __('messages.user_ratings')]);
+                $msg= __('messages.msg_deleted',['name' => __('messages.user_ratings')] );
             }
-        } elseif ($type === 'handyman_rating') {
+        }elseif ($type === 'handyman_rating') {
             $handymanrating = HandymanRating::find($id);
-            $msg = __('messages.msg_fail_to_delete', ['name' => __('messages.handyman_ratings')]);
+            $msg= __('messages.msg_fail_to_delete',['name' => __('messages.handyman_ratings')] );
 
-            if ($handymanrating != '') {
+            if($handymanrating != ''){
                 $handymanrating->delete();
-                $msg = __('messages.msg_deleted', ['name' => __('messages.handyman_ratings')]);
+                $msg= __('messages.msg_deleted',['name' => __('messages.handyman_ratings')] );
             }
-        } else {
+        }else {
             $msg = "Invalid type parameter";
-            return comman_custom_response(['message' => $msg, 'status' => false]);
+            return comman_custom_response(['message'=> $msg, 'status' => false]);
         }
 
-        return comman_custom_response(['message' => $msg, 'status' => true]);
+        return comman_custom_response(['message'=> $msg, 'status' => true]);
     }
 
-    public function updateLocation(Request $request)
-    {
+    public function updateLocation(Request $request) {
         $bookingID = $request->input('booking_id');
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
@@ -773,7 +772,7 @@ class BookingController extends Controller
 
         ];
         $locations = LiveLocation::updateOrCreate(['booking_id' => $data['booking_id']], $data);
-        $time_zone = getTimeZone();
+        $time_zone=getTimeZone();
 
         $datetime_in_timezone = Carbon::parse($locations->updated_at)->timezone($time_zone);
 
@@ -783,8 +782,7 @@ class BookingController extends Controller
         return response()->json(['data' => $data, 'message' => $message], 200);
     }
 
-    public function getLocation(Request $request)
-    {
+    public function getLocation(Request $request){
         $bookingID = $request->input('booking_id');
 
         $latestLiveLocation = Cache::remember('latest_live_location_' . $bookingID, 30, function () use ($bookingID) {
@@ -796,11 +794,11 @@ class BookingController extends Controller
             return response()->json(['error' => 'Live location not found for this booking ID'], 404);
         }
 
-        $time_zone = getTimeZone();
+        $time_zone=getTimeZone();
 
         $datetime_in_timezone = Carbon::parse($latestLiveLocation->updated_at)->timezone($time_zone);
 
-        $datetime = $datetime_in_timezone->toDateTimeString();
+        $datetime= $datetime_in_timezone->toDateTimeString();
         $data = [
             'latitude' => $latestLiveLocation->latitude,
             'longitude' => $latestLiveLocation->longitude,
@@ -809,6 +807,7 @@ class BookingController extends Controller
 
         $message = __('messages.location_update');
         return response()->json(['data' => $data, 'message' => $message], 200);
+
     }
 
     // public function getEarningsBreakdown(Request $request)

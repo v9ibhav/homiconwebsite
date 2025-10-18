@@ -136,22 +136,12 @@
                 {{ html()->number('radious',$site->radious)->class('form-control')->placeholder('50')->id('radious')}}
             </div>
         </div>
-    <div class="form-group">
-    <label for="digitafter_decimal_point" class="col-sm-6 form-control-label">{{ __('messages.digitafter_decimal_point') }}</label>
-    <div class="col-sm-12">
-        {{ html()->number('digitafter_decimal_point', $site->digitafter_decimal_point)
-            ->class('form-control')
-            ->placeholder('2')
-            ->id('digitafter_decimal_point')
-            ->attribute('min', 2)
-            ->attribute('max', 6)
-            ->attribute('step', 1)
-            ->required()
-        }}
-        <small id="digitafter_decimal_point_error" class="text-danger d-block mt-1"></small>
-    </div>
-</div>
-
+        <div class="form-group">
+            <label for="" class="col-sm-6 form-control-label">{{ __('messages.digitafter_decimal_point') }}</label>
+            <div class="col-sm-12">
+                {{ html()->number('digitafter_decimal_point', $site->digitafter_decimal_point)->class('form-control')->placeholder('1')->id('digitafter_decimal_point')}}
+            </div>
+        </div>
         <div class="form-group">
             <label for="" class="col-sm-6 form-control-label">{{ __('messages.copyright_text') }}</label>
             <div class="col-sm-12">
@@ -221,114 +211,108 @@
 </div>
 {{ html()->form()->close() }}
 <script>
-    $(document).ready(function () {
 
-        // 🔢 Validate 'digitafter_decimal_point' input: allow only 2–6
-        $('#digitafter_decimal_point').on('input', function () {
-            let val = parseInt(this.value);
-            let errorBox = $('#digitafter_decimal_point_error');
-
-            if (isNaN(val) || val < 2 || val > 6) {
-                errorBox.text('Please enter a value between 2 and 6');
-                this.value = ''; // Clear the input if invalid
-            } else {
-                errorBox.text('');
-            }
-        });
-
-        // 🌍 Load currencies dynamically
+    $(document).ready(function (){
         loadCurrency();
-
-        // 🧠 Initialize Select2
         $('.select2js').select2();
+        $('.default_language').on('change', function (e) {
+            var id= $(this).val();
+            $('.language_option option:disabled').prop('selected',true);
+            $('.language_option option').prop('disabled',false);
 
-        // 🌐 Prevent default language from being selected as option
-        $('.default_language').on('change', function () {
-            var selectedId = $(this).val();
-
-            $('.language_option option:disabled').prop('selected', true);
-            $('.language_option option').prop('disabled', false);
-
-            $('.language_option option').each(function () {
-                var $option = $(this);
-                if (selectedId == $option.val()) {
-                    $option.prop('disabled', true).prop('selected', false);
+            $('.language_option option').each(function(index, val){
+                var $this = $(this);
+                if(id == $this.val()){
+                $this.prop('disabled',true);
+                $this.prop('selected',false);
                 }
             });
-
             $('.language_option').select2("destroy").select2();
         });
+    })
 
-        // 🔒 Ensure English language is always selected in language_option
-        const englishLangId = 'en';
+
+    function loadCurrency() {
+            var currency = "{{ isset($site->default_currency) ? $site->default_currency : '' }}";
+            var currency_route = "{{ route('ajax-list', ['type' => 'currency']) }}";
+            currency_route = currency_route.replace('amp;', '');
+
+            $.ajax({
+                url: currency_route,
+                success: function (result) {
+                    $('#default_currency').select2({
+                        width: '100%',
+                        placeholder: "{{ trans('messages.select_name', ['select' => trans('messages.currency')]) }}",
+                        data: result.results
+                    });
+
+                    if (currency != null) {
+                        $("#default_currency").val(currency).trigger('change');
+                    }
+                }
+            });
+        }
+var android_app_links = $("input[name='android_app_links']").prop('checked');
+
+androidAppLinks(android_app_links);
+
+$('#android_app_links').change(function(){
+    value = $(this).prop('checked');
+    androidAppLinks(value);
+});
+function androidAppLinks(value){
+    if(value == true){
+        $('#android_app').removeClass('d-none');
+        $("#provider_playstore_url").prop("required", true);
+        $("#playstore_url").prop("required", true);
+    }else{
+        $('#android_app').addClass('d-none');
+        $("#provider_playstore_url").prop("required", false);
+        $("#playstore_url").prop("required", false);
+    }
+}
+
+
+var ios_app_links = $("input[name='ios_app_links']").prop('checked');
+
+iosAppLinks(ios_app_links);
+
+$('#ios_app_links').change(function(){
+    value = $(this).prop('checked');
+    iosAppLinks(value);
+});
+function iosAppLinks(value){
+    if(value == true){
+        $('#ios_app').removeClass('d-none');
+        $("#provider_appstore_url").prop("required", true);
+        $("#appstore_url").prop("required", true);
+    }else{
+        $('#ios_app').addClass('d-none');
+        $("#provider_appstore_url").prop("required", false);
+        $("#appstore_url").prop("required", false);
+    }
+}
+
+</script>
+<script>
+    // Initialize the select2 dropdown
+    $(document).ready(function() {
+        // Ensure English (en) cannot be removed
+        const englishLangId = 'en'; // Set the ID for the English language
         const selectElement = $('#language_option');
 
-        selectElement.on('change', function () {
+        // Make sure English is always selected
+        selectElement.on('change', function() {
             let selectedOptions = $(this).val();
 
+            // Check if 'en' is removed from the selection, and add it back if so
             if (!selectedOptions.includes(englishLangId)) {
                 selectedOptions.push(englishLangId);
-                $(this).val(selectedOptions).trigger('change');
+                $(this).val(selectedOptions).trigger('change'); // Update the select2 value
             }
         });
 
+        // Reinitialize select2 after modifying the options
         selectElement.select2();
-
-        // 📱 Android App toggle
-        let androidAppLinks = $("input[name='android_app_links']").prop('checked');
-        androidAppLinksToggle(androidAppLinks);
-
-        $('#android_app_links').change(function () {
-            androidAppLinksToggle($(this).prop('checked'));
-        });
-
-        function androidAppLinksToggle(enabled) {
-            if (enabled) {
-                $('#android_app').removeClass('d-none');
-                $("#provider_playstore_url, #playstore_url").prop("required", true);
-            } else {
-                $('#android_app').addClass('d-none');
-                $("#provider_playstore_url, #playstore_url").prop("required", false);
-            }
-        }
-
-        // 🍎 iOS App toggle
-        let iosAppLinks = $("input[name='ios_app_links']").prop('checked');
-        iosAppLinksToggle(iosAppLinks);
-
-        $('#ios_app_links').change(function () {
-            iosAppLinksToggle($(this).prop('checked'));
-        });
-
-        function iosAppLinksToggle(enabled) {
-            if (enabled) {
-                $('#ios_app').removeClass('d-none');
-                $("#provider_appstore_url, #appstore_url").prop("required", true);
-            } else {
-                $('#ios_app').addClass('d-none');
-                $("#provider_appstore_url, #appstore_url").prop("required", false);
-            }
-        }
     });
-
-    // 📦 AJAX load currency list and set default
-    function loadCurrency() {
-        var currency = "{{ isset($site->default_currency) ? $site->default_currency : '' }}";
-        var currency_route = "{{ route('ajax-list', ['type' => 'currency']) }}".replace('amp;', '');
-
-        $.ajax({
-            url: currency_route,
-            success: function (result) {
-                $('#default_currency').select2({
-                    width: '100%',
-                    placeholder: "{{ trans('messages.select_name', ['select' => trans('messages.currency')]) }}",
-                    data: result.results
-                });
-
-                if (currency) {
-                    $("#default_currency").val(currency).trigger('change');
-                }
-            }
-        });
-    }
 </script>

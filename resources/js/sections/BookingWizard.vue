@@ -13,17 +13,11 @@
                   <div class="content flex-grow-1">
                   <div class="d-sm-flex align-items-center gap-3 justify-content-between">
                     <h4 class="mb-0">{{ service.name }}</h4>
-                   <div class="flex-shrink-0 d-inline-flex align-items-center gap-2 mt-sm-0 mt-2">
-  <span class="text-primary fw-500 d-inline-block position-relative h5">
-    <span v-if="service.price > 0">{{ formatCurrencyVue(service.price) }}</span>
-    <span v-else>Free</span>
-  </span>
-
-  <template v-if="formattedDuration(service.duration)">
-    <span class="font-size-18">/</span>
-    <span class="h5 text-body">{{ formattedDuration(service.duration) }}</span>
-  </template>
-</div>
+                    <div class="flex-shrink-0 d-inline-flex align-items-center gap-2 mt-sm-0 mt-2">
+                      <span class="text-primary fw-500 d-inline-block position-relative h5"><span v-if="service.price>0">{{ formatCurrencyVue(service.price) }}</span><span v-else>Free</span></span>
+                      <span class="font-size-18" v-if="service.duration">/</span>
+                      <span class="h5 text-body" v-if="service.duration">{{ formattedDuration(service.duration) }}</span>
+                    </div>
                   </div>
                   <div class="d-sm-flex gap-2 mt-3">
                     <h6 class="m-0 lh-1">{{ $t('messages.category') }}:</h6>
@@ -312,39 +306,40 @@
                                       </tr>
           
                                       
-                                       <tr v-if="validCoupons.length > 0 && SeletedCouponId == 0 && props.service.package_type == null">
-  <td class="ps-0">
-    <span class="text-capitalize">{{ $t('landingpage.coupon') }}</span>
-  </td>
-  <td class="pe-0">
-    <span class="d-block text-primary text-end cursor-pointer" @click="OpenCouponCardMethod()">
-      {{ $t('messages.apply_coupon') }}
-    </span>
-  </td>
-</tr>
-
-<tr v-if="validCoupons.length > 0 && SeletedCouponId > 0 && selectedCoupon != null && props.service.package_type == null">
-  <td class="ps-0">
-    <span class="text-capitalize cursor-pointer" @click="OpenCouponCardMethod()">
-      {{ $t('landingpage.coupon') }} ({{ selectedCoupon.code }})
-    </span>
-  </td>
-  <td class="pe-0">
-    <span class="d-block text-success text-end">{{ formatCurrencyVue(coupondiscount) }}</span>
-  </td>
-</tr>
-
-<tr v-if="OpenCouponCard == 1">
-  <td>
-   <couponcard
-  @getSelectedCoupon="handleCouponResponse"
-  :coupons="validCoupons"
-  :service_price="service.price"
-  :SeletedCouponId="SeletedCouponId"
-/>
-  </td>
-</tr>
-
+                                        <tr v-if="coupons !=''&& SeletedCouponId==0 && props.service.package_type == null" >
+                                          <td class="ps-0">
+                                            <span class="text-capitalize">{{ $t('landingpage.coupon') }} </span>
+                                          </td>
+                                          <td class="pe-0">
+          
+                                            <span class="d-block text-primary text-end cursor-pointer" @click="OpenCouponCardMethod()"> {{ $t('messages.apply_coupon') }}</span>
+                                          
+                                          </td>
+                                        </tr>
+          
+                                        <tr v-if="coupons !=''&& SeletedCouponId>0 && selectedCoupon !=null && props.service.package_type == null">
+          
+                                          <td class="ps-0">
+                                            <span class="text-capitalize cursor-pointer" @click="OpenCouponCardMethod()">{{ $t('landingpage.coupon') }} ({{selectedCoupon.code}})</span>
+                                          </td>
+                                          <td class="pe-0">
+          
+                                            <span  class="d-block text-success text-end" >{{formatCurrencyVue(coupondiscount)}}</span>
+                                          
+                                          
+                                          </td>
+          
+                                        </tr>
+          
+          
+                                        <tr v-if="OpenCouponCard==1">
+                                          <td>
+          
+                                              <couponcard @getSelectedCoupon="handleCouponResponse" :coupons= coupons :service_price= service.price :SeletedCouponId=SeletedCouponId ></couponcard>
+          
+                                          </td>
+                                        </tr>
+          
                                       <tr v-if="serviceaddon">
                                           <td class="ps-0"><span class="">{{ $t('landingpage.Add-ons') }}</span></td>
                                           <td class="pe-0"><span
@@ -532,22 +527,19 @@ const formatDate = (dateString) => {
   return formatMap[datefrm] || `${year}-${month}-${day}`;
 };
 const formattedDuration = (value) => {
-  if (!value) return '';
+  if (!value)
+    return '';
 
   const durationParts = value.split(':');
   const hours = parseInt(durationParts[0]);
   const minutes = parseInt(durationParts[1]);
 
-  // Hide if duration is exactly 0 hrs and 0 min
-  if (hours === 0 && minutes === 0) return '';
-
   if (hours > 0) {
-    return `(${hours} hrs${minutes > 0 ? ' ' + minutes + ' min' : ''})`;
+    return `(${hours} hrs ${minutes > 0 ? minutes + ' min' : ''})`;
   } else {
     return `(${minutes} min)`;
   }
 };
-
 
 const DateFormate = ref(new Date());
 
@@ -733,36 +725,26 @@ const formatCurrencyVue = (value) => {
 
 
 const handleCouponResponse = (couponId) => {
-  if (couponId != null) {
-    const foundCoupon = props.coupons.find(coupon => coupon.id == couponId);
 
-    if (foundCoupon) {
-      let discountAmount = foundCoupon.discount;
+if (couponId != null) {
 
-      if (foundCoupon.discount_type === 'percent') {
-        discountAmount = (foundCoupon.discount / 100) * props.service.price;
-      }
+    OpenCouponCard.value = 0
+    SeletedCouponId.value=couponId
 
-      // Reject coupon if discount exceeds price
-      if (discountAmount > props.service.price) {
-        alert("This coupon cannot be applied because the discount exceeds the service price.");
-        return;
-      }
+    if(SeletedCouponId.value>0){
 
-      selectedCoupon.value = foundCoupon;
-      SeletedCouponId.value = couponId;
-    } else {
-      selectedCoupon.value = null;
-      SeletedCouponId.value = 0;
+       selectedCoupon.value = props.coupons.find(coupon => coupon.id == couponId);
+    
+     }else{
+
+        selectedCoupon.value= null 
     }
 
-    OpenCouponCard.value = 0;
-  } else {
-    SeletedCouponId.value = 0;
-    selectedCoupon.value = null;
-  }
-};
+} else {
+  coupon.value = 0
+}
 
+}
 
 const defaultData = () => {
   errorMessages.value = {}
@@ -986,16 +968,5 @@ const formSubmit = handleSubmit(async(values) => {
 
 })    
 
-const validCoupons = computed(() => {
-  return props.coupons.filter(coupon => {
-    let discountAmount = coupon.discount;
-
-    if (coupon.discount_type === 'percent') {
-      discountAmount = (coupon.discount / 100) * props.service.price;
-    }
-
-    return discountAmount <= props.service.price;
-  });
-});
 
 </script>

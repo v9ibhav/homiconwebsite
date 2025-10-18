@@ -12,6 +12,8 @@ class AuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -20,48 +22,50 @@ class AuthenticatedSessionController extends Controller
 
     /**
      * Handle an incoming authentication request.
+     *
+     * @param  \App\Http\Requests\Auth\LoginRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
+    
     public function store(LoginRequest $request)
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
+        $user = \Auth::user();
 
-        if ($user->status == 0) {
+        if($user->status == 0) {
             Auth::logout();
-            return redirect()->back()->withErrors(['message' => __('auth.account_inactive')]);
+            return redirect()->back()->withErrors(['message' =>  __('auth.account_inactive')]);
         }
-
-        // User login through frontend
-        if ($request->login == 'user_login' && $user->user_type === 'user') {
-            return redirect(RouteServiceProvider::FRONTEND)
-                ->with('success', __('auth.login_success'));
+        if($request->login == 'user_login' && $user->user_type === 'user'){
+            return redirect(RouteServiceProvider::FRONTEND);
         } 
-        // User is trying to login from the wrong portal
-        elseif ($request->login == 'user_login' && $user->user_type !== 'user') {
+        elseif($request->login == 'user_login' && $user->user_type !== 'user') {
             Auth::logout();
-            return redirect()->back()->withErrors(['message' => __('auth.invalid_user_type')]);
+            return redirect()->back()->withErrors(['message' => 'You are not allowed to log in from here.']);
         }
-
-        // Admin or other login
-        return redirect(RouteServiceProvider::HOME)
-            ->with('success', __('auth.login_success'));
+        else{
+            return redirect(RouteServiceProvider::HOME);
+        }
     }
 
     /**
-     * Logout the user.
+     * Destroy an authenticated session.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Request $request)
     {
-     
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
 
-        return redirect(RouteServiceProvider::FRONTEND)
-            ->with('success', __('auth.logout_success'));
+        return redirect(RouteServiceProvider::FRONTEND);
+        // return redirect('/');
     }
 }

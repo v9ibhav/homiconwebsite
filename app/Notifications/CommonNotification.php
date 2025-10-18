@@ -124,7 +124,7 @@ class CommonNotification extends Notification implements ShouldQueue
 
                             $notificationData['type'] = $templateData->whatsapp_subject ?? 'None';
                             $notificationData['message'] = $templateDetail ?? __('messages.default_notification_body');
-
+                            
                             $this->sendWhatsAppMessage($notificationData);
                             break;
                     }
@@ -142,64 +142,31 @@ class CommonNotification extends Notification implements ShouldQueue
      * @param  mixed  $notifiable
      * @return MailMailableSend
      */
-  public function toMail($notifiable)
-{
-    $userType = strtolower($this->data['user_type']);
-    $email = $notifiable->email ?? ($notifiable->routes['mail'] ?? null);
+    public function toMail($notifiable)
+    {
+        $userType = $this->data['user_type'];
+        $email = isset($notifiable->email) ? $notifiable->email : $notifiable->routes['mail'];
 
-    if (!$email) {
-        \Log::error("No email found for notifiable.");
-        return null;
+        $mail = MailTemplates::where('type', $this->type)
+            ->with('defaultMailTemplateMap')
+            ->first();
+
+        $notify_data = MailTemplateContentMapping::where('template_id', $mail->id)->get();
+        $templateData = $notify_data->where('user_type', $userType)->first();
+        $this->subject = $templateData->subject;
+        $this->data['type'] = $templateData->subject ?? null;
+        $this->data['message'] = $templateData->template_detail ?? __('messages.default_notification_body');
+        return (new MailMailableSend($this->notification, $this->data, $this->type))->to($email)
+            ->bcc(isset($this->notification->bcc) ? json_decode($this->notification->bcc) : [])
+            ->cc(isset($this->notification->cc) ? json_decode($this->notification->cc) : [])
+            ->subject($this->subject);
     }
-
-    // Step 1: Get the main mail template (just for type matching)
-    $mail = MailTemplates::where('type', $this->type)->first();
-    if (!$mail) {
-        \Log::error("Mail template not found for type: {$this->type}");
-        return null;
-    }
-
-    // Step 2: Get subject from mail_template_content_mappings
-    $templateData = MailTemplateContentMapping::where('template_id', $mail->id)
-        ->where('user_type', $userType)
-        ->first();
-
-    if (!$templateData) {
-        \Log::error("Subject not found in mail_template_content_mappings for template_id: {$mail->id}, user_type: {$userType}");
-        return null;
-    }
-
-    $subject = $templateData->subject;
-
-    // Step 3: Use subject + user_type to find mail body from notification_template_content_mapping
-    $customTemplate = NotificationTemplateContentMapping::where('subject', $subject)
-        ->where('user_type', $userType)
-        ->first();
-
-    $mailBody = $customTemplate->mail_template_detail ?? '**Body not found for subject & user_type**';
-
-    // Optional logging
-    \Log::info("Mail subject: {$subject}, user_type: {$userType}");
-    \Log::info("Mail body fetched:", ['body' => $mailBody]);
-
-    // Assign data
-    $this->subject = $subject;
-    $this->data['type'] = $subject;
-    $this->data['message'] = $mailBody;
-
-    return (new MailMailableSend($this->notification, $this->data, $this->type))
-        ->to($email)
-        ->bcc(json_decode($this->notification->bcc ?? '[]'))
-        ->cc(json_decode($this->notification->cc ?? '[]'))
-        ->subject($this->subject);
-}
-
 
 
     public function toFcm($notifiable)
     {
         $msg = strip_tags($this->data['message']);
-        if (!isset($msg) && $msg == '') {
+        if (! isset($msg) && $msg == '') {
             $msg = __('message.notification_body');
         }
         $type = 'booking';
@@ -207,29 +174,29 @@ class CommonNotification extends Notification implements ShouldQueue
             $type = $this->data['type'];
         }
 
-        $heading = $this->data['type'] ?? '';
-
+        $heading =  $this->data['type'] ?? '';
+       
         $additionalData = json_encode($this->data);
         return fcm([
             "message" => [
-                "topic" => 'user_' . $notifiable->id,
+                "topic" => 'user_'.$notifiable->id,
                 "notification" => [
                     "title" => $heading,
                     "body" => $msg,
                 ],
-                "data" => [
-                    "sound" => "default",
+                "data" => [                    
+                    "sound"=>"default", 
                     "title" => $heading,
                     "body" => $msg,
                     "story_id" => "story_12345",
                     "type" => $type,
                     "additional_data" => $additionalData,
-                    "click_action" => "FLUTTER_NOTIFICATION_CLICK",
+                    "click_action"=> "FLUTTER_NOTIFICATION_CLICK",
                 ],
                 "android" => [
                     "priority" => "high",
-                    "notification" => [
-                        "click_action" => "FLUTTER_NOTIFICATION_CLICK",
+                    "notification" => [                        
+                        "click_action"=> "FLUTTER_NOTIFICATION_CLICK",
                     ],
                 ],
                 "apns" => [
@@ -261,8 +228,7 @@ class CommonNotification extends Notification implements ShouldQueue
     //     return $this->data;
     // }
 
-    function sendSmsMessage($data)
-    {
+    function sendSmsMessage($data) {
         $settingData = Setting::where('type', 'OTHER_SETTING')->first();
         $settings = json_decode($settingData->value, true);
 
@@ -279,7 +245,7 @@ class CommonNotification extends Notification implements ShouldQueue
         $sid = $settings['twilio_sid_sms'];
         $authToken = $settings['twilio_auth_token_sms'];
         $twilioPhoneNumber = $settings['twilio_phone_number_sms'];
-        $recipientNumber = '+' . $user->contact_number;
+        $recipientNumber = '+'.$user->contact_number;
         $messageBody = strip_tags($data['message']);
 
         $client = new Client($sid, $authToken);
@@ -301,29 +267,28 @@ class CommonNotification extends Notification implements ShouldQueue
         }
     }
 
-    function sendWhatsAppMessage($data)
-    {
+    function sendWhatsAppMessage($data) {
         $settingData = Setting::where('type', 'OTHER_SETTING')->first();
         $settings = json_decode($settingData->value, true);
 
         $user = User::where('id', $data['person_id'])->first();
 
-
+    
         if (empty($settings['twilio_sid_whatsapp']) || empty($settings['twilio_auth_token_whatsapp']) || empty($settings['twilio_whatsapp_number'])) {
-            return false;
+            return false;  
         }
-
+        
         if (empty($user) || empty($user->contact_number) || empty($data['message'])) {
-            return false;
+            return false;  
         }
-
+    
         $sid = $settings['twilio_sid_whatsapp'];
         $authToken = $settings['twilio_auth_token_whatsapp'];
         $twilioWhatsAppNumber = 'whatsapp:' . $settings['twilio_whatsapp_number'];
         $recipientNumber = 'whatsapp:' . $user->contact_number;
         $messageBody = strip_tags($data['message']);
         $client = new Client($sid, $authToken);
-
+    
         try {
             $client->messages->create(
                 $recipientNumber,
@@ -332,9 +297,9 @@ class CommonNotification extends Notification implements ShouldQueue
                     'body' => $messageBody
                 ]
             );
-            return true;
+            return true;  
         } catch (\Exception $e) {
-            return false;
+            return false;  
         }
     }
 

@@ -12,12 +12,12 @@
                         <div class="d-flex justify-content-between align-items-center p-3 flex-wrap gap-3">
                             <h5 class="fw-bold">{{ $pageTitle ?? trans('messages.list') }}</h5>
                             @if ($auth_user->can('subcategory add'))
-                            <a href="{{ route('subcategory.create') }}" class="float-end me-1 btn btn-sm btn-primary"><i
-                                    class="fa fa-plus-circle"></i>
-                                {{ trans('messages.add_form_title', ['form' => trans('messages.subcategory')]) }}</a>
+                                <a href="{{ route('subcategory.create') }}"
+                                    class="float-end me-1 btn btn-sm btn-primary"><i class="fa fa-plus-circle"></i>
+                                    {{ trans('messages.add_form_title', ['form' => trans('messages.subcategory')]) }}</a>
                             @endif
                         </div>
-                        {{-- {{ $dataTable->table(['class' => 'table w-100'],false) }} --}}
+                        {{-- {{ $dataTable->table(['class' => 'table  w-100'],false) }} --}}
                     </div>
                 </div>
             </div>
@@ -58,8 +58,9 @@
                                     data--submit="{{ route('sub-bulk-action') }}" data-datatable="reload"
                                     data-confirmation='true'
                                     data-title="{{ __('subcategory', ['form' => __('subcategory')]) }}"
-                                    title="{{ __('subcategory', ['form' => __('subcategory')]) }}" data-message='{{ __('
-                                    Do you want to perform this action??') }}'>{{ __('messages.apply') }}</button>
+                                    title="{{ __('subcategory', ['form' => __('subcategory')]) }}"
+                                    data-message='{{ __('Do you want to perform this action??') }}'
+                                    disabled>{{ __('messages.apply') }}</button>
                         </div>
 
                         </form>
@@ -71,9 +72,9 @@
                                     <select name="column_status" id="column_status" class="select2 form-select"
                                         data-filter="select" style="width: 100%">
                                         <option value="">{{ __('messages.all') }}</option>
-                                        <option value="0" {{ $filter['status']=='0' ? 'selected' : '' }}>
+                                        <option value="0" {{ $filter['status'] == '0' ? 'selected' : '' }}>
                                             {{ __('messages.inactive') }}</option>
-                                        <option value="1" {{ $filter['status']=='1' ? 'selected' : '' }}>
+                                        <option value="1" {{ $filter['status'] == '1' ? 'selected' : '' }}>
                                             {{ __('messages.active') }}</option>
                                     </select>
                                 </div>
@@ -222,5 +223,5 @@
             }
         });
     </script>
-
+    
 </x-master-layout>

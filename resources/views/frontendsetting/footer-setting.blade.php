@@ -80,10 +80,10 @@
                         }
                     }
                 @endphp
-                <div class="form-group col-md-12" id='enable_select_service'>
+                <div class="form-group col-md-12" id='enable_select_provider'>
                     {{ html()->label(__('messages.select_name', ['select' => __('messages.service')]) . ' <span class="text-danger">*</span>', 'service_id[]')->class('form-control-label') }}
                     <br />
-                    {{ html()->select('service_id[]', $serviceNames, old('service_id', $selectedServiceIds))->class('select2js form-control service_id')->id('service_id')->attribute('data-placeholder', __('messages.select_name', ['select' => __('messages.service')]))->attribute('data-ajax--url', route('ajax-list', ['type' => 'service']))->multiple() }}
+                    {{ html()->select('service_id[]', $serviceNames, old('service_id', $selectedServiceIds))->class('select2js form-control service_id')->id('service_id')->attribute('data-placeholder', __('messages.select_name', ['select' => __('messages.provider')]))->attribute('data-ajax--url', route('ajax-list', ['type' => 'service']))->multiple() }}
                 </div>
             </div>
         </div>
@@ -141,10 +141,10 @@
 
     function checkEnableProvider(value) {
         if (value == true) {
-            $('#enable_select_service').removeClass('d-none');
+            $('#enable_select_provider').removeClass('d-none');
             $('#service_id').prop('required', true);
         } else {
-            $('#enable_select_service').addClass('d-none');
+            $('#enable_select_provider').addClass('d-none');
             $('#service_id').prop('required', false);
         }
     }

@@ -53,8 +53,8 @@
                             </div>
                     
                             <div class="form-group col-md-4">
-                                {{ html()->label(trans('messages.ifsc_no'), 'ifsc_no')->class('form-control-label')}}
-                                {{ html()->text('ifsc_no',$bankdata->ifsc_no)->placeholder(trans('messages.ifsc_no'))->class('form-control')}}
+                                {{ html()->label(trans('messages.mobile_no'), 'mobile_no')->class('form-control-label')}}
+                                {{ html()->text('mobile_no',$bankdata->mobile_no)->placeholder(trans('messages.mobile_no'))->class('form-control')}}
                                 <small class="help-block with-errors text-danger"></small>
                             </div>
                     
@@ -62,13 +62,13 @@
                                 {{ html()->label(trans('messages.status') . ' <span class="text-danger">*</span>', 'status')->class('form-control-label')}}
                                 {{ html()->select('status', ['1' => __('messages.active'), '0' => __('messages.inactive')],$bankdata->status)->class('form-select select2js')->required()}}
                             </div>
-                            {{-- <div class="form-group col-md-4">
+                            <div class="form-group col-md-4">
                                 <label class="form-control-label" for="bank_attachment">{{ __('messages.image') }} <span class="text-danger">*</span> </label>
                                 <div class="custom-file">
                                     <input type="file" name="bank_attachment[]" class="custom-file-input" data-file-error="{{ __('messages.files_not_allowed') }}" multiple>
                                     <label class="custom-file-label upload-label">{{ __('messages.choose_file',['file' =>  __('messages.attachments') ]) }}</label>
                                 </div>
-                            </div> --}}
+                            </div>
                             <div class="row bank_attachment_div">
                                 <div class="col-md-12">
                                     @if(getMediaFileExit($bankdata, 'bank_attachment'))
@@ -87,12 +87,12 @@
                     
                                                         <div class="col-md-2 pe-10 text-center galary file-gallary-{{$bankdata->id}} position-relative" data-gallery=".file-gallary-{{$bankdata->id}}" id="bank_attachment_preview_{{$attchment->id}}">
                                                             @if($extention)
-                                                                <a id="attachment_files" href="{{ $attchment->getFullUrl() }}" class="list-group-item-action  attachment-list" target="_blank">
-                                                                    <img src="{{ $attchment->getFullUrl() }}" class="attachment-image img-fluid" alt="">
+                                                                <a id="attachment_files" href="{{ $attchment->getFullUrl() }}" class="list-group-item-action attachment-list" target="_blank">
+                                                                    <img src="{{ $attchment->getFullUrl() }}" class="attachment-image" alt="">
                                                                 </a>
                                                             @else
-                                                                <a id="attachment_files" class="video list-group-item-action attachment-list " href="{{ $attchment->getFullUrl() }}">
-                                                                    <img src="{{ asset('images/file.png') }}" class="attachment-file img-fluid">
+                                                                <a id="attachment_files" class="video list-group-item-action attachment-list" href="{{ $attchment->getFullUrl() }}">
+                                                                    <img src="{{ asset('images/file.png') }}" class="attachment-file">
                                                                 </a>
                                                             @endif
                                                             <a class="text-danger remove-file" href="{{ route('remove.file', ['id' => $attchment->id, 'type' => 'bank_attachment']) }}" data--submit="confirm_form" data--confirmation='true' data--ajax="true" data-toggle="tooltip" title='{{ __("messages.remove_file_title" , ["name" =>  __("messages.attachments") ] ) }}' data-title='{{ __("messages.remove_file_title" , ["name" =>  __("messages.attachments") ] ) }}' data-message='{{ __("messages.remove_file_msg") }}'>
@@ -119,23 +119,23 @@
         function preview() {
             bank_image_preview.src = URL.createObjectURL(event.target.files[0]);
         }
-        // $(document).on('keyup', '.mobile_no', function() {
-        //     var contactNumberInput = document.getElementById('mobile_no');
-        //     var inputValue = contactNumberInput.value;
-        //     inputValue = inputValue.replace(/[^0-9+\- ]/g, '');
-        //     if (inputValue.length > 15) {
-        //         inputValue = inputValue.substring(0, 15);
-        //         $('#mobile_no_err').text('Contact number should not exceed 15 characters');
-        //     } else {
-        //             $('#mobile_no_err').text('');
-        //     }
-        //     contactNumberInput.value = inputValue;
-        //     if (inputValue.match(/^[0-9+\- ]+$/)) {
-        //         $('#mobile_no_err').text('');
-        //     } else {
-        //         $('#mobile_no_err').text('Please enter a valid mobile number');
-        //     }
-        // });
+        $(document).on('keyup', '.mobile_no', function() {
+            var contactNumberInput = document.getElementById('mobile_no');
+            var inputValue = contactNumberInput.value;
+            inputValue = inputValue.replace(/[^0-9+\- ]/g, '');
+            if (inputValue.length > 15) {
+                inputValue = inputValue.substring(0, 15);
+                $('#mobile_no_err').text('Contact number should not exceed 15 characters');
+            } else {
+                    $('#mobile_no_err').text('');
+            }
+            contactNumberInput.value = inputValue;
+            if (inputValue.match(/^[0-9+\- ]+$/)) {
+                $('#mobile_no_err').text('');
+            } else {
+                $('#mobile_no_err').text('Please enter a valid mobile number');
+            }
+        });
 //         document.addEventListener('DOMContentLoaded', function() { 
 //     checkImage();
 // });

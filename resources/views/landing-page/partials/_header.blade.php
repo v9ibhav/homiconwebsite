@@ -150,7 +150,7 @@
                                     stroke="currentColor" stroke-width="1.42857" stroke-linecap="round"
                                     stroke-linejoin="round" />
                               </svg>
-                              {{__('messages.login')}}
+                              Login
                            </a>
                         </li>
                       @else
@@ -197,31 +197,24 @@
                                     </a>
                                  </li>
 
-                                 {{-- <li>
-                                    <span class="dropdown-item"> --}}
-                                       @php
-                                       $user = auth()->user();
-                                       $wallet = $user->wallet ?? null;
-                                       $wallet_amount = 0;
-                                       $othersetting = \App\Models\Setting::where('type', 'OTHER_SETTING')->where('key', 'OTHER_SETTING')->first();
-                                       $wallet_enabled = $othersetting && !empty(json_decode($othersetting->value)->wallet);
-
-                                       if ($wallet_enabled && $wallet) {
-                                           $wallet_amount = $wallet->amount ?? 0;
-                                       }
-                                       @endphp
-                                       @if($wallet_enabled)
-                                       <li>
-                                          <span class="dropdown-item">
-                                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                 <li>
+                                    <span class="dropdown-item">
+                                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                           <path d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12V14C22 17.7712 22 19.6569 20.8284 20.8284C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14V12Z" stroke="currentColor" stroke-width="1.5"></path>
                                           <path d="M18 16L16 16M16 16L14 16M16 16L16 14M16 16L16 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                                           <path d="M7 4V2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                                           <path d="M17 4V2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                                           <path d="M2.5 9H21.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                                        </svg>
-                                       <span class="ms-2">{{__('messages.wallet_balance')}}: <span class="text-primary">{{getPriceFormat($wallet_amount)}}</span></span>
-                                       @endif
+                                       <span class="ms-2">
+                                          @php
+                                          $user = auth()->user();
+                                          $wallet = $user->wallet ?? null;
+                                          $wallet_amount= $wallet->amount ?? 0;
+                                          @endphp
+                                          {{__('messages.wallet_balance')}}:
+                                          <span class="text-primary">{{getPriceFormat($wallet_amount)}}</span>
+                                       </span>
                                     </span>
                                  </li>
                                  @if(auth()->user()->can('helpdesk list'))
@@ -234,7 +227,7 @@
                             <path d="M45.6037 59.2132H74.3962C75.3846 59.2132 76.1864 58.4114 76.1864 57.423C76.1864 56.4347 75.3846 55.6328 74.3962 55.6328H45.6037C44.6153 55.6328 43.8135 56.4347 43.8135 57.423C43.8135 58.4114 44.6153 59.2132 45.6037 59.2132Z" fill="currentColor"/>
                             <path d="M60.7272 65.1807C60.7272 64.1923 59.9254 63.3904 58.937 63.3904H45.6037C44.6153 63.3904 43.8135 64.1923 43.8135 65.1807C43.8135 66.169 44.6153 66.9709 45.6037 66.9709H58.937C59.9254 66.9709 60.7272 66.169 60.7272 65.1807Z" fill="currentColor"/>
                         </svg>
-                                       <span class="ms-2">{{__('messages.helpdesk')}}</span>
+                                       <span class="ms-2"> {{__('messages.helpdesk')}}</span>
                                     </a>
                                  </li>
                                  @endif

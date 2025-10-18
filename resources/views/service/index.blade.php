@@ -54,7 +54,7 @@
                                     data-title="{{ __('service', ['form' => __('service')]) }}"
                                     title="{{ __('service', ['form' => __('service')]) }}"
                                     data-message='{{ __('Do you want to perform this action?') }}'
-                                    >{{ __('messages.apply') }}</button>
+                                    disabled>{{ __('messages.apply') }}</button>
                         </div>
 
                         </form>
@@ -94,7 +94,7 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
-           const zone_id = @json($zone_id);
+
             window.renderedDataTable = $('#datatable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -110,8 +110,7 @@
                         };
                         d.filter = {
                             column_status: $('#column_status').val()
-                        };
-                        d.zone_id = zone_id;
+                        }
                     },
                 },
 

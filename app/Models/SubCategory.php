@@ -14,15 +14,13 @@ class SubCategory extends BaseModel implements HasMedia
     use TranslationTrait;
     protected $table = 'sub_categories';
     protected $fillable = [
-        'name', 'description', 'is_featured', 'status' , 'category_id', 'meta_title', 'meta_description', 'meta_keywords', 'slug', 'seo_enabled'
+        'name', 'description', 'is_featured', 'status' , 'category_id'
     ];
 
     protected $casts = [
         'status'    => 'integer',
         'is_featured'  => 'integer',
         'category_id'  => 'integer',
-        'meta_keywords' => 'array',
-        'seo_enabled' => 'boolean',
     ];
 
     public function translations()

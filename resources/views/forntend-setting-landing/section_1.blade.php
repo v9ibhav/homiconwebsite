@@ -1,13 +1,12 @@
+
 {{ html()->form('POST', route('landing_page_settings_updates'))->attribute('enctype', 'multipart/form-data')->attribute('data-toggle', 'validator')->open() }}
-
-
 
 {{ html()->hidden('id',$landing_page->id)->placeholder('id')->class('form-control') }}
 {{ html()->hidden('type', $tabpage)->placeholder('id')->class('form-control') }}
 
         <div class="form-group">
             <div class="form-control d-flex align-items-center justify-content-between">
-                <label class="mb-0" for="enable_section_1">{{__('messages.home_slidar')}}</label>
+                <label class="mb-0" for="enable_section_1">{{__('messages.enable_section_1')}}</label>
                 <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
                     <input type="checkbox" class="custom-control-input section_1" name="status" id="section_1" data-type="section_1"  {{!empty($landing_page) && $landing_page->status == 1 ? 'checked' : ''}}>
                     <label class="custom-control-label" for="section_1"></label>
@@ -47,7 +46,7 @@
             </div>
             <div class="form-group">
                 <div class="form-control d-flex align-items-center justify-content-between">
-                    <label for="enable_popular_services" class="mb-0">{{__('messages.enable_popular_category')}}</label>
+                    <label for="enable_popular_services" class="mb-0">{{__('messages.enable_popular_services')}}</label>
                     <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
                         <input type="checkbox" class="custom-control-input" name="enable_popular_services" id="enable_popular_services">
                         <label class="custom-control-label" for="enable_popular_services"></label>
@@ -151,86 +150,35 @@
 
     $(document).ready(function() {
         $('.select2js').select2();
-
+    });
+    $(document).ready(function() {
         $('#category_id').on('change', function() {
+
             var selectedOptions = $(this).val();
 
+
             if (selectedOptions && selectedOptions.length > 4) {
-                // Remove the last selected item
+
                 selectedOptions.pop();
+
                 $(this).val(selectedOptions).trigger('change.select2');
-                
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'bottom',
-                    iconColor: '#fff',
-                    customClass: {
-                        popup: 'colored-toast'
-                    },
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: false
-                });
-                Toast.fire({
-                    icon: 'error',
-                    title: 'Maximum of 4 Category allowed to select. Please deselect one to add another.'
-                });
             }
         });
 
         $('#provider_id').on('change', function() {
+
             var selectedOptions = $(this).val();
 
+
             if (selectedOptions && selectedOptions.length > 4) {
-                // Remove the last selected item
+
                 selectedOptions.pop();
+
                 $(this).val(selectedOptions).trigger('change.select2');
-                
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'bottom',
-                    iconColor: '#fff',
-                    customClass: {
-                        popup: 'colored-toast'
-                    },
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: false
-                });
-                Toast.fire({
-                    icon: 'error',
-                    title: 'Maximum of 4 Provider allowed to select. Please deselect one to add another.'
-                });
             }
         });
     });
 
-    // Add styles for toast
-    var style = document.createElement('style');
-    style.textContent = `
-        .colored-toast.swal2-icon-error {
-            background-color: #dc3545 !important;
-        }
-        .colored-toast {
-            color: white !important;
-        }
-        .colored-toast .swal2-title {
-            color: white !important;
-            font-size: 15px !important;
-            font-weight: 500 !important;
-            padding: 5px 15px !important;
-        }
-        .colored-toast .swal2-icon {
-            margin: 5px !important;
-            width: 20px !important;
-            height: 20px !important;
-        }
-        .colored-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line] {
-            background-color: #fff !important;
-            height: 0.15em !important;
-        }
-    `;
-    document.head.appendChild(style);
 
     var get_value = $('input[name="status"]:checked').data("type");
     getConfig(get_value)

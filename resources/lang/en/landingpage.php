@@ -1,4 +1,4 @@
-<?php return  array(
+<?php return  array (
   'home' => 'Home',
   'categories' => 'Categories',
   'services' => 'Services',
@@ -127,7 +127,7 @@
   'hrs' => 'hrs',
   'reset' => 'Reset',
   'cancel_booking' => 'Cancel Booking',
-  'cancel_reason' => 'Cancelled Reason',
+  'cancel_reason' => 'Cancelation Reason',
   'payment_option' => 'Payment Option',
   'include_package' => 'Included in this Package',
   'start' => 'Start',
@@ -161,12 +161,9 @@
   'admin_login' => 'Admin Portal',
   'total_cancellation_fee' => 'Total cancellation fee',
   'based_book_service' => 'Based on your booked service',
-  'about_us' => 'About Us',
-  'as_handyman' => 'As Handyman',
-  'pending' => 'Pending',
-  'pending_approval' => 'Pending Approval',
+  'about_us'=>'About Us',
+  'as_handyman'=> 'As Handyman',
+  'pending'=> 'Pending',
+  'pending_approval'=> 'Pending Approval',
   'demo_admin' => 'Demo Admin',
-  'search_service' => 'Search Service',
-  'available_zones' => 'Available Zones',
-  'subcatgory' => 'SubCategory'
 );

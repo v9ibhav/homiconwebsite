@@ -1,53 +1,7 @@
 @extends('landing-page.layouts.default')
 @section('content')
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert"
-        style="
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            min-width: 250px;
-            max-width: 90%;
-            border-radius: 1px;
-            z-index: 1050;
-            position: fixed;
-            padding: 10px 20px;
-            font-size: 1rem;
-            background-color: #000;
-            color: #fff;
-            border: none;
-        ">
-        {{ session('success') }}
-        <button type="button" data-bs-dismiss="alert" aria-label="Close"
-                style="margin-left: 15px; background: none; border: none; color: green;">
-                DISMISS
-            </button>
-    </div>
-
-    <script>
-        setTimeout(() => {
-            const alertElem = document.querySelector('.alert');
-            if (alertElem) {
-                const bsAlert = bootstrap.Alert.getInstance(alertElem);
-                if (bsAlert) {
-                    bsAlert.close();
-                } else {
-                    alertElem.remove();
-                }
-            }
-        }, 2000);
-    </script>
-@endif
-
-                 @php
-                     $user_lat= session('user_lat') ?? null;
-                     $user_lng= session('user_lng') ?? null;
-                 @endphp
-
 
 <!-- Banner -->
-@if(isset($sectionData['section_1']) && $status && $status->key == 'section_1' && $status->status == 1 && isset($sectionData['section_1']['enable_popular_provider']) && $sectionData['section_1']['enable_popular_provider'] === "on")
 <div class="padding-top-bottom-90 bg-light">
     <div class="container-fluid">
        <div class="row align-items-center">
@@ -78,26 +32,13 @@
                             {{ $sectionData['section_1']['description'] ?? null }}
                         </p>
                     </div>
-                </div> 
-            
-
-                @if(isset( $user_lat ) && isset( $user_lng ) && $user_lat  !=null && $user_lng !=null )
-
-                <location-search :user_id="{{json_encode($auth_user_id)}}" :postjobservice="{{$postjobservice}}" :user_lat={{ $user_lat ?? '' }} :user_lng={{  $user_lng ?? '' }} ></location-search>
-
-                @else
-
-                  <location-search :user_id="{{json_encode($auth_user_id)}}" :postjobservice="{{$postjobservice}}"></location-search>
-
-
-                @endif
+                </div>
+                <location-search :user_id="{{json_encode($auth_user_id)}}" :postjobservice="{{$postjobservice}}"></location-search>
                @endif
 
              </div>
           </div>
-          @endif
-          @if(isset($sectionData['section_1']) && $status && $status->key == 'section_1' && $status->status == 1 && isset($sectionData['section_1']['enable_popular_provider']) && $sectionData['section_1']['enable_popular_provider'] === "on")
-        
+        @if($sectionData['section_1']['enable_popular_provider'] == "on")
           <div class="col-xl-6 px-xl-0 mt-xl-0 mt-5">
             <div class="position-relative swiper iq-team-slider overflow-hidden mySwiper">
                <div class="swiper-wrapper">
@@ -190,25 +131,10 @@
                     </div>
                     </h3>
                 </div>
-               
-                @if($favourite !=null )
                 <a href="{{ route('service.list') }}" class="btn btn-link p-0 flex-shrink-0">{{__('messages.view_all')}}</a>
-                @endif
             </div>
-                
-              
-                 @if(isset( $user_lat ) && isset( $user_lng ) && $user_lat  !=null && $user_lng !=null )
 
-    
-                  <service-slider-section :user_lat={{ $user_lat ?? '' }} :user_lng={{  $user_lng ?? '' }}  :user_id="{{json_encode($auth_user_id)}}" :favourite="{{json_encode($favourite)}}" :type="'ac'" />
-
-                 @else
-
-                  <service-slider-section :user_id="{{json_encode($auth_user_id)}}" :favourite="{{json_encode($favourite)}}" :type="'ac'"/>
-
-                 @endif
-
-
+            <service-slider-section :user_id="{{json_encode($auth_user_id)}}" :favourite="{{json_encode($favourite)}}" :type="'ac'"/>
             </div>
         @endif
 
@@ -229,17 +155,9 @@
                         </div>
                     </h3>
                     </div>
-                 @if( $favourite !=null )
                     <a href="{{ route('service.list') }}" class="btn btn-link p-0 flex-shrink-0">{{__('messages.view_all')}}</a>
-                   @endif  
                 </div>
-               @if(isset( $user_lat ) && isset( $user_lng ) && $user_lat !=null && $user_lng !=null )
-                <service-slider-section  :user_lat={{ $user_lat ?? '' }} :user_lng={{  $user_lng ?? '' }}   :user_id="{{json_encode($auth_user_id)}}" :favourite="{{json_encode($favourite)}}" :type="'cleaning'" />
-                @else
-
-                   <service-slider-section :user_id="{{json_encode($auth_user_id)}}" :favourite="{{json_encode($favourite)}}" :type="'cleaning'"/>
-
-                @endif
+                <service-slider-section :user_id="{{json_encode($auth_user_id)}}" :favourite="{{json_encode($favourite)}}" :type="'cleaning'"/>
             </div>
         @endif
 
@@ -250,25 +168,9 @@
 
 
 {{-- promtion banner section --}}
-@if(isProviderBannerEnabled() && $promotional_banners->count() >= 1)
-<div class="section-padding">
+@if(isProviderBannerEnabled())
+<div class="section-padding bg-light our-service">
     <div class="container">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <div class="iq-title-box mb-0">
-        <h3 class="text-capitalize line-count-1">Promotional Banner
-            <div class="highlighted-text"><div class="swiper-pagination"></div>
-                <span class="highlighted-text-swipe"></span>
-                <span class="highlighted-image">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="155" height="12" viewBox="0 0 155 12"
-                    fill="none">
-                    <path d="M2.5 9.5C3.16964 9.26081 78.8393 -2.45948 152.5 4.9554" stroke="currentColor"
-                        stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </span>
-            </div>
-        </h3>
-        </div>
-    </div>
         <promotion-banner-section></promotion-banner-section>
     </div>
 </div>
@@ -309,11 +211,7 @@ session(['recently_viewed:' . $auth_user_id => $recentlyViewed]);
 
                     <div class="row">
                         <div class="col-12">
-                        @if(isset( $user_lat ) && isset( $user_lng ) && $user_lat  !=null && $user_lng !=null )
-                        <service-slider-section  :user_lat={{ $user_lat ?? '' }} :user_lng={{  $user_lng ?? '' }}  :user_id="{{json_encode($auth_user_id)}}" :favourite="{{json_encode($favourite)}}" :type="'recently_view'"/>
-                        @else
-                         <service-slider-section  :user_id="{{json_encode($auth_user_id)}}" :favourite="{{json_encode($favourite)}}" :type="'recently_view'"/>
-                        @endif
+                        <service-slider-section :user_id="{{json_encode($auth_user_id)}}" :favourite="{{json_encode($favourite)}}" :type="'recently_view'"/>
                         </div>
                     </div>
                 </div>
@@ -548,56 +446,8 @@ session(['recently_viewed:' . $auth_user_id => $recentlyViewed]);
 
 @endsection
 @section('bottom_script')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const message = localStorage.getItem('login_success_message');
-    if (message) {
-        const alertDiv = `
-            <div class="alert alert-success alert-dismissible fade show" role="alert"
-                style="
-                    position: fixed;
-                    bottom: 20px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    min-width: 250px;
-                    max-width: 90%;
-                    border-radius: 1px;
-                    z-index: 1050;
-                    padding: 10px 20px;
-                    font-size: 1rem;
-                    background-color: #000;  /* black background */
-                    color: #fff;             /* white text */
-                    border: none;            /* remove default border */
-                ">
-                ${message}
-               <button type="button" data-bs-dismiss="alert" aria-label="Close"
-                style="margin-left: 15px; background: none; border: none; color: green;">
-                DISMISS
-            </button>
-
-            </div>`;
-        document.body.insertAdjacentHTML('afterbegin', alertDiv);
-
-        localStorage.removeItem('login_success_message');
-
-        setTimeout(() => {
-            const alertElem = document.querySelector('.alert');
-            if (alertElem) {
-                const bsAlert = bootstrap.Alert.getInstance(alertElem);
-                if (bsAlert) {
-                    bsAlert.close();
-                } else {
-                    alertElem.remove();
-                }
-            }
-        }, 2000);
-    }
-});
-</script>
-
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script>
-
    document.addEventListener("DOMContentLoaded", function () {
       var $sliders = jQuery(document).find('.iq-team-slider');
       if ($sliders.length > 0) {

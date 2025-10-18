@@ -56,7 +56,7 @@
 </div>
 <div class="form-group">
     <div class="form-control d-flex align-items-center justify-content-between">
-        <label for="post_services">{{ __('messages.Job_request') }}</label>
+        <label for="post_services">{{ __('messages.enable_post_services') }}</label>
         <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
             <input type="checkbox" class="custom-control-input" name="post_services" id="post_services" {{ !empty($serviceconfig->post_services) ? 'checked' : '' }}>
             <label class="custom-control-label" for="post_services"></label>
@@ -66,14 +66,7 @@
 
 <div class="form-group">
     <div class="form-control d-flex align-items-center justify-content-between">
-        <label for="enable_global_advance_payment" class="mb-0">
-            {{ __('messages.global_advance_payment') }}
-            <!-- <i class="fas fa-info-circle ms-2" 
-               data-bs-toggle="tooltip" 
-               data-bs-placement="top"
-               title="Enable this to request an advance payment from customers before starting the service. You can specify the percentage below.">
-            </i> -->
-        </label>
+        <label for="enable_global_advance_payment" class="mb-0">{{ __('messages.global_advance_payment') }}</label>
         <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
             <input type="checkbox" class="custom-control-input" name="global_advance_payment" id="global_advance_payment"
                    {{ !empty($serviceconfig->global_advance_payment) ? 'checked' : '' }}>
@@ -82,21 +75,10 @@
     </div>
 </div>
 
-<div class="form-padding-box mb-3 {{ empty($serviceconfig->global_advance_payment) ? 'd-none' : '' }}" id="advance_payment_section">
+<div class="form-padding-box mb-3 d-none" id="advance_payment_section">
     <div class="row">
         <div class="form-group col-sm-6 mb-0" id="key">
-            <div class="d-flex align-items-center justify-content-between">
-                {{ html()->label(
-                    trans('messages.advance_paynment_percantage') . ' (%) <span class="text-danger">*</span>', 
-                    'advance_paynment_percantage'
-                )->class('form-control-label') }}
-                <i class="fas fa-info-circle ms-2" 
-                   data-bs-toggle="tooltip" 
-                   data-bs-placement="top"
-                   title="The percentage of the total service fee requested as an advance payment before the service begins.">
-                </i>
-            </div>
-
+            {{ html()->label(trans('messages.advance_paynment_percantage') . '(%) <span class="text-danger">*</span>', 'advance_paynment_percantage')->class('form-control-label') }}
             {{ html()->number('advance_paynment_percantage')
                 ->class('form-control')
                 ->id('advance_paynment_percantage')
@@ -104,8 +86,7 @@
                 ->attribute('min', 1)
                 ->attribute('max', 99)
                 ->attribute('step', '0.1')
-                ->attribute('placeholder', __('messages.advance_paynment_percantage'))
-                ->attribute('required', !empty($serviceconfig->global_advance_payment) ? true : null)
+                ->placeholder(__('messages.advance_paynment_percantage'))
             }}
             <small class="help-block with-errors text-danger"></small>
         </div>
@@ -115,14 +96,7 @@
 
 <div class="form-group">
     <div class="form-control d-flex align-items-center justify-content-between">
-        <label for="enable_cancellation_charge" class="mb-0">
-            {{ __('messages.cancellation_charge') }}
-            <!-- <i class="fas fa-info-circle ms-2"
-               data-bs-toggle="tooltip"
-               data-bs-placement="top"
-               title="Enable this to charge a cancellation fee if the customer cancels within a defined number of hours. Set the percentage and time window below.">
-            </i> -->
-        </label>
+        <label for="enable_cancellation_charge" class="mb-0">{{ __('messages.cancellation_charge') }}</label>
         <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
             <input type="checkbox" class="custom-control-input" name="cancellation_charge" id="cancellation_charge"
                    {{ !empty($serviceconfig->cancellation_charge) ? 'checked' : '' }}>
@@ -131,61 +105,36 @@
     </div>
 </div>
 
-
-<div class="form-padding-box mb-3 {{ empty($serviceconfig->cancellation_charge) ? 'd-none' : '' }}" id="cancellation_charge_section">
-<div class="row">
-    <div class="form-group col-sm-6 mb-0" id="cancellation_charge_amount_group">
-        <div class="d-flex align-items-center justify-content-between">
-            {{ html()->label(
-                trans('messages.cancellation_charge_amount') . ' (%) <span class="text-danger">*</span>', 
-                'cancellation_charge_amount'
-            )->class('form-control-label') }}
-            <i class="fas fa-info-circle ms-2" 
-               data-bs-toggle="tooltip" 
-               data-bs-placement="top"
-               title="The percentage charge applied if a service is cancelled within the specified hours before it starts.">
-            </i>
+<div class="form-padding-box mb-3 d-none" id="cancellation_charge_section">
+    <div class="row">
+        <div class="form-group col-sm-6 mb-0" >
+            {{ html()->label(trans('messages.cancellation_charge_amount') . ' (%) <span class="text-danger">*</span>' , 'cancellation_charge_amount')->class('form-control-label') }}
+            {{ html()->number('cancellation_charge_amount')
+                ->class('form-control')
+                ->id('cancellation_charge_amount')
+                ->value(!empty($serviceconfig->cancellation_charge_amount) ? $serviceconfig->cancellation_charge_amount : '')
+                ->attribute('min', 1)
+                ->attribute('max', 99)
+                ->attribute('step', '0.1')
+                ->placeholder(__('messages.cancellation_charge_amount'))
+            }}
+            <small class="help-block with-errors text-danger"></small>
         </div>
 
-        {{ html()->number('cancellation_charge_amount')
-            ->class('form-control')
-            ->id('cancellation_charge_amount')
-            ->value(!empty($serviceconfig->cancellation_charge_amount) ? $serviceconfig->cancellation_charge_amount : '')
-            ->attribute('min', 1)
-            ->attribute('max', 99)
-            ->attribute('step', '0.1')
-            ->placeholder(__('messages.cancellation_charge_amount'))
-        }}
-        <small class="help-block with-errors text-danger"></small>
-    </div>
-
-    <div class="form-group col-sm-6 mb-0" id="cancellation_charge_hours_group">
-        <div class="d-flex align-items-center justify-content-between">
-            {{ html()->label(
-                trans('messages.cancellation_charge_hours') . ' <span class="text-danger">*</span>', 
-                'cancellation_charge_hours'
-            )->class('form-control-label') }}
-            <i class="fas fa-info-circle ms-2" 
-               data-bs-toggle="tooltip" 
-               data-bs-placement="top"
-               title="The number of hours before a service during which a cancellation charge will apply.">
-            </i>
+        <div class="form-group col-sm-6 mb-0">
+            {{ html()->label(trans('messages.cancellation_charge_hours') . ' <span class="text-danger">*</span>', 'cancellation_charge_hours')->class('form-control-label') }}
+            {{ html()->number('cancellation_charge_hours')
+                ->class('form-control')
+                ->id('cancellation_charge_hours')
+                ->value(!empty($serviceconfig->cancellation_charge_hours) ? $serviceconfig->cancellation_charge_hours : '')
+                ->attribute('min', 1)
+                ->attribute('max', 99)
+                ->placeholder(__('messages.cancellation_charge_hours'))
+            }}
+            <small class="help-block with-errors text-danger"></small>
         </div>
-
-        {{ html()->number('cancellation_charge_hours')
-            ->class('form-control')
-            ->id('cancellation_charge_hours')
-            ->value(!empty($serviceconfig->cancellation_charge_hours) ? $serviceconfig->cancellation_charge_hours : '')
-            ->attribute('min', 1)
-            ->attribute('max', 99)
-            ->placeholder(__('messages.cancellation_charge_hours'))
-        }}
-        <small class="help-block with-errors text-danger"></small>
     </div>
 </div>
-
-</div>
-
 
 
 {{ html()->submit(__('messages.save'))->class('btn btn-md btn-primary float-md-end') }}
@@ -196,17 +145,16 @@
 $(document).ready(function () {
     const advancePaymentPercentage = document.getElementById('advance_paynment_percantage');
 
-    // Toggle advance payment section
     let enableGlobalAdvancePayment = $("input[name='global_advance_payment']").prop('checked');
-    toggleAdvancePaymentSection(enableGlobalAdvancePayment);
+    advancePaymentSetting(enableGlobalAdvancePayment);
 
-    $('#global_advance_payment').change(function () {
+    $('#global_advance_payment').change(function() {
         let value = $(this).prop('checked');
-        toggleAdvancePaymentSection(value);
+        advancePaymentSetting(value);
     });
 
-    function toggleAdvancePaymentSection(isEnabled) {
-        if (isEnabled) {
+    function advancePaymentSetting(value) {
+        if (value) {
             $('#advance_payment_section').removeClass('d-none');
             advancePaymentPercentage.setAttribute('required', 'required');
         } else {
@@ -215,33 +163,30 @@ $(document).ready(function () {
         }
     }
 
-    // Toggle cancellation charge section
-    const cancellationChargeAmount = document.getElementById('cancellation_charge_amount');
-    const cancellationChargeHours = document.getElementById('cancellation_charge_hours');
 
-    let enableCancellationCharge = $("input[name='cancellation_charge']").prop('checked');
-    toggleCancellationChargeSection(enableCancellationCharge);
 
-    $('#cancellation_charge').change(function () {
-        let value = $(this).prop('checked');
-        toggleCancellationChargeSection(value);
-    });
+ const CancellationChargeAmount = document.getElementById('cancellation_charge_amount');
+ const CancellationChargeHours = document.getElementById('cancellation_charge_hours');
 
-    function toggleCancellationChargeSection(isEnabled) {
-        if (isEnabled) {
-            $('#cancellation_charge_section').removeClass('d-none');
-            cancellationChargeAmount.setAttribute('required', 'required');
-            cancellationChargeHours.setAttribute('required', 'required');
-        } else {
-            $('#cancellation_charge_section').addClass('d-none');
-            cancellationChargeAmount.removeAttribute('required');
-            cancellationChargeHours.removeAttribute('required');
-        }
-    }
+let enableCancellationCharge = $("input[name='cancellation_charge']").prop('checked');
+CancellationChargeSetting(enableCancellationCharge);
 
-    // Optional: Re-initialize tooltips if needed
-    $('[data-bs-toggle="tooltip"]').tooltip();
+$('#cancellation_charge').change(function() {
+    let value = $(this).prop('checked');
+    CancellationChargeSetting(value);
 });
 
+function CancellationChargeSetting(value) {
+    if (value) {
+        $('#cancellation_charge_section').removeClass('d-none');
+        CancellationChargeAmount.setAttribute('required', 'required');
+        CancellationChargeHours.setAttribute('required', 'required');
+    } else {
+        $('#cancellation_charge_section').addClass('d-none');
+        CancellationChargeAmount.removeAttribute('required');
+        CancellationChargeHours.removeAttribute('required');
+    }
+}
+});
 
 </script>

@@ -6,7 +6,7 @@
 <div class="row">
     <div class="form-group col-md-12">
         <div class="form-control d-flex align-items-center justify-content-between">
-                    <label for="enable_section_7" class="mb-0">{{__('messages.how_it_works')}}</label>
+                    <label for="enable_section_7" class="mb-0">{{__('messages.enable_section_7')}}</label>
             <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
                         <input type="checkbox" class="custom-control-input section_7" name="status" id="section_7" data-type="section_7"  {{!empty($landing_page) && $landing_page->status == 1 ? 'checked' : ''}}>
                 <label class="custom-control-label" for="section_7"></label>

@@ -1,13 +1,8 @@
 <div class="helpdesk-card position-relative mb-5">
         <div class="d-flex mt-3">
         <strong class="font-size-14 mx-2 text-primary">#{{$data->id ?? '-'}}</strong>
-        <p class="font-size-14 pl-2">
-    @if($data->created_at)
-        {{ $data->created_at->setTimezone(new \DateTimeZone($datetime->time_zone ?? 'UTC'))->format("$datetime->date_format $datetime->time_format") }}
-    @else
-        -
-    @endif
-</p>
+        <p class="font-size-14 pl-2">{{date("$datetime->date_format $datetime->time_format", strtotime($data->created_at->setTimezone(new \DateTimeZone($datetime->time_zone ?? 'UTC'))))}}</p>
+
         </div>
         <h6 class="">
             {{ $data->subject ?? '-'}}

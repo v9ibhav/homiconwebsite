@@ -21,32 +21,25 @@
                                             <label for="email" class="form-control-label">
                                                 {{ __('messages.email') }} <span class="text-danger">*</span>
                                             </label>
-                                            <input type="email" name="email" id="email" value="{{ old('email') }}"
+                                            <input type="email" name="email" id="email" value="{{ old('email') }}" 
                                                 class="form-control" placeholder="{{ __('messages.email') }}" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             <label for="password" class="form-control-label">
-                                                {{ __('messages.new_password') }} <span class="text-danger">*</span>
+                                                {{ __('messages.password') }} <span class="text-danger">*</span>
                                             </label>
-
-                                                <input type="password" name="password" id="password"
-                                                    class="form-control"
-                                                    placeholder="{{ __('messages.password') }}"
-                                                    aria-label="Password" aria-describedby="togglePasswordIcon"
-                                                    required>
-                                            
-                                            <small id="password-error" class="help-block text-danger" style="display: none;"></small>
+                                            <input type="password" name="password" id="password" 
+                                                class="form-control" placeholder="{{ __('messages.password') }}" required>
                                         </div>
                                     </div>
-
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             <label for="password_confirmation" class="form-control-label">
-                                                {{ __('messages.new_confirm_password') }} <span class="text-danger">*</span>
+                                                {{ __('messages.password_confirmation') }} <span class="text-danger">*</span>
                                             </label>
-                                            <input type="password" name="password_confirmation" id="password_confirmation"
+                                            <input type="password" name="password_confirmation" id="password_confirmation" 
                                                 class="form-control" placeholder="{{ __('messages.password_confirmation') }}" required>
                                         </div>
                                     </div>
@@ -61,37 +54,4 @@
             </div>
         </div>
     </section>
-    <script>
-        function togglePassword(inputId, iconId) {
-            const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
-
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            } else {
-                input.type = "password";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const passwordInput = document.getElementById('password');
-            const errorMsg = document.getElementById('password-error');
-
-            passwordInput.addEventListener('input', function() {
-                const password = passwordInput.value.trim();
-                if (password.length < 8 || password.length > 14) {
-                    errorMsg.textContent = 'Password Length Should be 8 to 14 Characters long.';
-                    errorMsg.style.display = 'block';
-                } else {
-                    errorMsg.textContent = '';
-                    errorMsg.style.display = 'none';
-                }
-            });
-        });
-    </script>
-
 </x-guest-layout>

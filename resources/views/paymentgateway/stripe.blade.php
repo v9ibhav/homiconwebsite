@@ -37,40 +37,35 @@
         <small class="help-block with-errors text-danger"></small>
     </div>
     
-@php
-    $isAdmin = auth()->user()->hasRole('admin'); 
-@endphp
-
-<div class="form-group col-md-12">
-    {{ html()->label(trans('messages.stripe_url').' <span class="text-danger">*</span>', 'stripe_url', ['class' => 'form-control-label']) }}
-    {{ html()->{$isAdmin ? 'text' : 'password'}('stripe_url', $payment_data->stripe_url)
-        ->id('stripe_url')
-        ->placeholder(trans('messages.stripe_url'))
-        ->class('form-control')
-    }}
-    <small class="help-block with-errors text-danger"></small>
-</div>
-
-<div class="form-group col-md-12">
-    {{ html()->label(trans('messages.stripe_key').' <span class="text-danger">*</span>', 'stripe_key', ['class' => 'form-control-label']) }}
-    {{ html()->{$isAdmin ? 'text' : 'password'}('stripe_key', $payment_data->stripe_key)
-        ->id('stripe_key')
-        ->placeholder(trans('messages.stripe_key'))
-        ->class('form-control')
-    }}
-    <small class="help-block with-errors text-danger"></small>
-</div>
-
-<div class="form-group col-md-12">
-    {{ html()->label(trans('messages.stripe_publickey').' <span class="text-danger">*</span>', 'stripe_publickey', ['class' => 'form-control-label']) }}
-    {{ html()->{$isAdmin ? 'text' : 'password'}('stripe_publickey', $payment_data->stripe_publickey)
-        ->id('stripe_publickey')
-        ->placeholder(trans('messages.stripe_publickey'))
-        ->class('form-control')
-    }}
-    <small class="help-block with-errors text-danger"></small>
-</div>
-
+    <div class="form-group col-md-12">
+        {{ html()->label(trans('messages.stripe_url').' <span class="text-danger">*</span>', 'stripe_url', ['class' => 'form-control-label']) }}
+        {{ html()->text('stripe_url',$payment_data->stripe_url)
+            ->id('stripe_url')
+            ->placeholder(trans('messages.stripe_url'))
+            ->class('form-control')
+        }}
+        <small class="help-block with-errors text-danger"></small>
+    </div>
+    
+    <div class="form-group col-md-12">
+        {{ html()->label(trans('messages.stripe_key').' <span class="text-danger">*</span>', 'stripe_key', ['class' => 'form-control-label']) }}
+        {{ html()->text('stripe_key', $payment_data->stripe_key)
+            ->id('stripe_key')
+            ->placeholder(trans('messages.stripe_key'))
+            ->class('form-control')
+        }}
+        <small class="help-block with-errors text-danger"></small>
+    </div>
+    
+    <div class="form-group col-md-12">
+        {{ html()->label(trans('messages.stripe_publickey').' <span class="text-danger">*</span>', 'stripe_publickey', ['class' => 'form-control-label']) }}
+        {{ html()->text('stripe_publickey', $payment_data->stripe_publickey)
+            ->id('stripe_publickey')
+            ->placeholder(trans('messages.stripe_publickey'))
+            ->class('form-control')
+        }}
+        <small class="help-block with-errors text-danger"></small>
+    </div>
     
  </div>
  {{ html()->submit(__('messages.save'))->class('btn btn-md btn-primary float-md-end') }}

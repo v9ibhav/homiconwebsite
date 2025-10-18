@@ -17,7 +17,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        {{ html()->form('POST', route('handyman.store'))->attribute('enctype', 'multipart/form-data')->attribute('data-toggle', 'validator')->id('user-form')->open() }}
+                        {{ html()->form('POST', route('handyman.store'))->attribute('enctype', 'multipart/form-data')->attribute('data-toggle', 'validator')->id('handyman')->open() }}
                         {{ html()->hidden('id',$handymandata->id ?? null) }}
                         {{ html()->hidden('user_type', 'handyman') }}
                         <div class="row">
@@ -75,7 +75,7 @@
                                     
                                     }}
                             </div>
-<!--                     
+                    
                             <div class="form-group col-md-4">
                                 {{ html()->label(__('messages.select_name', ['select' => __('messages.provider_address')]).' <span class="text-danger">*</span>', 'name')->class('form-control-label') }}
                                 <br />
@@ -85,7 +85,7 @@
                                     ->required()
                                     ->attribute('data-placeholder', __('messages.select_name', ['select' => __('messages.provider_address')])) 
                                     }}
-                            </div> -->
+                            </div>
                     
                             <div class="form-group col-md-4">
                                 {{ html()->label(__('messages.select_name', ['select' => __('messages.country')]).' <span class="text-danger">*</span>', 'country_id')->class('form-control-label') }}
@@ -215,13 +215,12 @@
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js" // To handle number formatting
     });
 
+    // Update the contact number input on change
     $(input).on('change', function() {
-    var full = iti.getNumber(); 
-    var code = '+' + iti.getSelectedCountryData().dialCode; 
-    var number = full.replace(code, ''); 
-    number = number.replace(/^0+/, ''); 
-    $('#contact_number').val(code + ' ' + number);
-});
+        var number = iti.getNumber(); // Get the full number with country code
+        console.log("Entered number: ", number); // Log the number
+        $('#contact_number').val(number); // Update the input value
+    });
 
     // Handle form submission
     $('#user-form').on('submit', function(e) {
@@ -229,32 +228,28 @@
             e.preventDefault(); // Prevent form submission if the number is invalid
             $('#contact_number-error').text('Please enter a valid mobile number.').show(); // Show error message
         } else {
-            $('#contact_number-error').hide();
-        var full = iti.getNumber();
-        var code = '+' + iti.getSelectedCountryData().dialCode;
-        var number = full.replace(code, '');
-        $('#contact_number').val(code + ' ' + number);
-    }
-});
+            $('#contact_number-error').hide(); // Hide error message if valid
+        }
+    });
 
         })
-        $(document).on('keyup', '.contact_number', function() {
-            var contactNumberInput = document.getElementById('contact_number');
-            var inputValue = contactNumberInput.value;
-            inputValue = inputValue.replace(/[^0-9+\- ]/g, '');
-            if (inputValue.length > 15) {
-                inputValue = inputValue.substring(0, 15);
-                $('#contact_number_err').text('Contact number should not exceed 15 characters');
-            } else {
-                $('#contact_number_err').text('');
-            }
-            contactNumberInput.value = inputValue;
-            if (inputValue.match(/^[0-9+\- ]+$/)) {
-                $('#contact_number_err').text('');
-            } else {
-                $('#contact_number_err').text('Please enter a valid mobile number');
-            }
-        });
+        // $(document).on('keyup', '.contact_number', function() {
+        //     var contactNumberInput = document.getElementById('contact_number');
+        //     var inputValue = contactNumberInput.value;
+        //     inputValue = inputValue.replace(/[^0-9+\- ]/g, '');
+        //     if (inputValue.length > 15) {
+        //         inputValue = inputValue.substring(0, 15);
+        //         $('#contact_number_err').text('Contact number should not exceed 15 characters');
+        //     } else {
+        //         $('#contact_number_err').text('');
+        //     }
+        //     contactNumberInput.value = inputValue;
+        //     if (inputValue.match(/^[0-9+\- ]+$/)) {
+        //         $('#contact_number_err').text('');
+        //     } else {
+        //         $('#contact_number_err').text('Please enter a valid mobile number');
+        //     }
+        // });
 
 
         function stateName(country, state = "") {

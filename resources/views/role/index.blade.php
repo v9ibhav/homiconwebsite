@@ -31,7 +31,7 @@
                           data-confirmation='true' data-title="{{ __('role', ['form' => __('role')]) }}"
                           title="{{ __('role', ['form' => __('role')]) }}"
                           data-message='{{ __('Do you want to perform this action?') }}'
-                          >{{ __('messages.apply') }}</button>
+                          disabled>{{ __('messages.apply') }}</button>
                   </form>
               </div>
 

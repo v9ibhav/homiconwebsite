@@ -23,10 +23,10 @@
                 <a href="javascript:void(0)" data-href="{{ route('landing_layout_page') }}?tabpage=section_9" data-target=".payment_paste_here" data-toggle="tabajax"  class="nav-link  {{$tabpage=='section_9'?'active':''}}"   rel="tooltip"> {{__('messages.our_clients')}}</a>
             </li>
             <li class="nav-item payment-link">
-                <a href="javascript:void(0)" data-href="{{ route('landing_layout_page') }}?tabpage=section_6" data-target=".payment_paste_here" data-toggle="tabajax"  class="nav-link  {{$tabpage=='section_6'?'active':''}}"   rel="tooltip"> {{__('messages.discover_our_app')}}</a>
+                <a href="javascript:void(0)" data-href="{{ route('landing_layout_page') }}?tabpage=section_6" data-target=".payment_paste_here" data-toggle="tabajax"  class="nav-link  {{$tabpage=='section_6'?'active':''}}"   rel="tooltip"> {{__('messages.section_6')}}</a>
             </li>
             <li class="nav-item payment-link">
-                <a href="javascript:void(0)" data-href="{{ route('landing_layout_page') }}?tabpage=section_7" data-target=".payment_paste_here" data-toggle="tabajax"  class="nav-link  {{$tabpage=='section_7'?'active':''}}"   rel="tooltip"> {{__('messages.how_it_works')}}</a>
+                <a href="javascript:void(0)" data-href="{{ route('landing_layout_page') }}?tabpage=section_7" data-target=".payment_paste_here" data-toggle="tabajax"  class="nav-link  {{$tabpage=='section_7'?'active':''}}"   rel="tooltip"> {{__('messages.section_7')}}</a>
             </li>
         </ul>
         <div class="card payment-content-wrapper">
@@ -60,7 +60,7 @@
             $('.payment_paste_here').html(data);
         });
 
-        // $this.tab('show');
+        $this.tab('show');
         return false;
     });
 </script>

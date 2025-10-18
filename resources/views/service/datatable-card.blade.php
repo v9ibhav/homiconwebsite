@@ -69,23 +69,20 @@
          </li>
       @endif
       @if(!empty($data->duration))
-    @php
-        $durationParts = explode(':', $data->duration);
-        $hours = isset($durationParts[0]) ? intval($durationParts[0]) : 0;
-        $minutes = isset($durationParts[1]) ? intval($durationParts[1]) : 0;
-    @endphp
-
-    @if($hours > 0 || $minutes > 0)
-        <li class="d-inline-block fw-500 position-relative service-price">
+         @php
+            $durationParts = explode(':', $data->duration);
+            $hours = intval($durationParts[0]);
+            $minutes = intval($durationParts[1]);
+         @endphp
+         <li class="d-inline-block fw-500 position-relative service-price">
+             <!-- ({{ $data->duration }} min) -->
             @if($hours > 0)
-                ({{ $hours }} hrs @if($minutes > 0) {{ $minutes }} min @endif)
+               ({{ $hours }} hrs @if($minutes > 0) {{ $minutes }} min @endif)
             @else
-                ({{ $minutes }} min)
+               ({{ $minutes }} min)
             @endif
-        </li>
-    @endif
-@endif
-
+         </li>
+      @endif
    </ul> 
    <div
       class="mt-3">
@@ -114,7 +111,7 @@
    </div>
 </div>
 
-<script src="{{ asset('js/sweetalert2.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
 <script>
    $(document).ready(function () {
    
@@ -215,4 +212,4 @@
     window.location.href = $(this).attr('href');
 });
 });
-</script>   
+</script>

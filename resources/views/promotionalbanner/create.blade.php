@@ -1,10 +1,10 @@
 <x-master-layout>
 <head>
     <!-- Other head content -->
-<script src="{{ asset('js/sweetalert2.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
-<div class="container-fluid">
+<div class="container-fluid">   
 <div class="row">
             <div class="col-lg-12">
                 <div class="card card-block card-stretch">
@@ -50,9 +50,9 @@
                                     <div class="mb-3">
                                         <label for="short_description" class="form-label fw-bold">{{ __('messages.short_description') }}</label>
                                         <div class="form-control bg-light-subtle p-3">
-                                            <textarea class="border-0 w-100 bg-transparent" id="short_description"
+                                            <textarea class="border-0 w-100 bg-transparent" id="short_description" 
                                                       name="short_description" maxlength="120" rows="3"
-                                                      placeholder='eg. "During the service, the furniture was accidentally damaged."'
+                                                      placeholder='eg. "During the service, the furniture was accidentally damaged."' 
                                                       style="resize: none; outline: none;"></textarea>
                                         </div>
                                     </div>
@@ -98,15 +98,15 @@
                                         <option value="link">Link</option>
                                     </select>
                                 </div>
-
+                                
                                 <div class="form-group col-md-6" id="url_field" style="display: none;">
                                     <label for="banner_redirect_url">{{ __('messages.redirect_url') }} <span class="text-danger">*</span></label>
                                     <input type="url" class="form-control" name="banner_redirect_url" id="banner_redirect_url">
                                 </div>
-                               @if(auth()->user()->hasAnyRole(['admin', 'demo_admin']))
+                                @if(auth()->user()->hasRole('admin'))
                                 <div class="form-group col-md-6" id="provider_field" style="display: none;">
                                     <label for="provider_id">{{ __('messages.select_provider') }} <span class="text-danger">*</span></label>
-                                    <select class="form-control select2js" name="provider_id" id="provider_id" required
+                                    <select class="form-control select2js" name="provider_id" id="provider_id" required 
                                             data-placeholder="{{ __('messages.select_provider') }}" data-ajax--url="{{ route('ajax-list', ['type' => 'provider']) }}">
                                     </select>
                                 </div>
@@ -129,7 +129,7 @@
                                         <!-- <option value="wallet">Wallet</option> -->
                                     </select>
                                 </div>
-
+                                                              
 
                                 {{-- <div class="form-group col-md-12">
                                     <label for="description">Description</label>
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const imageInput = document.querySelector('#image');
     const imagePreview = document.querySelector('#imagePreview');
 
-
+    
     imageInput.addEventListener('change', function() {
         const file = this.files[0];
         if (file) {
@@ -205,7 +205,7 @@ $(document).ready(function() {
             $('#url_field').show();
             $('#service_field, #provider_field').hide();
             $('#banner_redirect_url').prop('required', true);
-            $('#service_id, #provider_id').prop('required', false);
+            $('#service_id, #provider_id').prop('required', false);            
         } else if($(this).val() === 'service') {
             $('#url_field').hide();
             $('#service_field,#provider_field').show();
@@ -217,7 +217,7 @@ $(document).ready(function() {
     // Initialize select2
     function loadServices(providerId) {
         $('#service_id').empty().trigger('change');
-
+        
         if (providerId) {
             $('#service_id').select2({
                 width: '100%',
@@ -244,12 +244,12 @@ $(document).ready(function() {
 
     @if(auth()->user()->hasRole('provider'))
         let providerId = $('#provider_id').val();
-        loadServices(providerId);
+        loadServices(providerId); 
     @endif
 
     $('#provider_id').change(function() {
         let providerId = $(this).val();
-        loadServices(providerId);
+        loadServices(providerId); 
     });
 
 
@@ -257,7 +257,7 @@ $(document).ready(function() {
     $('#payment_method').change(function() {
         const method = $(this).val();
         const paymentDetails = $('#payment_details');
-
+        
         if (method) {
             paymentDetails.show();
             // Load payment gateway specific fields based on selection
@@ -287,14 +287,14 @@ $(document).ready(function() {
 
     $('form').on('submit', function(e) {
         e.preventDefault();
-
+        
         const form = $(this);
         const submitBtn = form.find('button[type="submit"]');
         const formData = new FormData(this);
-
+        
         // Disable submit button and show loading
         submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status"></span> {{ __('messages.processing') }}');
-
+        
         $.ajax({
             url: form.attr('action'),
             method: 'POST',
@@ -310,14 +310,14 @@ $(document).ready(function() {
                             "amount": response.amount,
                             "currency": response.currency,
                             "name": response.name,
-
+                         
                             "order_id": response.order_id,
                             "handler": function (paymentResponse){
                                 const successUrl = new URL(response.success_url);
                                 successUrl.searchParams.append('gateway', 'razorpay');
                                 successUrl.searchParams.append('razorpay_payment_id', paymentResponse.razorpay_payment_id);
                                 successUrl.searchParams.append('banner_id', response.banner_id);
-
+                                
                                 window.location.href = successUrl.toString();
                             },
                             "prefill": {
@@ -333,7 +333,7 @@ $(document).ready(function() {
                         var rzp1 = new Razorpay(options);
                         rzp1.open();
                 }
-
+                
                 if (response.data && response.data.payment_method == 'flutterwave') {
                     const config = response.data;
                     console.log(response.data,config);
@@ -351,9 +351,9 @@ $(document).ready(function() {
                     customizations: config.customizations,
                     callback: function(response) {
                         if (response.status === "successful") {
-                            window.location.href = config.redirect_url +
-                                '&transaction_id=' + response.transaction_id +
-                                '&tx_ref=' + response.tx_ref +
+                            window.location.href = config.redirect_url + 
+                                '&transaction_id=' + response.transaction_id + 
+                                '&tx_ref=' + response.tx_ref + 
                                 '&plan_id=' + config.meta.banner_id;
                         } else {
                             alert('Payment failed. Please try again.');
@@ -365,10 +365,10 @@ $(document).ready(function() {
                 });
 
                 }
-
+                   
                 if (response.status && response.checkout_url) {
                     // Redirect to Stripe checkout
-
+                   
                     window.location.href = response.checkout_url;
                 } else if (response.status && response.message) {
                     // Success for wallet payment
@@ -379,13 +379,13 @@ $(document).ready(function() {
                     }).then(() => {
                         console.log(response);
                         window.location.href = '{{ route("promotional-banner") }}';
-                    });
+                    });              
                 }
             },
             error: function(xhr) {
                 // Reset button state
                 submitBtn.prop('disabled', false).text('{{ __('messages.submit') }}');
-
+                
                 // Handle validation errors
                 if (xhr.status === 422) {
                     console.log(1);
@@ -411,7 +411,7 @@ $(document).ready(function() {
                         text: xhr.responseJSON.message,
                     });
                 } else {
-
+                
                     Swal.fire({
                         icon: 'error',
                         title: '{{ __('messages.error') }}',

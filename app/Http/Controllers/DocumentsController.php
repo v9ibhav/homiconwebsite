@@ -99,25 +99,16 @@ class DocumentsController extends Controller
                 break;
 
             case 'delete':
-                if (!auth()->user()->can('document delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 Documents::whereIn('id', $ids)->delete();
                 $message = 'Bulk Documents Deleted';
                 break;
                 
             case 'restore':
-                if (!auth()->user()->can('document delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 Documents::whereIn('id', $ids)->restore();
                 $message = 'Bulk Documents Restored';
                 break;
                 
             case 'permanently-delete':
-                if (!auth()->user()->can('document delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 Documents::whereIn('id', $ids)->forceDelete();
                 $message = 'Bulk Documents Permanently Deleted';
                 break;

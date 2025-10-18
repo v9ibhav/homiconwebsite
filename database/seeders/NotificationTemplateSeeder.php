@@ -408,7 +408,7 @@ class NotificationTemplateSeeder extends Seeder
             Constant::updateOrCreate(['type' => $value['type'], 'value' => $value['value']], $value);
         }
 
-        // echo " Insert: notificationtempletes \n\n";
+        echo " Insert: notificationtempletes \n\n";
 
         // Enable foreign key checks!
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
@@ -1238,7 +1238,7 @@ class NotificationTemplateSeeder extends Seeder
             'subject' => 'Your Service Request Was Rejected',
             'template_detail' => '<p>Unfortunately, your service request was rejected.</p>',
         ]);
-
+    
         $template = NotificationTemplate::create([
             'type' => 'register',
             'name' => 'register',

@@ -57,7 +57,7 @@
                                     data-message="{{ __('messages.perform_action_confirmation') }}"
                                     data-confirm-button="{{ __('messages.yes') }}"
                                     data-cancel-button="{{ __('messages.no') }}"
-                                    >{{ __('messages.apply') }}</button>
+                                    disabled>{{ __('messages.apply') }}</button>
                                     @endif
                         </div>
                         </form>
@@ -439,5 +439,5 @@ function showDeleteConfirmation(serviceId) {
 }
 });
     </script>
-<script src="{{ asset('js/sweetalert2.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </x-master-layout>

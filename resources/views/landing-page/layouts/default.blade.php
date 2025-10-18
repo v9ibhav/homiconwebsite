@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html onload="pageLoad()" lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ session()->has('dir') ? session()->get('dir') : 'ltr' , }}"> 
-<!-- <html lang="en" > -->
+ <!-- <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ session()->has('dir') ? session()->get('dir') : 'ltr' , }}">  -->
+<html lang="en" onload="pageLoad()">
 <head>
     @yield('before_head')
     @include('landing-page.partials._head')
@@ -21,27 +21,6 @@
         }
     })();
 </script>
-
-{{-- <script>
-document.addEventListener("DOMContentLoaded", function () {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            fetch("{{ route('user.set-location') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                })
-            });
-        });
-    }
-});
-</script> --}}
-
 <body class="body-bg">
 
 
@@ -79,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
+    
 <script>
     function readMoreBtn() {
     var readMoreBtns = document.querySelectorAll(".readmore-btn");

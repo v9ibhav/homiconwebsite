@@ -52,7 +52,6 @@
 </section>
 </template>
 <script setup>
-import $ from 'jquery';
 import FlatPickr from 'vue-flatpickr-component'
 import { useField, useForm } from 'vee-validate'
 import 'flatpickr/dist/flatpickr.css';
@@ -91,15 +90,8 @@ const initializeFlatpickr = () => {
 
 
 // Datatable
-
+const ajaxReload = () => window.$(tableRef.value).DataTable().ajax.reload(null, false)
 const tableRef = ref(null)
-const ajaxReload = () => {
-  if ($.fn.DataTable.isDataTable(tableRef.value)) {
-    $(tableRef.value).DataTable().ajax.reload(null, false);
-  } else {
-    console.error('DataTable instance not found or not initialized yet.');
-  }
-}
 const columns = ref([
     { data: 'name', title: '', orderable: false, searchable: false}
 ]);

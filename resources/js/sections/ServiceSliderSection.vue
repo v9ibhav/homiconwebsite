@@ -1,63 +1,77 @@
 <template>
-  <section ref="servicesection">
-    <Swiper class="swiper-container" v-if="serviceDetails.length > 0" :modules="modules" :slides-per-view="5"
-      :space-between="30" :pagination="{ clickable: true }" :loop="false"
-      :autoplay="{ delay: 3000, disableOnInteraction: false }" :breakpoints="{
-        320: { slidesPerView: 1 },
-        550: { slidesPerView: 2 },
-        991: { slidesPerView: 3 },
-        1400: { slidesPerView: 3 },
-        1500: { slidesPerView: 4 },
-        1920: { slidesPerView: 4 },
-        2040: { slidesPerView: 4 },
-        2440: { slidesPerView: 4 }
-      }" @slide-change-transition-start="changeSlide">
-
-      <SwiperSlide v-for="service in serviceDetails" :key="service.id">
-        <div class=" mt-5 justify-content-center  service-slide-items-4">
-          <div class="col">
-            <ServiceCard :user_id="user_id" :service_id="service.id" :provider_id="service.provider_id"
-              :title="service.name" :image="service.attchments[0]" :userName="service.provider_name"
-              :userImage="service.provider_image" :reviewNo="service.total_rating" :reviewCount="service.total_review"
-              :price="service.price" :duration="service.duration" :favourite="isFavourite(service.id)"
-              :visit_type="service.visit_type" />
-          </div>
+    <section ref="servicesection">
+    <Swiper class="swiper-container"  v-if="serviceDetails.length > 0"
+    :modules="modules"
+    :slides-per-view="5"
+    :space-between="30"
+    :pagination="{ clickable: true  }"
+    :loop="false"
+    :autoplay="{ delay: 3000, disableOnInteraction: false }"
+    :breakpoints="{
+          320: { slidesPerView: 1 },
+          550: { slidesPerView: 2 },
+          991: { slidesPerView: 3 },
+          1400: { slidesPerView: 3 },
+          1500: { slidesPerView: 4 },
+          1920: { slidesPerView: 4 },
+          2040: { slidesPerView: 4 },
+          2440: { slidesPerView: 4 }
+        }"
+      @slide-change-transition-start="changeSlide"
+    >
+    
+    <SwiperSlide v-for="service in serviceDetails" :key="service.id">
+    <div class=" mt-5 justify-content-center  service-slide-items-4">
+        <div class="col">
+            <ServiceCard 
+              :user_id="user_id" 
+              :service_id="service.id"  
+              :provider_id="service.provider_id" 
+              :title="service.name" 
+              :image="service.attchments[0]" 
+              :userName="service.provider_name" 
+              :userImage="service.provider_image" 
+              :reviewNo="service.total_rating" 
+              :reviewCount="service.total_review"
+              :price="service.price" 
+              :duration="service.duration"
+              :favourite="isFavourite(service.id)"
+              :visit_type="service.visit_type"
+              />
         </div>
-      </SwiperSlide>
-    </Swiper>
+    </div>
+</SwiperSlide>
+</Swiper>
 
 
-    <Swiper class="swiper-container" v-if="IS_LOADER == true && serviceDetails.length == 0" :modules="modules"
-      :slides-per-view="4" :space-between="30" :pagination="{ clickable: true }" :loop="true"
-      :autoplay="{ delay: 3000, disableOnInteraction: false }" :breakpoints="{
-        320: { slidesPerView: 1 },
-        550: { slidesPerView: 2 },
-        991: { slidesPerView: 3 },
-        1400: { slidesPerView: 3 },
-        1500: { slidesPerView: 4 },
-        1920: { slidesPerView: 4 },
-        2040: { slidesPerView: 4 },
-        2440: { slidesPerView: 4 }
-      }">
-      <SwiperSlide v-for="item in 4" :key="item">
-        <div class=" mt-5 justify-content-center service-slide-items-4">
-          <div class="col">
-            <ServiceShimmer></ServiceShimmer>
-          </div>
+<Swiper class="swiper-container" v-if="IS_LOADER ==true && serviceDetails.length == 0"
+    :modules="modules"
+    :slides-per-view="4"
+    :space-between="30"
+    :pagination="{ clickable: true  }"
+    :loop="true"
+    :autoplay="{ delay: 3000, disableOnInteraction: false }"
+    :breakpoints="{
+          320: { slidesPerView: 1 },
+          550: { slidesPerView: 2 },
+          991: { slidesPerView: 3 },
+          1400: { slidesPerView: 3 },
+          1500: { slidesPerView: 4 },
+          1920: { slidesPerView: 4 },
+          2040: { slidesPerView: 4 },
+          2440: { slidesPerView: 4 }
+        }"
+    >
+    <SwiperSlide v-for="item in 4" :key="item" >
+    <div class=" mt-5 justify-content-center service-slide-items-4">
+        <div  class="col">
+            <ServiceShimmer ></ServiceShimmer>
         </div>
-      </SwiperSlide>
-    </Swiper>
-
-
-    <span class="mt-2 text-center"
-
-      v-if="IS_LOADER == false && serviceDetails.length == 0 && user_lat == null && user_lng == null">
-      {{
-        $t('messages.nodata') }} </span>
-    <span class="mt-2 text-center"
-      v-if="IS_LOADER == false && serviceDetails.length == 0 && user_lat != null && user_lng != null">
-      {{ $t('messages.no_data_in_zone') }}</span>
-  </section>
+    </div>
+</SwiperSlide>
+</Swiper>
+<span v-if="IS_LOADER ==false && serviceDetails.length == 0"> Data Not Available </span>
+</section>
 </template>
 
 <script setup>
@@ -66,21 +80,21 @@ import ServiceCard from '../components/ServiceCard.vue';
 
 
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
-import ServiceShimmer from '../shimmer/ServiceShimmer.vue';
+import ServiceShimmer  from '../shimmer/ServiceShimmer.vue';
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
 const modules = [Navigation, Pagination, Scrollbar, A11y];
-const props = defineProps(['user_id', 'favourite', 'type', 'user_lat', 'user_lng']);
+const props = defineProps(['user_id','favourite','type']);
 
-const IS_LOADER = ref(false)
+const IS_LOADER=ref(false)
 
 // Export component options
-import { computed } from 'vue';
-import { onMounted, ref } from 'vue';
-import { useSection } from '../store/index'
-import { useObserveSection } from '../hooks/Observer'
-import { SERVICE_API, PROVIDER_API, REMOVE_SESSION } from '../data/api';
+import { computed} from 'vue';
+import { onMounted,ref} from 'vue';
+import {useSection} from '../store/index'
+import {useObserveSection} from '../hooks/Observer'
+import { SERVICE_API,PROVIDER_API} from '../data/api'; 
 
 const store = useSection()
 const service_data = computed(() => store.service_list_data)
@@ -88,73 +102,73 @@ const service_data = computed(() => store.service_list_data)
 const services = ref([]);
 const serviceDetails = ref([]);
 const baseUrl = document.querySelector('meta[name="baseUrl"]').getAttribute('content');
-const [servicesection] = useObserveSection(() => store.get_service_list({ per_page: 8, category_id: null }))
+const [servicesection] = useObserveSection(() => store.get_service_list({per_page: 8, category_id: null}))
 
 const fetchService = async () => {
-  try {
-    IS_LOADER.value = true
-    const response = await fetch(SERVICE_API({ per_page: 'all', status: 1 }));
-    const data = await response.json();
-    if (data && Array.isArray(data.data)) {
-      const TotalServices = data.data;
-      const topServices = TotalServices.slice(0, 10);
-      services.value = TotalServices;
-    } else {
-      console.error('Invalid data structure or missing array of providers.');
-    }
-  } catch (error) {
-    console.error('Error fetching or processing data:', error);
-  }
-};
+      try {
+         IS_LOADER.value=true
+         const response = await fetch(SERVICE_API({ per_page: 'all', status: 1 }));
+         const data = await response.json();
+         if (data && Array.isArray(data.data)) {
+         const TotalServices = data.data;
+         const topServices = TotalServices.slice(0, 10);
+         services.value = TotalServices;
+         } else {
+         console.error('Invalid data structure or missing array of providers.');
+         }
+      } catch (error) {
+         console.error('Error fetching or processing data:', error);
+      }
+   };
 
-const fetchProviders = async () => {
-  try {
-    const response = await fetch(PROVIDER_API({ user_type: 'provider', status: 1, per_page: 'all' }));
-    const data = await response.json();
+   const fetchProviders = async () => {
+    try {
+      const response = await fetch(PROVIDER_API({ user_type: 'provider', status: 1, per_page: 'all' }));
+      const data = await response.json();
 
-    if (data && Array.isArray(data.data)) {
-      return data.data;
-    } else {
-      console.error('Invalid data structure or missing array of providers.');
+      if (data && Array.isArray(data.data)) {
+        return data.data; 
+      } else {
+        console.error('Invalid data structure or missing array of providers.');
+        return [];
+      }
+    } catch (error) {
+      console.error('Error fetching or processing data:', error);
       return [];
     }
-  } catch (error) {
-    console.error('Error fetching or processing data:', error);
-    return [];
-  }
-};
+  };
 
-const defaultEarningType = async () => {
-  try {
-    const response = await fetch(`${baseUrl}/api/configurations`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      },
-      body: JSON.stringify({})
-    });
+  const defaultEarningType = async () => {
+    try {
+        const response = await fetch(`${baseUrl}/api/configurations`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({})
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    const earningType = data && data.earning_type ? data.earning_type : 'commission';
-    return earningType;
-  } catch (error) {
-    console.error('Error fetching or processing AppSetting:', error);
-    return 'commission';
-  }
+        const earningType = data && data.earning_type ? data.earning_type : 'commission';
+        return earningType;
+    } catch (error) {
+        console.error('Error fetching or processing AppSetting:', error);
+        return 'commission';
+    }
 };
 
 
-const getCategoryDetails = async () => {
+   const getCategoryDetails = async () => {
   try {
     await store.get_landing_page_setting_list({ per_page: 10, page: 1 });
 
     const settings = store.landing_page_setting_list_data.data.find(
-      setting =>
+      setting => 
         (props.type === 'ac' && setting.key === 'section_3') ||
         (props.type === 'cleaning' && setting.key === 'section_4') ||
-        (props.type === 'recently_view' && setting.key === 'section_8') &&
+        (props.type === 'recently_view' && setting.key === 'section_8') && 
         setting.status === 1
     );
 
@@ -191,7 +205,7 @@ const getCategoryDetails = async () => {
         });
 
         serviceDetails.value = filteredServices;
-      } else {
+      } else{
         const uniqueServices = selectedServices.filter(service => {
           if (!uniqueServiceIds.has(service.id)) {
             uniqueServiceIds.add(service.id);
@@ -201,7 +215,7 @@ const getCategoryDetails = async () => {
         });
         serviceDetails.value = uniqueServices;
       }
-      IS_LOADER.value = false
+      IS_LOADER.value=false
 
     }
   } catch (error) {
@@ -215,14 +229,14 @@ const fetchRecentlyViewed = async () => {
     const data = await response.json();
 
     if (data && Array.isArray(data)) {
-      return data;
+      return data; 
     } else {
       console.error('Invalid data structure or missing array of recently viewed service IDs.');
       return [];
     }
   } catch (error) {
     console.error('Error fetching or processing recently viewed services:', error);
-    return [];
+    return []; 
   }
 };
 
@@ -237,7 +251,7 @@ function getJsonValue(jsonString, key) {
 }
 
 const isFavourite = (serviceId) => {
-  return props.favourite !== null ? props.favourite.some(item => item.service_id === serviceId) : false;
+    return props.favourite !== null ? props.favourite.some(item => item.service_id === serviceId) : false;
 };
 
 
@@ -246,27 +260,27 @@ onMounted(async () => {
   await getCategoryDetails();
 });
 
-function changeSlide(elem) {
+function changeSlide (elem) {
   // console.log(this, elem)
-  // var currentElement = jQuery(elem.el);
-  // var lastBullet = currentElement.find(".swiper-pagination-bullet:last");
-  // console.log(lastBullet)
-  // if (elem.slides.length - (elem.loopedSlides + 1) === elem.activeIndex) {
-  //     lastBullet.addClass("js_prefix-disable-bullate");
-  // } else {
-  //     lastBullet.removeClass("js_prefix-disable-bullate");
-  // }
-  // if (jQuery(window).width() > 1199) {
-  //     var innerTranslate = -(160 + swSpace[this.currentBreakpoint]) * (this.activeIndex);
-  //     currentElement.find(".swiper-wrapper").css({
-  //     "transform": "translate3d(" + innerTranslate + "px, 0, 0)"
-  //     });
-  //     currentElement.find('.swiper-slide:not(.swiper-slide-active)').css({
-  //     width: "160px"
-  //     });
-  //     currentElement.find('.swiper-slide.swiper-slide-active').css({
-  //     width: "476px"
-  //     });
-  // }
+    // var currentElement = jQuery(elem.el);
+    // var lastBullet = currentElement.find(".swiper-pagination-bullet:last");
+    // console.log(lastBullet)
+    // if (elem.slides.length - (elem.loopedSlides + 1) === elem.activeIndex) {
+    //     lastBullet.addClass("js_prefix-disable-bullate");
+    // } else {
+    //     lastBullet.removeClass("js_prefix-disable-bullate");
+    // }
+    // if (jQuery(window).width() > 1199) {
+    //     var innerTranslate = -(160 + swSpace[this.currentBreakpoint]) * (this.activeIndex);
+    //     currentElement.find(".swiper-wrapper").css({
+    //     "transform": "translate3d(" + innerTranslate + "px, 0, 0)"
+    //     });
+    //     currentElement.find('.swiper-slide:not(.swiper-slide-active)').css({
+    //     width: "160px"
+    //     });
+    //     currentElement.find('.swiper-slide.swiper-slide-active').css({
+    //     width: "476px"
+    //     });
+    // }
 }
 </script>

@@ -21,11 +21,11 @@
                         <div class="row">
                             <div class="form-group col-md-4">
                                 {{ html()->label(__('messages.code') . ' <span class="text-danger">*</span>', 'code')->class('form-control-label') }}
-                                {{-- @if($coupondata->id == null) --}}
-                                    {{ html()->text('code', old('code', $coupondata->code))->placeholder(__('messages.code'))->class('form-control')->required()}}
-                                {{-- @else
+                                @if($coupondata->id == null)
+                                    {{ html()->text('code', old('code'))->placeholder(__('messages.code'))->class('form-control')->required()}}
+                                @else
                                     <p>{{ $coupondata->code }}</p>
-                                @endif --}}
+                                @endif
                                 <small class="help-block with-errors text-danger"></small>
                             </div>
                     

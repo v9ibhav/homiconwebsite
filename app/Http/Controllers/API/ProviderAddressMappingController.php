@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProviderAddressMapping;
 use App\Http\Resources\API\ProviderAddressMappingResource;
-use App\Models\ServiceZone;
-use App\Models\ProviderZoneMapping;
 
 class ProviderAddressMappingController extends Controller
 {
@@ -65,54 +63,6 @@ class ProviderAddressMappingController extends Controller
             'data' => $items,
         ];
         
-        return comman_custom_response($response);
-    }
-
-    public function getProviderZones(Request $request)
-    {
-        // dd('hello');
-        $provider_id = $request->provider_id;
-        
-        // $zones = ServiceZone::whereHas('providers', function($query) use ($provider_id) {
-        //     $query->where('provider_zone_mappings.provider_id', $provider_id);
-        // });
-
-        $zones = ProviderZoneMapping::where('provider_id', $provider_id)->with('zone');
-
-        $per_page = config('constant.PER_PAGE_LIMIT');
-        if($request->has('per_page') && !empty($request->per_page)){
-            if(is_numeric($request->per_page)){
-                $per_page = $request->per_page;
-            }
-            if($request->per_page === 'all'){
-                $per_page = $zones->count();
-            }
-        }
-
-        $zones = $zones->orderBy('created_at','desc')->paginate($per_page);
-        
-        $response = [
-            'pagination' => [
-                'total_items' => $zones->total(),
-                'per_page' => $zones->perPage(),
-                'currentPage' => $zones->currentPage(),
-                'totalPages' => $zones->lastPage(),
-                'from' => $zones->firstItem(),
-                'to' => $zones->lastItem(),
-                'next_page' => $zones->nextPageUrl(),
-                'previous_page' => $zones->previousPageUrl(),
-            ],
-            'data' => [
-                'current_page' => $zones->currentPage(),
-                'data' => $zones->map(function($zone) {
-                    return [
-                        'id' => $zone->zone->id,
-                        'name' => $zone->zone->name
-                    ];
-                })->toArray()
-            ]
-        ];
-
         return comman_custom_response($response);
     }
 }

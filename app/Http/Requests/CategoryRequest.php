@@ -24,19 +24,9 @@ class CategoryRequest extends FormRequest
     public function rules()
     {
         $id = request()->id;
-        
-        $rules = [
+        return [
             'name'              => 'required|unique:categories,name,'.$id,
             'status'            => 'required',
         ];
-
-        // Only apply SEO validation if SEO is enabled
-        if (request()->has('seo_enabled') && request()->seo_enabled) {
-            $rules['meta_title'] = 'required|string|max:255|unique:categories,meta_title,'.$id;
-            $rules['meta_description'] = 'required|string|max:200';
-            $rules['meta_keywords'] = 'required|string';
-        }
-
-        return $rules;
     }
 }

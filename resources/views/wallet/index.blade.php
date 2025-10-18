@@ -42,7 +42,7 @@
                 data-datatable="reload" data-confirmation='true'
                 data-title="{{ __('wallet',['form'=>  __('wallet') ]) }}"
                 title="{{ __('wallet',['form'=>  __('wallet') ]) }}"
-                data-message='{{ __("Do you want to perform this action?") }}' >{{__('messages.apply')}}</button>
+                data-message='{{ __("Do you want to perform this action?") }}' disabled>{{__('messages.apply')}}</button>
             </div>
           
             </form>

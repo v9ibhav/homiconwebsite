@@ -23,53 +23,20 @@
                 <label for="avatar" class="col-sm-6 form-control-label">{{ __('messages.image') }}</label>
         <div class="col-sm-12">
             <div class="row">
-            <div class="col-sm-4">
-    <div class="image-preview-wrapper">
-    <img src="{{ getSingleMedia($landing_page_data,'login_register_image') }}" 
-         width="100"  
-         id="login_register_image_preview" 
-         alt="login_register_image" 
-         class="image login_register_image login_register_image_preview">
-    @if($landing_page_data && getMediaFileExit($landing_page_data, 'login_register_image'))
-    <a class="text-danger remove-file remove-btn"
-   href="{{ route('remove.file', ['id' => $landing_page_data->id, 'type' => 'login_register_image']) }}"
-   data--submit="confirm_form"
-   data--confirmation="true"
-   data--ajax="true"
-   title='{{ __("messages.remove_file_title" , ["name" =>  __("messages.image") ]) }}'
-   data-title='{{ __("messages.remove_file_title" , ["name" =>  __("messages.image") ]) }}'
-   data-message='{{ __("messages.remove_file_msg") }}'>
-    <i class="ri-close-circle-line"></i>
-</a>
-
-    @endif
-</div>
-</div>
-<style>
-    .image-preview-wrapper {
-    position: relative;
-    display: inline-block;
-    padding-top: 10px; /* Add padding to prevent icon overlap if needed */
-}
-
-.image-preview-wrapper .remove-btn {
-    position: absolute;
-    top: -10px;     /* Move it up outside the image */
-    right: -10px;   /* Move it to the right outside the image */
-    background: #ccd3da;
-    border-radius: 50%;
-    padding: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 10;
-}
-
-.image-preview-wrapper img {
-    display: block;
-    max-width: 100px;
-}
-
-</style>
-
+                <div class="col-sm-4">
+                            <img src="{{ getSingleMedia($landing_page_data,'login_register_image') }}" width="100"  id="login_register_image_preview" alt="login_register_image" class="image login_register_image login_register_image_preview">
+                    @if($landing_page_data && getMediaFileExit($landing_page_data, 'login_register_image'))
+                        <a class="text-danger remove-file" href="{{ route('remove.file', ['id' => $landing_page_data->id, 'type' => 'login_register_image']) }}"
+                            data--submit="confirm_form"
+                                    data--confirmation='true'
+                            data--ajax="true"
+                                    title='{{ __("messages.remove_file_title" , ["name" =>  __("messages.image") ]) }}'
+                                    data-title='{{ __("messages.remove_file_title" , ["name" =>  __("messages.image") ]) }}'
+                                    data-message='{{ __("messages.remove_file_msg") }}'>
+                            <i class="ri-close-circle-line"></i>
+                        </a>
+                    @endif
+                </div>
                 <div class="col-sm-8 mt-sm-0 mt-2">
                     <div class="custom-file col-md-12">
                         {{ html()->file('login_register_image')->class('custom-file-input custom-file-input-sm detail')->id('login_register_image')->attribute('lang', 'en')->attribute('accept', 'image/*')->attribute('onchange', 'preview()') }}
@@ -169,51 +136,4 @@
         var label = $(input).closest('.custom-file').find('.custom-file-label');
         label.text(fileName);
     }
-</script>
-<script>
-   $(document).on('click', '.remove-file', function (e) {
-    e.preventDefault();
-
-    var url = $(this).attr('href');
-    var id = getUrlParameter(url, 'id');
-    var type = getUrlParameter(url, 'type');
-
-    $.ajax({
-        url: url,
-        type: 'POST',
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-            id: id,
-            type: type
-        },
-        success: function (response) {
-            Snackbar.show({ 
-                text: 'File removed successfully.', 
-                pos: 'bottom-right', 
-                backgroundColor: '#28a745', 
-                actionTextColor: '#fff' 
-            });
-
-            // Clear image preview and remove the icon
-            $('.login_register_image_preview').attr('src', '');
-            $('.remove-file').remove();
-        },
-        error: function (xhr) {
-            Snackbar.show({ 
-                text: 'Failed to remove file.', 
-                pos: 'bottom-right', 
-                backgroundColor: '#d32f2f', 
-                actionTextColor: '#fff' 
-            });
-        }
-    });
-});
-
-// Helper to get query string values
-function getUrlParameter(url, name) {
-    let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(url);
-    return results ? decodeURIComponent(results[1]) : null;
-}
-
-
 </script>

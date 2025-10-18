@@ -39,7 +39,7 @@
                                     data-confirmation='true' data-title="{{ __('payment', ['form' => __('payment')]) }}"
                                     title="{{ __('payment', ['form' => __('payment')]) }}"
                                     data-message='{{ __('Do you want to perform this action?') }}'
-                                    >{{ __('messages.apply') }}</button>
+                                    disabled>{{ __('messages.apply') }}</button>
                             @endif
                     </div>
 

@@ -21,25 +21,25 @@
                     <div class="col-sm-12 col-lg-12">
                     @if(!empty($landing_page_data) && $landing_page_data->status)
                     
-                           @php
-                                $valueArray = json_decode($landing_page_data->value ?? '{}', true);
-                                $availableKeys = ['service', 'provider', 'categories', 'bookings'];
-                            @endphp
-                            
                             <ul class="nav flex-column nav-pills nav-fill tabslink list" id="tabs-text" role="tablist">
-                                @foreach($availableKeys as $key)
-                                    @php $value = $valueArray[$key] ?? 0; @endphp
-                                    <li class="nav-item list-item" data-section="{{ $key }}" draggable=true>
-                                        <div class="form-group mb-0">
-                                            <div class="form-control d-flex align-items-center justify-content-between">
-                                                <label for="{{ $key }}" class="mb-0">{{ __('messages.' . $key) }}</label>
-                                                <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
-                                                    <input type="checkbox" class="custom-control-input" name="{{ $key }}" id="{{ $key }}" {{ $value ? 'checked' : '' }}>
-                                                    <label class="custom-control-label" for="{{ $key }}"></label>
+                                @php
+                                    $valueArray = json_decode($landing_page_data->value, true);
+                                @endphp
+
+                                @foreach($valueArray as $key => $value)
+                                    @if(in_array($key, ['service', 'provider', 'categories', 'bookings']))
+                                        <li class="nav-item list-item" data-section="{{ $key }}" draggable=true>
+                                            <div class="form-group mb-0">
+                                                <div class="form-control d-flex align-items-center justify-content-between">
+                                                    <label for="{{ $key }}" class="mb-0">{{ __('messages.' . $key) }}</label>
+                                                    <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
+                                                        <input type="checkbox" class="custom-control-input" name="{{ $key }}" id="{{ $key }}" {{ $value ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="{{ $key }}"></label>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </li>
+                                        </li>
+                                    @endif
                                 @endforeach
                             </ul>
                         @else

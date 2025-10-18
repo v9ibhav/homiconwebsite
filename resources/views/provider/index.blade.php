@@ -57,7 +57,7 @@
                                             data-title="{{ __('provider', ['form' => __('provider')]) }}"
                                             title="{{ __('provider', ['form' => __('provider')]) }}"
                                             data-message='{{ __('Do you want to perform this action?') }}'
-                                            >{{ __('messages.apply') }}</button>
+                                            disabled>{{ __('messages.apply') }}</button>
                                     </form>
                                 </div>
                             </div>
@@ -86,7 +86,6 @@
             const canEdit = {{ json_encode($auth_user->can('provider edit')) }};
             const canDelete = {{ json_encode($auth_user->can('provider delete')) }};
             const canChangePassword = {{ json_encode($auth_user->can('provider changepassword')) }};
-            const zone_id = @json($zone_id);
             const columns = [{
                     name: 'check',
                     data: 'check',
@@ -164,7 +163,6 @@
                         d.filter = {
                             column_status: $('#column_status').val()
                         };
-                        d.zone_id = zone_id;
                     },
                 },
                 columns: columns,

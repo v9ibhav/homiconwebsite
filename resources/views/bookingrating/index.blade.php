@@ -39,7 +39,7 @@
                                 data-title="{{ __('booking rating', ['form' => __('booking rating')]) }}"
                                 title="{{ __('booking rating', ['form' => __('booking rating')]) }}"
                                 data-message='{{ __('Do you want to perform this action?') }}'
-                                >{{ __('messages.apply') }}</button>
+                                disabled>{{ __('messages.apply') }}</button>
                     </div>
 
                     </form>

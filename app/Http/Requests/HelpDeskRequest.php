@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Validation\Rule;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class HelpDeskRequest extends FormRequest
@@ -26,16 +25,10 @@ class HelpDeskRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->id ?? null;
+
         return [
                 'subject'          => 'required',
                 'description'      => 'required',
-                'email' => [
-                    'nullable',
-                    'email',
-                    Rule::unique('help_desk', 'email')->ignore($id),
-                    'required_if:mode,email'
-                ]
         ];
     }
 

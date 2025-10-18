@@ -44,21 +44,4 @@ class ProviderAddressMapping extends Model
     {
         return $query->orderByRaw('deleted_at IS NULL DESC, deleted_at DESC')->orderBy('updated_at', 'desc');
     }
-    public function scopeLocationProvider($query, $latitude, $longitude, $distance, $unit = 'km')
-    {
-        $unit_value = $unit == 'km' ? 6371 : 3959;
-
-        return $query->selectRaw("
-            provider_id,
-            ($unit_value * acos(
-                cos(radians($latitude)) * 
-                cos(radians(latitude)) * 
-                cos(radians(longitude) - radians($longitude)) + 
-                sin(radians($latitude)) * 
-                sin(radians(latitude))
-            )) AS distance
-        ")
-        ->having('distance', '<=', $distance)
-        ->orderBy('distance', 'asc');
-    }
 }

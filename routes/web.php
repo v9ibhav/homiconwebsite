@@ -6,7 +6,6 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\ServiceZoneController;
 use App\Http\Controllers\ProviderTypeController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\HandymanController;
@@ -144,14 +143,6 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::post('update-status', [ServiceController::class, 'updateStatus'])->name('service.updateStatus');
         Route::post('request-bulk-action', [ServiceController::class, 'request_bulk_action'])->name('request.bulk-action');
     });
-
-    Route::group(['middleware' => ['permission:service zone list']], function () {
-        Route::get('servicezone/index_data', [ServiceZoneController::class, 'index_data'])->name('servicezone.index_data');
-        Route::post('servicezone/bulk-action', [ServiceZoneController::class, 'bulk_action'])->name('servicezone.bulk-action');
-        Route::post('servicezone/action', [ServiceZoneController::class, 'action'])->name('servicezone.action');
-        Route::resource('servicezone', ServiceZoneController::class);
-    });
-
     Route::get('provider-change-password', [ProviderController::class, 'getChangePassword'])->name('provider.getchangepassword');
     Route::post('provider-change-password', [ProviderController::class, 'changePassword'])->name('provider.changepassword');
     Route::get('provider-time-slot/{id}', [ProviderController::class, 'getProviderTimeSlot'])->name('provider.time-slot');
@@ -320,7 +311,6 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::post('refund-cancellation-policy-save', [SettingController::class, 'saveRefundCancellationPolicy'])->name('refund-cancellation-policy-save');
 
     Route::post('general-setting-save', [SettingController::class, 'generalSetting'])->name('generalsetting');
-    Route::post('seo-setting-save', [SettingController::class, 'seoSetting'])->name('seosetting');
     Route::post('theme-setup-save', [SettingController::class, 'themeSetup'])->name('themesetup');
     Route::post('site-setup-save', [SettingController::class, 'siteSetup'])->name('sitesetup');
     Route::post('service-config-save', [SettingController::class, 'serviceConfig'])->name('serviceConfig');

@@ -15,12 +15,7 @@
             <div class="col-md-12 p-0">
                 {{ html()->form('POST', route('permission.store'))->open() }}
                 <div class="accordion cursor" id="permissionList">
-
-                
                         @foreach($permission as  $key => $data)
-
-                          @if($data->name != 'system setting')
-                         
                             <?php
                                 $a = str_replace("_"," ",$key);
                                 $k = ucwords($a);
@@ -55,7 +50,6 @@
                                     </div>
                                 </div>
                             </div>
-                            @endif
                         @endforeach
                     </div>
                     {{ html()->form()->close() }}

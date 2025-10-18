@@ -32,9 +32,6 @@ class HandymanController extends Controller
         if ($request->status == 'unassigned') {
             $pageTitle = __('messages.unassigned_list_form_title', ['form' => __('messages.handyman')]);
         }
-        if ($request->status == 'request') {
-            $pageTitle = __('messages.pending_list_form_title', ['form' => __('messages.handyman')]);
-        }
         $auth_user = authSession();
         $assets = ['datatable'];
         $list_status = $request->status;
@@ -134,25 +131,16 @@ class HandymanController extends Controller
                 break;
 
             case 'delete':
-                if (!auth()->user()->can('handyman delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 User::whereIn('id', $ids)->delete();
                 $message = 'Bulk Handyman Deleted';
                 break;
 
             case 'restore':
-                if (!auth()->user()->can('handyman delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 User::whereIn('id', $ids)->restore();
                 $message = 'Bulk Handyman Restored';
                 break;
 
             case 'permanently-delete':
-                if (!auth()->user()->can('handyman delete') && !auth()->user()->hasRole('demo_admin')) {
-                    return response()->json(['status' => false, 'message' => trans('messages.permission_denied')]);
-                }
                 User::whereIn('id', $ids)->forceDelete();
                 $message = 'Bulk Handyman Permanently Deleted';
                 break;

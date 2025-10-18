@@ -27,13 +27,13 @@
                             @csrf
                             @if (auth()->user()->hasAnyRole(['admin']))
                                 <select name="action_type" class="form-select select2" id="quick-action-type"
-                                    style="width:auto" disabled>
+                                    style="width:100%" disabled>
                                     <option value="">{{ __('messages.no_action') }}</option>
-                                    <!--<option value="change-status">{{ __('messages.status') }}</option>-->
+                                    <option value="change-status">{{ __('messages.status') }}</option>
                                     <option value="delete">{{ __('messages.delete') }}</option>
                                 </select>
                                 <div class="select-status d-none quick-action-field" id="change-status-action"
-                                    style="width:auto">
+                                    style="width:100%">
                                     <select name="status" class="form-select select2" id="status"
                                         style="width:auto">
                                         <option value="1" class="m-2">{{ __('messages.approvecash') }}</option>
@@ -46,7 +46,7 @@
                                     data-title="{{ __('cash payment list', ['form' => __('cash payment list')]) }}"
                                     title="{{ __('cash payment list', ['form' => __('cash payment list')]) }}"
                                     data-message='{{ __('Do you want to perform this action?') }}'
-                                    >{{ __('messages.apply') }}</button>
+                                    disabled>{{ __('messages.apply') }}</button>
                             @endif
                     </div>
 

@@ -171,7 +171,7 @@
                         </div>
                         @endif
                        
-                        @if ($sectionData && isset($sectionData['footer_setting']) && $sectionData['footer_setting'] == 1 && isset($sectionData['enable_popular_service']) && $sectionData['enable_popular_service'] == 1 && $services && count($services) > 0)
+                        @if ($sectionData && isset($sectionData['footer_setting']) && $sectionData['footer_setting'] == 1 && isset($sectionData['enable_popular_service']) && $sectionData['enable_popular_service'] == 1)
                         <div class="mt-5">
                             <h5 class="text-white">{{__('landingpage.popular_services')}}</h5>
                             <ul class="list-inline mt-3 mb-0 d-flex flex-wrap gap-5 popular-service-list">
@@ -282,6 +282,7 @@
 </footer>
 
 @include('partials._scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
 <script>
     $('#submit_btn').on('click', function () {
        const email = $('#email').val();

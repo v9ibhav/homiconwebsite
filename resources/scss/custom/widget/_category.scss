@@ -69,17 +69,14 @@
       right: 0;
       bottom: 0;
     }
-
     &:first-child::after,
     &:last-child::after {
       content: none;
     }
-
     a {
       cursor: pointer;
       color: var(--#{$variable-prefix}body-color);
       transition: all 0.3s ease-in-out;
-
       &::before {
         content: "";
         position: absolute;
@@ -90,11 +87,9 @@
         transition: width 0.5s ease;
       }
     }
-
     &:hover {
       a {
         color: var(--bs-primary);
-
         &::before {
           width: 100%;
           border-color: var(--bs-primary);
@@ -105,15 +100,13 @@
 }
 
 // Category Box
-.category-card {
+.category-card{
   z-index: 1;
-
-  .img-bg {
+  .img-bg{
     background-color: var(--bs-body-bg);
     padding: 1.5625rem 2.5rem;
   }
-
-  .categories-desc {
+  .categories-desc{
     color: var(--#{$variable-prefix}body-color);
   }
 }
@@ -126,7 +119,6 @@
           .card {
             height: calc(100% - 2rem);
           }
-
           height: 100%;
 
           a {
@@ -144,23 +136,19 @@
 .category-box-list {
   padding: 2.5rem 2.8125rem;
   z-index: 1;
-
   .img-bg {
     background-color: var(--bs-white);
     width: 80px;
     height: 80px;
     padding: 1.25rem;
   }
-
   .category-item {
     color: var(--#{$variable-prefix}body-color);
   }
-
   .category-link {
     background-color: $card-bg;
     color: var(--#{$variable-prefix}body-color);
   }
-
   ul {
     li {
       svg {
@@ -175,7 +163,7 @@
 .swiper-slide-active .img-bg,
 .swiper-slide-active .category-link {
   background-color: var(--bs-primary-hover-bg);
-  color: var(--bs-white);
+  color: var(--bs-white); 
 }
 
 .circle-clip-effect:hover .categories-name a,
@@ -221,12 +209,11 @@
 .category-tab-list {
   .nav-tabs {
     width: 100%;
-
+    
     .nav-item {
       max-width: 6rem;
       white-space: normal;
     }
-
     .nav-link {
       padding: 0;
       background: transparent;
@@ -234,26 +221,23 @@
       color: var(--bs-body-color);
       text-transform: capitalize;
       transition: all .3s ease 0s;
-
       &.active {
         color: var(--bs-primary);
 
-        .category-title {
+        .category-title{
           font-weight: 800;
         }
       }
-
       &:hover {
         color: var(--bs-primary);
       }
     }
-
-    .category-title {
+    .category-title{
       font-family: $font-family-monospace;
       transition: font-weight .5s ease-in;
     }
 
-    .category-tabs-image {
+    .category-tabs-image{
       height: 90px;
       width: 90px;
       line-height: 90px;
@@ -262,7 +246,6 @@
     }
 
   }
-
   .sticky {
     background: $white;
   }

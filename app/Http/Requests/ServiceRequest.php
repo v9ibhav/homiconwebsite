@@ -26,22 +26,13 @@ class ServiceRequest extends FormRequest
     public function rules()
     {
         $id = request()->id;
-        $rules = [
+        return [
             'name'                           => 'required|unique:services,name,'.$id,
             'category_id'                    => 'required',
             'type'                           => 'required',
             'price'                          => 'required|min:0',
-            'status'                         => 'required',
+            'status'                         => 'required',  
         ];
-
-        // Only apply SEO validation if SEO is enabled
-        if (request()->has('seo_enabled') && request()->seo_enabled) {
-            $rules['meta_title'] = 'required|string|max:255|unique:services,meta_title,'.$id;
-            $rules['meta_description'] = 'required|string|max:200';
-            $rules['meta_keywords'] = 'required|string';
-        }
-
-        return $rules;
     }
     public function messages()
     {

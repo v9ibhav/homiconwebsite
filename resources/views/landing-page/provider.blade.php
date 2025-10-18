@@ -4,8 +4,7 @@
 @section('content')
 <div class="blog-list section-padding ">
     <div class="container">
-        <provider-page link="{{ route('provider.data',['latitude' => $latitude, 'longitude' => $longitude]) }}"></provider-page>
+        <provider-page link="{{ route('provider.data') }}"></provider-page>
     </div>
 </div>
 @endsection
-

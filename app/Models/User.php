@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, Notifiable, HasRoles, InteractsWithMedia, SoftDeletes;
+    use HasApiTokens, Notifiable, HasRoles, InteractsWithMedia,SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -20,44 +20,14 @@ class User extends Authenticatable implements HasMedia
      * @var array
      */
     protected $fillable = [
-        'username',
-        'first_name',
-        'last_name',
-        'email',
-        'password',
-        'user_type',
-        'address',
-        'contact_number',
-        'email_verified_at',
-        'remember_token',
+        'username', 'first_name', 'last_name', 'email',
+        'password', 'user_type', 'address', 'contact_number', 'email_verified_at', 'remember_token',
         'handymantype_id',
-        'player_id',
-        'country_id',
-        'state_id',
-        'city_id',
-        'address',
-        'provider_id',
-        'status',
-        'display_name',
-        'providertype_id',
-        'is_featured',
-        'time_zone',
-        'last_notification_seen',
-        'login_type',
-        'service_address_id',
-        'handyman_zone_id',
-        'uid',
-        'is_subscribe',
-        'social_image',
-        'is_available',
-        'designation',
-        'last_online_time',
-        'known_languages',
-        'skills',
-        'description',
-        'why_choose_me',
-        'is_email_verified',
-        'language'
+        'player_id','country_id', 'state_id',  'city_id' , 'address', 'provider_id' , 'status',
+        'display_name', 'providertype_id' , 'is_featured' , 'time_zone' ,'last_notification_seen' ,
+        'login_type','service_address_id' , 'uid','is_subscribe',
+        'social_image','is_available','designation','last_online_time',
+        'known_languages','skills','description','why_choose_me','is_email_verified','language'
     ];
 
     /**
@@ -93,19 +63,18 @@ class User extends Authenticatable implements HasMedia
         'is_email_verified'    => 'integer'
     ];
 
-    protected static function boot()
-    {
+    protected static function boot(){
         parent::boot();
 
 
         static::deleted(function ($row) {
             switch ($row->user_type) {
                 case 'provider':
-                    if ($row->forceDeleting === true) {
+                    if($row->forceDeleting === true){
                         $row->providerService()->forceDelete();
                         $row->providerBooking()->forceDelete();
                         $row->blog()->forceDelete();
-                    } else {
+                    }else{
                         $row->providerService()->delete();
                         $row->providerBooking()->delete();
                         $row->blog()->delete();
@@ -113,18 +82,18 @@ class User extends Authenticatable implements HasMedia
                     break;
 
                 case 'handyman':
-                    if ($row->forceDeleting === true) {
+                    if($row->forceDeleting === true){
                         $row->handyman()->forceDelete();
-                    } else {
+                    }else{
                         $row->handyman()->delete();
                     }
                     break;
 
                 case 'customer':
-                    if ($row->forceDeleting === true) {
+                    if($row->forceDeleting === true){
                         $row->booking()->forceDelete();
                         $row->payment()->forceDelete();
-                    } else {
+                    }else{
                         $row->booking()->delete();
                         $row->payment()->delete();
                     }
@@ -135,7 +104,7 @@ class User extends Authenticatable implements HasMedia
                     break;
             }
         });
-        static::restoring(function ($row) {
+        static::restoring(function($row) {
             switch ($row->user_type) {
                 case 'provider':
                     $row->providerService()->withTrashed()->restore();
@@ -144,12 +113,12 @@ class User extends Authenticatable implements HasMedia
                     break;
 
                 case 'handyman':
-                    $row->handyman()->withTrashed()->restore();
+                   $row->handyman()->withTrashed()->restore();
                     break;
 
                 case 'customer':
-                    $row->booking()->withTrashed()->restore();
-                    $row->payment()->withTrashed()->restore();
+                   $row->booking()->withTrashed()->restore();
+                   $row->payment()->withTrashed()->restore();
                     break;
 
                 default:
@@ -160,85 +129,70 @@ class User extends Authenticatable implements HasMedia
     }
 
 
-    public function country()
-    {
-        return $this->belongsTo(Country::class, 'country_id', 'id');
+    public function country(){
+        return $this->belongsTo(Country::class, 'country_id','id');
     }
 
-    public function city()
-    {
-        return $this->belongsTo(City::class, 'city_id', 'id');
+    public function city(){
+        return $this->belongsTo(City::class, 'city_id','id');
     }
 
-    public function state()
-    {
-        return $this->belongsTo(State::class, 'state_id', 'id');
+    public function state(){
+        return $this->belongsTo(State::class, 'state_id','id');
     }
 
-    public function providertype()
-    {
-        return $this->belongsTo(ProviderType::class, 'providertype_id', 'id');
+    public function providertype(){
+        return $this->belongsTo(ProviderType::class, 'providertype_id','id');
     }
 
-    public function providers()
-    {
-        return $this->belongsTo(User::class, 'provider_id', 'id');
+    public function providers(){
+        return $this->belongsTo(User::class, 'provider_id','id');
     }
 
-    public function handyman()
-    {
-        return $this->hasMany(BookingHandymanMapping::class, 'handyman_id', 'id');
+    public function handyman(){
+        return $this->hasMany(BookingHandymanMapping::class, 'handyman_id','id');
     }
 
-    public function booking()
-    {
-        return $this->hasMany(Booking::class, 'customer_id', 'id');
+    public function booking(){
+        return $this->hasMany(Booking::class, 'customer_id','id');
     }
 
-    public function payment()
-    {
-        return $this->hasMany(Payment::class, 'customer_id', 'id');
+    public function payment(){
+        return $this->hasMany(Payment::class, 'customer_id','id');
     }
 
-    protected function getUserByKeyValue($key, $value)
-    {
+    protected function getUserByKeyValue($key,$value){
         return $this->where($key, $value)->first();
     }
-    public function providerTaxMapping()
-    {
-        return $this->hasMany(ProviderTaxMapping::class, 'provider_id', 'id');
+    public function providerTaxMapping(){
+        return $this->hasMany(ProviderTaxMapping::class, 'provider_id','id');
     }
-    public function providerTaxMappingData()
-    {
-        return $this->hasMany(ProviderTaxMapping::class, 'provider_id', 'id')->with('taxes');
+    public function providerTaxMappingData(){
+        return $this->hasMany(ProviderTaxMapping::class, 'provider_id','id')->with('taxes');
     }
 
-    public function scopeMyUsers($query, $type = '')
-    {
+    public function scopeMyUsers($query,$type=''){
         $user = auth()->user();
-        if ($user->hasRole('admin') || $user->hasRole('demo_admin')) {
-            if ($type === 'get_provider') {
-                $query->where('user_type', 'provider')->where('status', 1);
+        if($user->hasRole('admin') || $user->hasRole('demo_admin')) {
+            if($type === 'get_provider'){
+                $query->where('user_type', 'provider')->where('status',1);
             }
-            if ($type === 'get_customer') {
+            if($type === 'get_customer'){
                 $query->where('user_type', 'user');
             }
             return $query;
         }
-        if ($user->hasRole('provider')) {
-            return $query->where('user_type', 'handyman')->where('provider_id', $user->id);
+        if($user->hasRole('provider')) {
+            return $query->where('user_type', 'handyman')->where('provider_id',$user->id);
         }
     }
-    public function providerService()
-    {
-        return $this->hasMany(Service::class, 'provider_id', 'id');
+    public function providerService(){
+        return $this->hasMany(Service::class, 'provider_id','id');
     }
-    public function providerHandyman()
-    {
-        return $this->hasMany(User::class, 'provider_id', 'id');
+    public function providerHandyman(){
+        return $this->hasMany(User::class, 'provider_id','id');
     }
-    public function getServiceRating()
-    {
+    public function getServiceRating(){
         return $this->hasManyThrough(
             BookingRating::class,
             Service::class,
@@ -249,61 +203,49 @@ class User extends Authenticatable implements HasMedia
         );
     }
 
-    public function providerBooking()
-    {
-        return $this->hasMany(Booking::class, 'provider_id', 'id');
+    public function providerBooking(){
+        return $this->hasMany(Booking::class, 'provider_id','id');
     }
-    public function handymanBooking()
-    {
-        return $this->hasMany(BookingHandymanMapping::class, 'handyman_id', 'id');
+    public function handymanBooking(){
+        return $this->hasMany(BookingHandymanMapping::class, 'handyman_id','id');
     }
-    public function providerPendingBooking()
-    {
-        return $this->hasMany(Booking::class, 'provider_id', 'id')->whereNull('payment_id');
+    public function providerPendingBooking(){
+        return $this->hasMany(Booking::class, 'provider_id','id')->whereNull('payment_id');
     }
-    public function handymanPendingBooking()
-    {
-        return $this->hasMany(BookingHandymanMapping::class, 'handyman_id', 'id')->whereHas('bookings', function ($q) {
+    public function handymanPendingBooking(){
+        return $this->hasMany(BookingHandymanMapping::class, 'handyman_id','id')->whereHas('bookings', function($q){
             $q->whereNull('payment_id');
         });
     }
-    public function handymanAddressMapping()
-    {
-        return $this->belongsTo(ProviderAddressMapping::class, 'provider_id', 'id');
+    public function handymanAddressMapping(){
+        return $this->belongsTo(ProviderAddressMapping::class, 'service_address_id','id');
     }
 
-    public function handymanRating()
-    {
-        return $this->hasMany(HandymanRating::class, 'handyman_id', 'id');
+    public function handymanRating(){
+        return $this->hasMany(HandymanRating::class, 'handyman_id','id');
     }
 
-    public function providerDocument()
-    {
-        return $this->hasMany(ProviderDocument::class, 'provider_id', 'id');
+    public function providerDocument(){
+        return $this->hasMany(ProviderDocument::class, 'provider_id','id');
     }
-    public function handymantype()
-    {
-        return $this->belongsTo(HandymanType::class, 'handymantype_id', 'id');
+    public function handymantype(){
+        return $this->belongsTo(HandymanType::class, 'handymantype_id','id');
     }
-    public function subscriptionPackage()
-    {
-        return $this->hasOne(ProviderSubscription::class, 'user_id', 'id')->where('status', config('constant.SUBSCRIPTION_STATUS.ACTIVE'));
+    public function subscriptionPackage(){
+        return $this->hasOne(ProviderSubscription::class, 'user_id','id')->where('status',config('constant.SUBSCRIPTION_STATUS.ACTIVE'));
     }
-    public function providerbank()
-    {
-        return $this->hasMany(Bank::class, 'provider_id', 'id');
+    public function providerbank(){
+        return $this->hasMany(Bank::class, 'provider_id','id');
     }
-    public function wallet()
-    {
-        return $this->hasOne(Wallet::class, 'user_id', 'id')->where('status', 1);
+    public function wallet(){
+        return $this->hasOne(Wallet::class, 'user_id','id')->where('status',1);
+
     }
-    public function providerslotsmapping()
-    {
-        return $this->hasMany(ProviderSlotMapping::class, 'provider_id', 'id');
+    public function providerslotsmapping(){
+        return $this->hasMany(ProviderSlotMapping::class, 'provider_id','id');
     }
-    public function blog()
-    {
-        return $this->hasMany(Blog::class, 'author_id', 'id');
+    public function blog(){
+        return $this->hasMany(Blog::class, 'author_id','id');
     }
 
     public function scopeList($query)
@@ -314,11 +256,6 @@ class User extends Authenticatable implements HasMedia
     public function commission_earning()
     {
         return $this->hasMany(CommissionEarning::class, 'employee_id');
-    }
-
-    public function serviceZones()
-    {
-        return $this->belongsToMany(ServiceZone::class, 'provider_zone_mappings', 'provider_id', 'zone_id');
     }
 
     public static function seedSpecificUsers()
@@ -364,17 +301,5 @@ class User extends Authenticatable implements HasMedia
         foreach ($data as $userData) {
             self::create($userData);  // Using the User model to insert the data
         }
-    }
-    public function providerAddress()
-    {
-        return $this->hasMany(ProviderAddressMapping::class, 'provider_id');
-    }
-    public function zones()
-    {
-        return $this->belongsToMany(ServiceZone::class, 'provider_zone_mappings', 'provider_id', 'zone_id');
-    }
-    public function providerZones()
-    {
-        return $this->belongsToMany(ServiceZone::class, 'provider_zone_mappings', 'provider_id', 'zone_id');
     }
 }

@@ -96,14 +96,6 @@ class ServiceDetailResource extends JsonResource
             'translations' => ($finalTranslation === '[]' || !$finalTranslation) ? null : $finalTranslation,
             'reject_reason'        => $this->reject_reason,
             'service_request_status'        => $this->service_request_status,
-            'service_zone_mappings' => $this->zones->map(function($zone) {
-                return [
-                    'zone' => [
-                        'id' => $zone->id,
-                        'name' => $zone->name
-                    ]
-                ];
-            }),
         ];
     }
 }

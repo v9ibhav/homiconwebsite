@@ -304,8 +304,8 @@
         yaxis: {
             labels: {
                 offsetY:0,
-                minWidth: 60,
-                maxWidth: 60,
+                minWidth: 30,
+                maxWidth: 30,
                 style: {
                     colors: 'var(--bs-body-color)',
                 },

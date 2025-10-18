@@ -32,7 +32,7 @@ class PromotionalBannerController extends Controller
             'status' => $request->status,
         ];
         $auth_user = auth()->user();
-        return view('promotionalbanner.index', compact('auth_user', 'filter'));
+        return view('promotionalbanner.index', compact('auth_user','filter'));
     }
 
     public function index_data(DataTables $datatable, Request $request)
@@ -40,7 +40,7 @@ class PromotionalBannerController extends Controller
         $query = PromotionalBanner::with('provider')
             ->select('promotional_banners.*');
 
-        if (!auth()->user()->hasAnyRole('admin', 'demo_admin')) {
+        if (!auth()->user()->hasRole('admin')) {
             $query->where('promotional_banners.provider_id', auth()->id());
         }
 
@@ -61,17 +61,15 @@ class PromotionalBannerController extends Controller
                     $query->where(function ($q) use ($search) {
                         $q->whereRaw('LOWER(promotional_banners.id) LIKE ?', ["%{$search}%"])
                             ->orWhereRaw('LOWER(promotional_banners.updated_at) LIKE ?', ["%{$search}%"])
-                            ->orWhereHas('provider', function ($q2) use ($search) {
-                                $q2->whereRaw('LOWER(display_name) LIKE ?', ["%{$search}%"]);
-                            })
+                            ->orWhereRaw('LOWER(users.display_name) LIKE ?', ["%{$search}%"]) // Corrected to display_name
                             ->orWhereRaw('LOWER(promotional_banners.status) LIKE ?', ["%{$search}%"]);
                     });
                 }
             })
             ->editColumn('id', function ($row) {
-                return '#' . $row->id;
+                return '#'.$row->id;
             })
-            ->editColumn('display_name', function ($row) {
+             ->editColumn('display_name', function ($row) {
                 return view('provider.user', ['query' => $row->provider]); // Pass provider relation
             })
             ->orderColumn('display_name', function ($query, $order) {
@@ -101,24 +99,24 @@ class PromotionalBannerController extends Controller
             })
             ->addColumn('payment_status', function ($row) {
                 if ($row->payment_status === 'paid') {
-                    return '<span class="badge bg-success-subtle text-success">' . __('messages.paid') . '</span>';
+                    return '<span class="badge bg-success-subtle text-success">'.__('messages.paid').'</span>';
                 } elseif ($row->payment_status === 'refunded') {
-                    return '<span class="badge bg-info-subtle text-info">' . __('messages.refunded') . '</span>';
+                    return '<span class="badge bg-info-subtle text-info">'.__('messages.refunded').'</span>';
                 } else {
-                    return '<select class="form-control payment-status-dropdown" data-id="' . $row->id . '">
-                                <option value="pending" ' . ($row->payment_status === 'pending' ? 'selected' : '') . '>' . __('messages.pending') . '</option>
-                                <option value="paid" ' . ($row->payment_status === 'paid' ? 'selected' : '') . '>' . __('messages.paid') . '</option>
+                    return '<select class="form-control payment-status-dropdown" data-id="'.$row->id.'">
+                                <option value="pending" '.($row->payment_status === 'pending' ? 'selected' : '').'>'.__('messages.pending').'</option>
+                                <option value="paid" '.($row->payment_status === 'paid' ? 'selected' : '').'>'.__('messages.paid').'</option>
                             </select>';
                 }
             })
             ->addColumn('status', function ($row) {
                 switch ($row->status) {
                     case 'accepted':
-                        return '<span class="badge badge-active text-success bg-success-subtle">' . __('messages.accepted') . '</span>';
+                        return '<span class="badge badge-active text-success bg-success-subtle">'.__('messages.accepted').'</span>';
                     case 'rejected':
-                        return '<span class="badge badge-danger">' . __('messages.rejected') . '</span>';
+                        return '<span class="badge badge-danger">'.__('messages.rejected').'</span>';
                     default:
-                        return '<span class="badge badge-active text-warning bg-warning-subtle">' . __('messages.pending') . '</span>';
+                    return '<span class="badge badge-active text-warning bg-warning-subtle">'.__('messages.pending').'</span>';
                         // return '<span class="badge badge-warning">Pending</span>';
                 }
             })
@@ -127,7 +125,7 @@ class PromotionalBannerController extends Controller
             })
             ->addColumn('provider_id', function ($row) {
                 // dd($row->provider_id);
-                if (auth()->user()->hasAnyRole(['admin', 'demo_admin'])) {
+                if (auth()->user()->hasRole('admin')) {
                     return optional($row->provider_id)->username ?? 'N/A';
                 }
                 return $row->provider_id;
@@ -136,11 +134,11 @@ class PromotionalBannerController extends Controller
                 return view('promotionalbanner.action', compact('banner'))->render();
             })
 
-            ->rawColumns(['check', 'banner', 'status', 'payment_status', 'action', 'provider_name'])
+            ->rawColumns(['check', 'banner', 'status','payment_status', 'action', 'provider_name'])
             ->make(true);
     }
 
-    public function destroy($id)
+  public function destroy($id)
     {
         $banner = PromotionalBanner::findOrFail($id);
         $banner->delete();
@@ -156,15 +154,15 @@ class PromotionalBannerController extends Controller
         $setting = Setting::where('type', 'provider-banner')->first();
         $per_day_charge = $setting ? json_decode($setting->value)->promotion_price : 0;
         $paymentGateways = PaymentGateway::where('status', 1)
-            ->whereNotIn('type', ['cash'])
-            ->get();
+                            ->whereNotIn('type', ['cash'])
+                            ->get();
 
-        return view('promotionalbanner.create', compact('per_day_charge', 'paymentGateways'));
+        return view('promotionalbanner.create', compact('per_day_charge','paymentGateways'));
     }
 
     public function store(Request $request)
     {
-        $provider_id = auth()->check() && auth()->user()->hasAnyRole(['admin', 'demo_admin'])
+        $provider_id = auth()->check() && auth()->user()->hasRole('admin')
             ? $request->provider_id
             : auth()->id();
 
@@ -222,10 +220,11 @@ class PromotionalBannerController extends Controller
                 'banner_id' => $banner->id,
                 'banner_title' => $banner->title ?? 'unknown',
                 'provider_id' => $banner->provider_id,
-                'provider_name' => optional($banner->provider)->first_name . ' ' . optional($banner->provider)->last_name,
+                'provider_name' => optional($banner->provider)->first_name.' '.optional($banner->provider)->last_name,
             ]);
 
             return $this->handlePaymentMethods($request, $banner);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
@@ -252,7 +251,7 @@ class PromotionalBannerController extends Controller
     }
 
 
-    public function handleStripe(Request $request, $banner)
+        public function handleStripe(Request $request, $banner)
     {
         try {
             $gateway = PaymentGateway::where('type', 'stripe')->where('status', 1)->first();
@@ -269,16 +268,14 @@ class PromotionalBannerController extends Controller
 
             $session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
-                'line_items' => [
-                    [
-                        'price_data' => [
-                            'currency' => 'usd',
-                            'product_data' => ['name' => $request->short_description ?? '-'],
-                            'unit_amount' => (int) ($banner['total_amount'] * 100),
-                        ],
-                        'quantity' => 1,
-                    ]
-                ],
+                'line_items' => [[
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => ['name' => $request->short_description ?? '-'],
+                        'unit_amount' => (int)($banner['total_amount'] * 100),
+                    ],
+                    'quantity' => 1,
+                ]],
                 'mode' => 'payment',
                 'success_url' => route('stripe.success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('promotional-banner'),
@@ -341,7 +338,7 @@ class PromotionalBannerController extends Controller
                 'data' => [
                     'public_key' => $flutterwaveKey,
                     'tx_ref' => $tx_ref,
-                    'amount' => $banner->total_amount,
+                    'amount' => $banner->total_amount ,
                     'currency' => strtoupper('INR'),
                     'country' => 'NG',
                     'payment_options' => 'card',
@@ -375,40 +372,40 @@ class PromotionalBannerController extends Controller
 
     public function handleSuccess(Request $request)
     {
-        $session_id = $request->query('session_id'); // Get Stripe session ID (if applicable)
+              $session_id = $request->query('session_id'); // Get Stripe session ID (if applicable)
         $razorpay_payment_id = $request->query('razorpay_payment_id'); // Get Razorpay payment ID (if applicable)
 
 
         try {
 
-            // Handle Stripe Payment
-            if (!$session_id) {
-                return redirect()->route('promotional-banner')->with('error', 'Invalid Stripe payment session.');
-            }
+                // Handle Stripe Payment
+                if (!$session_id) {
+                    return redirect()->route('promotional-banner')->with('error', 'Invalid Stripe payment session.');
+                }
 
-            // Retrieve payment gateway settings for Stripe
-            $gateway = PaymentGateway::where('type', 'stripe')->where('status', 1)->first();
-            if (!$gateway) {
-                return redirect()->route('promotional-banner')->with('error', 'Stripe payment gateway configuration not found.');
-            }
+                // Retrieve payment gateway settings for Stripe
+                $gateway = PaymentGateway::where('type', 'stripe')->where('status', 1)->first();
+                if (!$gateway) {
+                    return redirect()->route('promotional-banner')->with('error', 'Stripe payment gateway configuration not found.');
+                }
 
-            $gatewayData = json_decode($gateway->value, true);
-            if (!isset($gatewayData['stripe_key'])) {
-                return redirect()->route('promotional-banner')->with('error', 'Stripe API key missing.');
-            }
+                $gatewayData = json_decode($gateway->value, true);
+                if (!isset($gatewayData['stripe_key'])) {
+                    return redirect()->route('promotional-banner')->with('error', 'Stripe API key missing.');
+                }
 
-            Stripe::setApiKey($gatewayData['stripe_key']);
+                Stripe::setApiKey($gatewayData['stripe_key']);
 
-            // Retrieve session details from Stripe
-            $session = Session::retrieve($session_id);
-            $paymentIntentId = $session->payment_intent;
-            $paymentIntent = \Stripe\PaymentIntent::retrieve($paymentIntentId);
+                // Retrieve session details from Stripe
+                $session = Session::retrieve($session_id);
+                $paymentIntentId = $session->payment_intent;
+                $paymentIntent = \Stripe\PaymentIntent::retrieve($paymentIntentId);
 
-            if ($paymentIntent->status !== 'succeeded') {
-                return redirect()->route('promotional-banner')->with('error', 'Stripe payment failed or is still pending.');
-            }
-            // Get Banner ID from Stripe session metadata
-            $bannerId = $session->metadata->banner_id ?? null;
+                if ($paymentIntent->status !== 'succeeded') {
+                    return redirect()->route('promotional-banner')->with('error', 'Stripe payment failed or is still pending.');
+                }
+                // Get Banner ID from Stripe session metadata
+                $bannerId = $session->metadata->banner_id ?? null;
 
 
             if (!$bannerId) {
@@ -433,12 +430,13 @@ class PromotionalBannerController extends Controller
                 'banner_id' => $banner->id,
                 'total_amount' => $banner->total_amount,
                 'payment_type' => 'stripe',
-                'txn_id' => $paymentIntentId,
+                'txn_id' =>  $paymentIntentId ,
                 'payment_status' => 'paid',
                 'datetime' => Carbon::now(),
             ]);
 
             return redirect()->route('promotional-banner')->with('success', 'Payment successful.');
+
         } catch (\Exception $e) {
 
             return redirect()->route('promotional-banner')->with('error', 'Error processing payment: ' . $e->getMessage());
@@ -471,14 +469,14 @@ class PromotionalBannerController extends Controller
                 'status' => 'pending',
             ]);
             BannerPayment::create([
-                'provider_id' => $banner->provider_id,
-                'banner_id' => $banner->id,
-                'total_amount' => $banner->total_amount,
-                'payment_type' => 'razorpay',
-                'txn_id' => $request->razorpay_payment_id,
-                'payment_status' => 'paid',
-                'datetime' => Carbon::now(),
-            ]);
+                            'provider_id' => $banner->provider_id,
+                            'banner_id' => $banner->id,
+                            'total_amount' => $banner->total_amount,
+                            'payment_type' => 'razorpay',
+                            'txn_id' =>  $request->razorpay_payment_id ,
+                            'payment_status' => 'paid',
+                            'datetime' => Carbon::now(),
+                        ]);
             return redirect()->route('promotional-banner')->with('success', 'Payment successful.');
         } else if ($payment->status === 'authorized') {
             $banner = PromotionalBanner::findOrFail($request->banner_id);
@@ -491,7 +489,7 @@ class PromotionalBannerController extends Controller
                 'banner_id' => $banner->id,
                 'total_amount' => $banner->total_amount,
                 'payment_type' => 'razorpay',
-                'txn_id' => $request->razorpay_payment_id,
+                'txn_id' =>  $request->razorpay_payment_id ,
                 'payment_status' => 'paid',
                 'datetime' => Carbon::now(),
             ]);
@@ -499,6 +497,7 @@ class PromotionalBannerController extends Controller
         } else {
             return redirect()->route('promotional-banner')->with('error', 'Payment verification failed.');
         }
+
     }
 
 
@@ -517,12 +516,10 @@ class PromotionalBannerController extends Controller
 
             $responseData = $response->json();
 
-            if (
-                $response->successful() &&
+            if ($response->successful() &&
                 isset($responseData['status']) &&
                 $responseData['status'] === 'success' &&
-                $responseData['data']['tx_ref'] === $tx_ref
-            ) {
+                $responseData['data']['tx_ref'] === $tx_ref) {
 
                 return $this->handlePaymentSuccess(
                     $plan_id,
@@ -533,6 +530,7 @@ class PromotionalBannerController extends Controller
             }
 
             throw new \Exception('Payment verification failed');
+
         } catch (\Exception $e) {
             Log::error('Flutterwave Payment Error', [
                 'error' => $e->getMessage(),
@@ -560,7 +558,7 @@ class PromotionalBannerController extends Controller
                 'banner_id' => $banner->id,
                 'total_amount' => $banner->total_amount,
                 'payment_type' => 'flutterwave',
-                'txn_id' => $transactionID,
+                'txn_id' =>  $transactionID ,
                 'payment_status' => 'paid',
                 'datetime' => Carbon::now(),
             ]);
@@ -657,7 +655,8 @@ class PromotionalBannerController extends Controller
             ];
 
             $this->sendNotification($notificationData);
-        } elseif ($request->status == 'rejected') {
+        }
+        elseif ($request->status == 'rejected') {
             DB::beginTransaction();
             try {
                 $currentPaymentStatus = $banner->payment_status;
@@ -733,9 +732,9 @@ class PromotionalBannerController extends Controller
     public function show($id)
     {
         $paymentGateways = PaymentGateway::where('status', 1)
-            ->whereNotIn('type', ['cash'])
-            ->get();
-        if (auth()->user()->hasAnyRole(['admin', 'demo_admin'])) {
+        ->whereNotIn('type', ['cash'])
+        ->get();
+        if (auth()->user()->hasRole('admin')) {
             $banner = PromotionalBanner::with(['service', 'provider'])->findOrFail($id);
         } else {
             $banner = PromotionalBanner::with(['service', 'provider'])
@@ -747,9 +746,8 @@ class PromotionalBannerController extends Controller
             }
         }
 
-
         $banner->banner_image = getSingleMedia($banner, 'banner_attachment');
-        return view('promotionalbanner.show', compact('banner', 'paymentGateways'));
+        return view('promotionalbanner.show', compact('banner','paymentGateways'));
     }
 
     public function processWalletPayment($request, $provider_id, $total_amount, $duration, $per_day_charge, $start_date, $end_date)
@@ -867,4 +865,7 @@ class PromotionalBannerController extends Controller
 
         return response()->json(['status' => true, 'message' => $message]);
     }
+
+
+
 }

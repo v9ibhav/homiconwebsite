@@ -13,9 +13,6 @@ use Carbon\Carbon;
 use App\Models\WithdrawMoney;
 use App\Models\PaymentGateway;
 use App\Models\User;
-use Validator;
-use App\Models\Bank;
-
 class WalletController extends Controller
 {
     use NotificationTrait;
@@ -190,7 +187,7 @@ class WalletController extends Controller
 
     public function withdrawMoney(Request $request){
 
-
+        
         $data = $request->except('_token');
 
         $payout_status='';
@@ -199,14 +196,6 @@ class WalletController extends Controller
         $payment_gateway= $data['payment_gateway'];
 
         $user_id=$data['user_id'];
-        
-        // Get bank details if payment method is bank
-        $bank_name = '';
-        if($data['payment_method'] === 'bank') {
-            $bank = Bank::find($data['bank']);
-            $bank_name = $bank ? $bank->bank_name : '';
-        }
-
         $wallet = Wallet::where('user_id', $user_id)->first();
 
         if (!$wallet) {

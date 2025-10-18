@@ -3,7 +3,9 @@
     <head>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-
+        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
 
     <div class="container-fluid">
@@ -13,8 +15,8 @@
                     <div class="card-body p-0">
                         <div class="d-flex justify-content-between align-items-center p-3 flex-wrap gap-3">
                             <h5 class="fw-bold">{{ $pageTitle ?? trans('messages.provider_promotional_banner') }}</h5>
-
-                            @if(!auth()->user()->hasAnyRole(['admin', 'demo_admin']))
+                            
+                            @if(!auth()->user()->hasRole('admin') && !auth()->user()->hasRole('demo_admin'))
                             <a href="{{ route('promotional-banner.create') }}" class="float-end me-1 btn btn-sm btn-primary">
                                 <i class="fa fa-plus-circle"></i>
                                 {{ __('messages.add_new', ['form' => __('messages.promotional_banner')]) }}
@@ -47,7 +49,7 @@
                                         <option value="rejected">{{ __('messages.rejected') }}</option>
                                     </select>
                                 </div>
-                                <button id="quick-action-apply" class="btn btn-primary" data-ajax="true" data--submit="{{ route('promotionalbanner.bulk-action') }}" data-datatable="reload" data-confirmation='true' data-title="{{ __('messages.promotional_banner') }}" title="{{ __('messages.promotional_banner') }}" data-message='{{ __('messages.confirm_action') }}' >{{ __('messages.apply') }}</button>
+                                <button id="quick-action-apply" class="btn btn-primary" data-ajax="true" data--submit="{{ route('promotionalbanner.bulk-action') }}" data-datatable="reload" data-confirmation='true' data-title="{{ __('messages.promotional_banner') }}" title="{{ __('messages.promotional_banner') }}" data-message='{{ __('messages.confirm_action') }}' disabled>{{ __('messages.apply') }}</button>
                             </form>
                         </div>
                     </div>
@@ -105,7 +107,7 @@
                 },
 
                 columns: [
-
+                        
                     {
                         name: 'check',
                         data: 'check',
@@ -133,7 +135,7 @@
                         orderable: false,
                         title: "{{ __('messages.banner') }}"
                     },
-                  @if(auth()->user()->hasAnyRole(['admin', 'demo_admin']))
+                    @if(auth()->user()->hasRole('admin'))
                     {
                         data: 'display_name',
                         name: 'display_name',
@@ -169,7 +171,7 @@
                         orderable: true,
                         title: "{{ __('messages.status') }}"
                     },
-                    @if(auth()->user()->hasAnyRole(['admin', 'demo_admin']))
+                    @if(auth()->user()->hasRole('admin'))
                     {
                         data: 'payment_status',
                         name: 'payment_status',
@@ -177,7 +179,7 @@
                         title: "{{ __('messages.payment_status') }}"
                     },
                     @endif
-                   @if(!auth()->user()->hasAnyRole(['admin', 'demo_admin']))
+                    @if(!auth()->user()->hasRole('admin'))
                     {
                         data: 'reason',
                         name: 'reason',
@@ -307,8 +309,8 @@
                 <label for="reject-reason" style="font-size: 14px; font-weight: bold; display: block; margin-bottom: 5px;">
                     Provide the reason for rejection
                 </label>
-                <textarea id="reject-reason" placeholder="e.g. Insufficient details"
-                    style="width: 100%; height: 100px; background-color: #ffffff; border: 1px solid #ccc;
+                <textarea id="reject-reason" placeholder="e.g. Insufficient details" 
+                    style="width: 100%; height: 100px; background-color: #ffffff; border: 1px solid #ccc; 
                     border-radius: 8px; padding: 10px; font-size: 14px; resize: none;"></textarea>
             </div>
         `,

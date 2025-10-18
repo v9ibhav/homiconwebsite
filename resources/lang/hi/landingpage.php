@@ -127,7 +127,7 @@
   'hrs' => 'hrs',
   'reset' => 'Reset',
   'cancel_booking' => 'Cancel Booking',
-  'cancel_reason' => 'Cancelled Reason',
+  'cancel_reason' => 'Cancelation Reason',
   'payment_option' => 'Payment Option',
   'include_package' => 'Included in this Package',
   'start' => 'Start',

@@ -22,6 +22,7 @@ use App\Http\Middleware\CheckInstallation;
 require __DIR__.'/auth.php';
 
 
+
 Route::middleware([CheckInstallation::class])->group(function () {
     Route::get('/', [FrontendController::class, 'index'])->name('frontend.index');
     Route::get('/login-page', [FrontendController::class, 'userLoginView'])->name('user.login');
@@ -70,7 +71,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('save-recently-viewed/{serviceId}',[FrontendSettingController::class,'recentlyViewedStore' ])->name('save-recently-viewed');
     Route::get('get-recently-viewed',[FrontendSettingController::class,'recentlyViewedGet' ])->name('get-recently-viewed');
 });
-Route::post('/user/set-location', [FrontendController::class, 'setLocation'])->name('user.set-location');
 Route::get('/category-datatable', [FrontendController::class, 'categoryDatatable'])->name('category.data');
 Route::get('/subcategory-datatable', [FrontendController::class, 'subCategoryDatatable'])->name('subcategory.data');
 Route::get('/service-datatable', [FrontendController::class, 'serviceDatatable'])->name('service.data');

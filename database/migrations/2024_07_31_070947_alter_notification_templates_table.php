@@ -356,7 +356,7 @@ class AlterNotificationTemplatesTable extends Migration
             Constant::updateOrCreate(['type' => $value['type'], 'value' => $value['value']], $value);
         }
 
-        // echo " Insert: notificationtempletes \n\n";
+        echo " Insert: notificationtempletes \n\n";
 
         // Enable foreign key checks!
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
@@ -942,7 +942,7 @@ class AlterNotificationTemplatesTable extends Migration
             // 'whatsapp_template_detail' => '<p>#[[ job_id ]] - [[ customer_name ]] has requested a new job [[ job_name ]].</p>',
             // 'mail_template_detail' => '<p>#[[ job_id ]] - [[ customer_name ]] has requested a new job [[ job_name ]].</p>',
             // 'sms_template_detail' => '<p>#[[ job_id ]] - [[ customer_name ]] has requested a new job [[ job_name ]].</p>',
-
+            
         ]);
 
         $template->defaultNotificationTemplateMap()->create([
@@ -1049,7 +1049,7 @@ class AlterNotificationTemplatesTable extends Migration
             // 'sms_template_detail' => '<p>Payout of [[ amount ]] has been processed to [[ provider_name ]].</p>',
         ]);
 
-
+        
 
         $template = NotificationTemplate::create([
             'type' => 'subscription_add',

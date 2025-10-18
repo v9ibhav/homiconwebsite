@@ -10,7 +10,6 @@ use App\Models\PackageServiceMapping;
 use Yajra\DataTables\DataTables;
 use App\Models\BookingPackageMapping;
 use App\Traits\TranslationTrait;
-use App\Models\Setting;
 
 class ServicePackageController extends Controller
 {
@@ -22,27 +21,16 @@ class ServicePackageController extends Controller
      */
     public function index(Request $request)
     {
-        // Get the row where type = service-configurations
-        $setting = Setting::where('type', 'service-configurations')->first();
-
-        $config = json_decode($setting->value ?? '{}', true);
-
-        // If service_packages is not enabled, block access
-        if (empty($config['service_packages']) || $config['service_packages'] != 1) {
-            abort(403, 'Permission required to view this content.');
-        }
-
         $filter = [
             'status' => $request->status,
         ];
-        $pageTitle = __('messages.packages');
+        $pageTitle = __('messages.packages' );
         $auth_user = authSession();
         $assets = ['datatable'];
-
-        return view('servicepackage.index', compact('pageTitle', 'auth_user', 'assets', 'filter'));
+        return view('servicepackage.index', compact('pageTitle','auth_user','assets','filter'));
     }
 
-    public function index_data(DataTables $datatable, Request $request)
+    public function index_data(DataTables $datatable,Request $request)
     {
         $query = ServicePackage::query();
         $primary_locale = app()->getLocale() ?? 'en';
@@ -55,61 +43,61 @@ class ServicePackageController extends Controller
         }
         $userId = auth()->user()->id;
         if (auth()->user()->hasAnyRole(['admin'])) {
-            $query = $query;
-        } else if (auth()->user()->hasAnyRole(['provider'])) {
-            $query = $query->where('service_packages.provider_id', $userId);
+            $query= $query;
+        }else if (auth()->user()->hasAnyRole(['provider'])){
+            $query= $query->where('service_packages.provider_id',$userId);
         }
         return $datatable->eloquent($query)
-            ->addColumn('check', function ($row) {
+        ->addColumn('check', function ($row) {
 
-                return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-' . $row->id . '"  name="datatable_ids[]" value="' . $row->id . '" onclick="dataTableRowCheck(' . $row->id . ',this)">';
-            })
-            ->editColumn('status', function ($query) {
-                return '<div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
+            return '<input type="checkbox" class="form-check-input select-table-row"  id="datatable-row-'.$row->id.'"  name="datatable_ids[]" value="'.$row->id.'" onclick="dataTableRowCheck('.$row->id.',this)">';
+        })
+        ->editColumn('status' , function ($query){
+            return '<div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
                 <div class="custom-switch-inner">
-                    <input type="checkbox" class="custom-control-input  change_status" data-type="servicepackage_status" ' . ($query->status ? "checked" : "") . '  value="' . $query->id . '" id="' . $query->id . '" data-id="' . $query->id . '">
-                    <label class="custom-control-label" for="' . $query->id . '" data-on-label="" data-off-label=""></label>
+                    <input type="checkbox" class="custom-control-input  change_status" data-type="servicepackage_status" '.($query->status ? "checked" : "").'  value="'.$query->id.'" id="'.$query->id.'" data-id="'.$query->id.'">
+                    <label class="custom-control-label" for="'.$query->id.'" data-on-label="" data-off-label=""></label>
                 </div>
             </div>';
-            })
+        })
+            
 
-
-            ->editColumn('name', function ($query) use ($primary_locale) {
-                $name = $this->getTranslation($query->translations, $primary_locale, 'name', $query->name) ?? $query->name;
+            ->editColumn('name', function($query) use($primary_locale){   
+                $name = $this->getTranslation($query->translations, $primary_locale, 'name', $query->name) ?? $query->name;             
                 if (auth()->user()->can('service list')) {
-                    $link = '<a class="btn-link btn-link-hover"  href=' . route('servicepackage.service', $query->id) . '>' . $name . '</a>';
+                    $link ='<a class="btn-link btn-link-hover"  href='.route('servicepackage.service',$query->id).'>'.$name.'</a>';
                 } else {
-                    $link = $name;
+                    $link = $name; 
                 }
                 return $link;
             })
-            ->filterColumn('name', function ($query, $keyword) use ($primary_locale) {
+            ->filterColumn('name',function($query,$keyword) use($primary_locale){
                 if ($primary_locale !== 'en') {
                     $query->where(function ($query) use ($keyword, $primary_locale) {
-                        $query->whereHas('translations', function ($query) use ($keyword, $primary_locale) {
-                            // Search in the translations table based on the primary_locale
-                            $query->where('locale', $primary_locale)
-                                ->where('value', 'LIKE', '%' . $keyword . '%');
-                        })
-                            ->orWhere('name', 'LIKE', '%' . $keyword . '%'); // Fallback to 'name' field if no translation is found
+                        $query->whereHas('translations', function($query) use ($keyword, $primary_locale) {
+                                // Search in the translations table based on the primary_locale
+                                $query->where('locale', $primary_locale)
+                                      ->where('value', 'LIKE', '%'.$keyword.'%');
+                            })
+                            ->orWhere('name', 'LIKE', '%'.$keyword.'%'); // Fallback to 'name' field if no translation is found
                     });
                 } else {
-                    $query->where('name', 'LIKE', '%' . $keyword . '%');
+                    $query->where('name', 'LIKE', '%'.$keyword.'%');
                 }
-
+               
             })
-            ->editColumn('provider_id', function ($query) {
+            ->editColumn('provider_id' , function ($query){
                 return view('servicepackage.service', compact('query'));
             })
-            ->filterColumn('provider_id', function ($query, $keyword) {
-                $query->whereHas('providers', function ($q) use ($keyword) {
-                    $q->where('display_name', 'like', '%' . $keyword . '%');
+            ->filterColumn('provider_id',function($query,$keyword){
+                $query->whereHas('providers',function ($q) use($keyword){
+                    $q->where('display_name','like','%'.$keyword.'%');
                 });
             })
             ->orderColumn('provider_id', function ($query, $order) {
                 $query->select('service_packages.*')
-                    ->join('users as providers', 'providers.id', '=', 'service_packages.provider_id')
-                    ->orderBy('providers.display_name', $order);
+                      ->join('users as providers', 'providers.id', '=', 'service_packages.provider_id')
+                      ->orderBy('providers.display_name', $order);   
             })
             ->editColumn('category_id', function ($query) {
                 return ($query->category_id != null && isset($query->category)) ? $query->category->name : '-';
@@ -124,7 +112,7 @@ class ServicePackageController extends Controller
                 return view('servicepackage.action', compact('servicepackage'))->render();
             })
             ->addIndexColumn()
-            ->rawColumns(['action', 'status', 'name', 'check'])
+            ->rawColumns(['action', 'status','name','check'])
             ->toJson();
     }
 
@@ -136,7 +124,7 @@ class ServicePackageController extends Controller
 
         $message = 'Bulk Action Updated';
 
-
+        
         switch ($actionType) {
             case 'change-status':
                 $branches = ServicePackage::whereIn('id', $ids)->update(['status' => $request->status]);
@@ -171,25 +159,25 @@ class ServicePackageController extends Controller
         $language_array = $this->languagesArray();
         $services = [];
         $selectedServiceId = [];
-        $servicepackage = ServicePackage::find($id);
+        $servicepackage = ServicePackage::find($id);   
         $pageTitle = trans('messages.update_form_title', ['form' => trans('messages.package')]);
-        if ($servicepackage !== null) {
+        if($servicepackage !== null){
             $serviceIds = $servicepackage->packageServices->pluck('service_id')->toArray();
             if (is_array($serviceIds)) {
-                $services = Service::whereIn('id', $serviceIds)->get();
-                $selectedServiceId = $serviceIds;
-            }
+            $services = Service::whereIn('id', $serviceIds)->get();
+            $selectedServiceId = $serviceIds;
         }
+    }
         if ($servicepackage == null) {
             $pageTitle = trans('messages.add_button_form', ['form' => trans('messages.package')]);
             $servicepackage = new ServicePackage;
-        } else {
+        }else{
             if ($servicepackage->provider_id !== auth()->user()->id && !auth()->user()->hasRole(['admin', 'demo_admin'])) {
                 return redirect(route('servicepackage.index'))->withErrors(trans('messages.demo_permission_denied'));
             }
         }
 
-        return view('servicepackage.create', compact('pageTitle', 'servicepackage', 'auth_user', 'services', 'selectedServiceId', 'language_array'));
+        return view('servicepackage.create', compact('pageTitle', 'servicepackage', 'auth_user','services','selectedServiceId','language_array'));
     }
 
     /**
@@ -218,19 +206,19 @@ class ServicePackageController extends Controller
             'package_type' => $request->package_type,
             'is_featured' => $request->is_featured,
         ];
-        $language_option = sitesetupSession('get')->language_option ?? ["ar", "nl", "en", "fr", "de", "hi", "it"];
+        $language_option = sitesetupSession('get')->language_option ?? ["ar","nl","en","fr","de","hi","it"];
         $primary_locale = app()->getLocale() ?? 'en';
         $translatableAttributes = ['name', 'description'];
-        if (!$request->is('api/*')) {
-            if ($request->id == null) {
-                if (!isset($data['package_attachment'])) {
-                    return redirect()->back()->withErrors(__('validation.required', ['attribute' => 'attachments']));
+        if(!$request->is('api/*')) {
+            if($request->id == null ){
+                if(!isset($data['package_attachment'])){
+                    return  redirect()->back()->withErrors(__('validation.required',['attribute' =>'attachments']));
                 }
             }
         }
-        if (!$request->is('api/*')) {
+        if(!$request->is('api/*')) {
             $service_package['is_featured'] = 0;
-            if ($request->has('is_featured')) {
+            if($request->has('is_featured')){
                 $service_package['is_featured'] = 1;
             }
         }
@@ -248,7 +236,7 @@ class ServicePackageController extends Controller
         }
         if (!empty($request->service_id)) {
             $service = $request->service_id;
-            if (!$request->is('api/*')) {
+            if(!$request->is('api/*')) {
                 $service = implode(",", $request->service_id);
             }
             foreach (explode(',', $service) as $key => $value) {
@@ -275,9 +263,9 @@ class ServicePackageController extends Controller
                 storeMediaFile($result, $request->package_attachment, 'package_attachment');
             } elseif (!getMediaFileExit($result, 'package_attachment')) {
                 return redirect()->route('servicepackage.create', ['id' => $result->id])
-                    ->withErrors(['package_attachment' => 'The attachments field is required.'])
-                    ->withInput();
-            }
+                ->withErrors(['package_attachment' => 'The attachments field is required.'])
+                ->withInput();
+            }	
         }
 
         $message = trans('messages.update_form', ['form' => trans('messages.package')]);
@@ -336,7 +324,7 @@ class ServicePackageController extends Controller
             if (request()->is('api/*')) {
                 return comman_message_response(__('messages.demo_permission_denied'));
             }
-            return redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
+            return  redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
         }
         $service_package = ServicePackage::find($id);
         $msg = __('messages.msg_fail_to_delete', ['item' => __('messages.package')]);
@@ -352,24 +340,23 @@ class ServicePackageController extends Controller
         return redirect()->back()->withSuccess($msg);
     }
 
-    public function action(Request $request)
-    {
+    public function action(Request $request){
         $id = $request->id;
-        $servicepackage = ServicePackage::where('id', $id)->first();
-        $msg = __('messages.not_found_entry', ['name' => __('messages.service_package')]);
-        if ($request->type === 'forcedelete') {
+        $servicepackage = ServicePackage::where('id',$id)->first();
+        $msg = __('messages.not_found_entry',['name' => __('messages.service_package')] );
+        if($request->type === 'forcedelete'){
             $bookingPackageMappings = $servicepackage->bookingPackageMappings;
             foreach ($bookingPackageMappings as $bookingPackageMapping) {
-                $booking = $bookingPackageMapping->bookings;
+                $booking = $bookingPackageMapping->bookings; 
                 if ($booking) {
-                    $booking->delete();
+                    $booking->delete(); 
                 }
                 $bookingPackageMapping->delete();
             }
             $servicepackage->forceDelete();
-            $msg = __('messages.msg_forcedelete', ['name' => __('messages.service_package')]);
+            $msg = __('messages.msg_forcedelete',['name' => __('messages.service_package')] );
         }
 
-        return comman_custom_response(['message' => $msg, 'status' => true]);
+        return comman_custom_response(['message'=> $msg , 'status' => true]);
     }
 }

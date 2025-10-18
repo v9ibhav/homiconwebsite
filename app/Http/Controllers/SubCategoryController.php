@@ -8,7 +8,6 @@ use App\Http\Requests\SubCategoryRequest;
 use Facade\Ignition\QueryRecorder\Query;
 use Yajra\DataTables\DataTables;
 use App\Traits\TranslationTrait;
-use Illuminate\Support\Str;
 class SubCategoryController extends Controller
 {
     use TranslationTrait;
@@ -25,8 +24,7 @@ class SubCategoryController extends Controller
         $pageTitle = trans('messages.list_form_title',['form' => trans('messages.subcategory')] );
         $auth_user = authSession();
         $assets = ['datatable'];
-        $globalSeoSetting = \App\Models\SeoSetting::first();
-        return view('subcategory.index',compact('pageTitle','auth_user','assets','filter', 'globalSeoSetting'));
+        return view('subcategory.index',compact('pageTitle','auth_user','assets','filter'));
     }
 
     public function index_data(DataTables $datatable,Request $request)
@@ -196,8 +194,7 @@ class SubCategoryController extends Controller
             $subcategory = new SubCategory;
         }
         
-        $globalSeoSetting = \App\Models\SeoSetting::first();
-        return view('subcategory.create', compact('pageTitle' ,'subcategory' ,'auth_user','language_array', 'globalSeoSetting'));
+        return view('subcategory.create', compact('pageTitle' ,'subcategory' ,'auth_user','language_array' ));
     }
 
     /**
@@ -212,11 +209,11 @@ class SubCategoryController extends Controller
             return  redirect()->back()->withErrors(trans('messages.demo_permission_denied'));
         }
         $data = $request->all();
-        $data['is_featured'] = $request->has('is_featured') ? $request->is_featured : 0;
-        $data['seo_enabled'] = $request->has('seo_enabled') ? $request->seo_enabled : 0;
-        if ($request->filled('meta_title')) {
-            $data['slug'] = $request->has('meta_title') ? Str::slug($request->meta_title) : null;
-        }
+
+        $data['is_featured'] = 0;
+        if($request->has('is_featured')){
+			$data['is_featured'] = $request->is_featured;
+		}
         $language_option = sitesetupSession('get')->language_option ?? ["ar","nl","en","fr","de","hi","it"];
 
         $primary_locale = app()->getLocale() ?? 'en';
@@ -228,8 +225,6 @@ class SubCategoryController extends Controller
                 }
             }
         }
-
-        
         $result = SubCategory::updateOrCreate(['id' => $data['id'] ],$data);
         if ($request->is('api/*')) {
             // Decode API JSON string
@@ -245,11 +240,6 @@ class SubCategoryController extends Controller
              return redirect()->route('subcategory.create', ['id' => $result->id])
              ->withErrors(['subcategory_image' => 'The attachments field is required.'])
              ->withInput();
-         }
-
-        // Handle SEO image upload
-        if ($request->hasFile('seo_image')) {
-            storeMediaFile($result, $request->file('seo_image'), 'seo_image');
          }
 
         $message = trans('messages.update_form',['form' => trans('messages.subcategory')]);
@@ -270,24 +260,7 @@ class SubCategoryController extends Controller
      */
     public function show($id)
     {
-        $locale = app()->getLocale();
-        $subcategory = \App\Models\SubCategory::findOrFail($id);
-        $globalSeoSetting = \App\Models\SeoSetting::first();
-
-        // Fallback logic: use subcategory meta if set, else global
-        $metaTitle = $subcategory->translate('meta_title', $locale) ?? $subcategory->meta_title ?? $globalSeoSetting->meta_title ?? $subcategory->name;
-        $metaDescription = $subcategory->translate('meta_description', $locale) ?? $subcategory->meta_description ?? $globalSeoSetting->meta_description ?? '';
-        $metaKeywords = $subcategory->translate('meta_keywords', $locale) ?? $subcategory->meta_keywords ?? $globalSeoSetting->meta_keywords ?? '';
-        $slug = $subcategory->translate('slug', $locale) ?? $subcategory->slug ?? $globalSeoSetting->slug ?? '';
-        // SEO image: try subcategory's localized image, else global
-        $seoImage = $subcategory->getFirstMediaUrl('seo_image_' . $locale);
-        if (empty($seoImage) && $globalSeoSetting) {
-            $seoImage = $globalSeoSetting->getFirstMediaUrl('seo_image');
-        }
-        $auth_user = authSession();
-        $filter = ['status' => null];
-        $pageTitle = trans('messages.list_form_title',['form' => trans('messages.subcategory')] );
-        return view('subcategory.index', compact('subcategory', 'metaTitle', 'metaDescription', 'metaKeywords', 'slug', 'seoImage', 'auth_user', 'filter', 'pageTitle', 'globalSeoSetting'));
+        //
     }
 
     /**

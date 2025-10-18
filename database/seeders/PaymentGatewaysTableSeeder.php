@@ -32,7 +32,7 @@ class PaymentGatewaysTableSeeder extends Seeder
                 'value' => NULL,
             ),
             1 => 
-           array (
+            array (
                 'created_at' => '2023-09-05 08:26:22',
                 'id' => 2,
                 'is_test' => 1,
@@ -41,11 +41,7 @@ class PaymentGatewaysTableSeeder extends Seeder
                 'title' => 'Stripe Payment',
                 'type' => 'stripe',
                 'updated_at' => '2023-09-05 08:26:22',
-                'value' => json_encode([
-                    "stripe_url" => "",
-                    "stripe_key" => "",
-                    "stripe_publickey" => ""
-                ])
+                'value' => NULL
             ),
             2 => 
             array (
@@ -57,11 +53,7 @@ class PaymentGatewaysTableSeeder extends Seeder
                 'title' => 'Razor Pay',
                 'type' => 'razorPay',
                 'updated_at' => '2023-09-05 09:49:30',
-               'value' => json_encode([
-                    "razor_url" => "",
-                    "razor_key" => "",
-                    "razor_secret" => ""
-                ]),
+                'value' => NULL
             ),
             3 => 
             array (
@@ -73,12 +65,7 @@ class PaymentGatewaysTableSeeder extends Seeder
                 'title' => 'FlutterWave',
                 'type' => 'flutterwave',
                 'updated_at' => '2023-09-05 09:50:14',
-                'value' => json_encode([
-                    "flutterwave_url" => "",
-                    "flutterwave_public" => "",
-                    "flutterwave_secret" => "",
-                    "flutterwave_encryption" => ""
-                ]),
+                'value' => NULL
             ),
         ));
         

@@ -26,45 +26,17 @@ use App\Http\Resources\API\CouponResource;
 use App\Http\Resources\API\TaxResource;
 use App\Models\Payment;
 use PDF;
-use App\Traits\ZoneTrait;
-use App\Models\ServiceZone;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Artisan;
 
 
 class CommanController extends Controller
 {
-    use ZoneTrait;
     public function getCountryList(Request $request)
     {
         $list = Country::get();
 
         return response()->json($list);
     }
-    public function RemoveSession(Request $request)
-    {
-        // Set lat/lng session values to empty strings
-        session(['user_lat' => '', 'user_lng' => '']);
-        session()->save();
 
-        // Flush general cache (including laravelcache if it's in default cache store)
-        Cache::flush();
-
-        // Optional: clear Laravel's compiled caches
-        Artisan::call('cache:clear');       // Clears application cache
-        Artisan::call('config:clear');      // Clears config cache
-        Artisan::call('route:clear');       // Clears route cache
-        Artisan::call('view:clear');        // Clears compiled blade views
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Session cleared and cache flushed successfully',
-            'data' => [
-                'user_lat' => session('user_lat'), // should return ''
-                'user_lng' => session('user_lng'),
-            ],
-        ]);
-    }
     public function getStateList(Request $request)
     {
         $list = State::where('country_id', $request->country_id)->get();
@@ -123,17 +95,20 @@ class CommanController extends Controller
         return comman_custom_response($response);
     }
     public function getSearchList(Request $request)
-    {
-        if ($request->has('provider_id')) {
+    {        
+        if ($request->has('provider_id'))
+        {
             $service = Service::where('status', 1)->where('service_type', 'service')->with(['providers', 'category', 'serviceRating'])->orderBy('created_at', 'desc');
-        } else {
-            $service = Service::where('status', 1)->where('service_request_status', "approve")->where('service_type', 'service')->with(['providers', 'category', 'serviceRating'])->orderBy('created_at', 'desc');
+        
+        }else{
+            $service = Service::where('status', 1)->where('service_request_status',"approve")->where('service_type', 'service')->with(['providers', 'category', 'serviceRating'])->orderBy('created_at', 'desc');
         }
-
+        
         if ($request->has('request_status')) {
 
             if ($request->request_status == 'reject') {
                 $service->where('is_service_request', 1)->where('service_request_status', operator: "reject");
+
             } elseif ($request->request_status == 'approve') {
                 $service->where('is_service_request', 1)->where('service_request_status', "approve");
             } else if ($request->request_status == 'pending') {
@@ -141,7 +116,7 @@ class CommanController extends Controller
                 $service->where('is_service_request', 1)->where('service_request_status', "pending");
             }
         }
-
+        
         if ($request->has('provider_id') && $request->provider_id != '') {
             $service->whereIn('provider_id', explode(',', $request->provider_id));
         }
@@ -175,32 +150,12 @@ class CommanController extends Controller
             }
         }
         if ($request->has('latitude') && !empty($request->latitude) && $request->has('longitude') && !empty($request->longitude)) {
+            $get_distance = getSettingKeyValue('site-setup', 'radious');
+            $get_unit = getSettingKeyValue('site-setup', 'distance_type');
 
-            $lat = $request->latitude ?? session('latitude');
-            $lng = $request->longitude ?? session('longitude');
-
-            $serviceZone = ServiceZone::all();
-
-            if (count($serviceZone) > 0) {
-
-                try {
-
-                    $matchingZoneIds = $this->getMatchingZonesByLatLng($lat, $lng);
-                    $service->whereHas('serviceZoneMapping', function ($service) use ($matchingZoneIds) {
-                        $service->whereIn('zone_id', $matchingZoneIds);
-                    });
-                } catch (\Exception $e) {
-                    $service = $service;
-                }
-            } else {
-
-                $get_distance = getSettingKeyValue('site-setup', 'radious') ?? 50;
-                $get_unit = getSettingKeyValue('site-setup', 'distance_type') ?? 'km';
-
-                $locations = $service->locationService($lat, $lng, $get_distance, $get_unit);
-                $service_in_location = ProviderServiceAddressMapping::whereIn('provider_address_id', $locations)->get()->pluck('service_id');
-                $service->with('providerServiceAddress')->whereIn('id', $service_in_location);
-            }
+            $locations = $service->locationService($request->latitude, $request->longitude, $get_distance, $get_unit);
+            $service_in_location = ProviderServiceAddressMapping::whereIn('provider_address_id', $locations)->get()->pluck('service_id');
+            $service->with('providerServiceAddress')->whereIn('id', $service_in_location);
         }
         $per_page = config('constant.PER_PAGE_LIMIT');
         if ($request->has('per_page') && !empty($request->per_page)) {
@@ -367,13 +322,13 @@ class CommanController extends Controller
         $email = $request->email;
         $booking_id = $request->booking_id;
 
-        $bookingdata = Booking::with('handymanAdded', 'payment', 'bookingExtraCharge', 'bookingPackage')->where('id', $booking_id)->first();
+        $bookingdata = Booking::with('handymanAdded', 'payment', 'bookingExtraCharge','bookingPackage')->where('id',$booking_id)->first();
         $payment = Payment::where('booking_id', $booking_id)->orderBy('id', 'desc')->first() ?? null;
         $emailData['email'] = $request->email;
         $emailData['title'] = env('APP_NAME');
-        $emailData['body'] = __('messages.invoice_mail_body', ['booking_id' => $booking_id]);
-        $data = AppSetting::first();
-        $pdf = PDF::loadView('booking.invoice_pdf', ['bookingdata' => $bookingdata, 'data' => $data, 'payment' => $payment]);
+        $emailData['body'] = __('messages.invoice_mail_body',['booking_id'=> $booking_id]);
+        $data =AppSetting::first();
+        $pdf = PDF::loadView('booking.invoice_pdf',['bookingdata'=>$bookingdata ,'data'=> $data, 'payment' => $payment]);
         try {
             \Mail::send('booking.invoice_email', $emailData, function ($message) use ($data, $pdf, $emailData, $booking_id) {
                 $message->to($emailData['email'])
@@ -387,6 +342,7 @@ class CommanController extends Controller
             $messagedata = __('messages.something_wrong');
             return comman_message_response($messagedata);
         }
+
     }
     public function getBankList(Request $request)
     {

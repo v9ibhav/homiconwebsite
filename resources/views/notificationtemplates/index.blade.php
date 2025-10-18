@@ -52,7 +52,7 @@
                                     data-title="{{ __('notificationtemplate', ['form' => __('notificationtemplate')]) }}"
                                     title="{{ __('notificationtemplate', ['form' => __('notificationtemplate')]) }}"
                                     data-message='{{ __('Do you want to perform this action?') }}'
-                                    >{{ __('messages.apply') }}</button>
+                                    disabled>{{ __('messages.apply') }}</button>
 
 
                             </form>

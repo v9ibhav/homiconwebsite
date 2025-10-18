@@ -94,9 +94,6 @@
                                             <li class="nav-item">
                                                 <a href="javascript:void(0)" data-href="{{ route('layout_page') }}?page=provider-banner" data-target=".paste_here" class="nav-link {{$page=='provider-banner'?'active':''}}"  data-toggle="tabajax" rel="tooltip"> {{ __('messages.provider_promotional_banner') }}</a>
                                             </li>
-                                              <li class="nav-item">
-                                                <a href="javascript:void(0)" data-href="{{ route('layout_page') }}?page=seo-setting" data-target=".paste_here" class="nav-link {{$page=='seo-setting'?'active':''}}"  data-toggle="tabajax" rel="tooltip"> {{ __('messages.seo_settings') }}</a>
-                                            </li>
                                             {{-- @if(!$isAdminOrProvider)
                                             <li class="nav-item">
                                                 <a href="javascript:void(0)" data-href="{{ route('layout_page') }}?page=provider-zip" data-target=".paste_here" class="nav-link {{$page=='provider-zip'?'active':''}}"  data-toggle="tabajax" rel="tooltip"> {{ __('messages.zip_code') }}</a>
@@ -133,51 +130,27 @@
         </div>
     </div>
 
-@section('bottom_script')
-<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
+    @section('bottom_script')
+        <script>
+            // (function($) {
+            //     "use strict";
+                $(document).ready(function(event)
+                {
+                    var $this = $('.nav-item').find('a.active');
+                    loadurl = '{{route('layout_page')}}?page={{$page}}';
 
-<script>
-    $(document).ready(function() {
-        const loadPageContent = () => {
+                    targ = $this.attr('data-target');
 
-            var $this = $('.nav-item').find('a.active');
-            var loadurl = '{{ route('layout_page') }}?page={{ $page }}';
-            var targ = $this.attr('data-target');
-            console.log('Loading content from URL:', targ);
-            
+                    id = this.id || '';
 
-            $.post(loadurl, {
-                '_token': $('meta[name="csrf-token"]').attr('content')
-            }, function(data) {
-                console.log('Content loaded successfully:', 'hello');
-                $(targ).html(data);
-                
-                initializeTagify();
-            });
+                    $.post(loadurl,{ '_token': $('meta[name=csrf-token]').attr('content') } ,function(data) {
+                        $(targ).html(data);
+                    });
 
-            $this.tab('show');
-            return false;
-        };
-
-         const initializeTagify = () => {
-            document.querySelectorAll('.meta-keywords-input').forEach(function(input) {
-                new Tagify(input, {
-                    delimiters: ",",
-                    dropdown: { enabled: 0 }
+                    $this.tab('show');
+                    return false;
                 });
-
-                // Prevent Enter from submitting the form
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') e.preventDefault();
-                });
-            });
-        };
-        
-
-        loadPageContent();
-    });
-</script>
-@endsection
-
+            // });
+        </script>
+    @endsection
 </x-master-layout>

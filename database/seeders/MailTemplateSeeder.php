@@ -402,7 +402,7 @@ class MailTemplateSeeder extends Seeder
             Constant::updateOrCreate(['type' => $value['type'], 'value' => $value['value']], $value);
         }
 
-        // echo " Insert: mailtempletes \n\n";
+        echo " Insert: mailtempletes \n\n";
 
         // Enable foreign key checks!
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
@@ -1222,7 +1222,7 @@ class MailTemplateSeeder extends Seeder
                                   <p>&nbsp;</p>
                                   <p>Best regards,<br />[[ company_name ]]</p>',
         ]);
-        // create
+        // create 
         $template = MailTemplates::create([
             'type' => 'service_request',
             'name' => 'service_request',
@@ -1271,9 +1271,9 @@ class MailTemplateSeeder extends Seeder
                                   <p><strong>User Details:</strong></p>
                                   <ul>
                                   <li>Name: [[ user_name ]]</li>
-
+                        
                                   </ul>
-
+            
                                   <p>&nbsp;</p>
                                   <p>Best regards,<br />[[ company_name ]]</p>',
         ]);
