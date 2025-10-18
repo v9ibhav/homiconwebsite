@@ -7,8 +7,8 @@
 </head>
 <style type="text/css">
     :root {
-        --bs-blue: #0d6efd;
-        --bs-indigo: #6610f2;
+        --bs-blue: #f8f9fa;
+        --bs-indigo: #f8f9fa;
         --bs-purple: #f8f9fa;
         --bs-pink: #d63384;
         --bs-red: #dc3545;

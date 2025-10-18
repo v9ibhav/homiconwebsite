@@ -63,7 +63,7 @@
                 <div style="float:right; text-align:right;">
                     <span style="color:#6C757D;">{{ __('messages.invoice_date') }}:</span><span style="color: #1C1F34; padding-right: 60px;">
                         {{ \Carbon\Carbon::parse($bookingdata->date)->format('Y-m-d') ?? '-' }}</span>
-                    <span style="color:#6C757D;">  {{ __('messages.invoice_id') }}-</span><span style="color: #5F60B9;"> {{ '#' . $bookingdata->id ?? '-'}}</span>
+                    <span style="color:#6C757D;">  {{ __('messages.invoice_id') }}-</span><span style="color: #f8f9fa;"> {{ '#' . $bookingdata->id ?? '-'}}</span>
                 </div>
             </div>
         </div>
@@ -406,13 +406,13 @@
                 policies, warranties, and liability limitations. Cancellations within 24 hours of the service may
                 incur
                 a fee. Any issues with workmanship are covered under our 30-day warranty. Contact us for details at
-                <a href="#" style="text-decoration: none; color: #5F60B9;">support@handyman.com.</a>
+                <a href="#" style="text-decoration: none; color: #f8f9fa;">support@handyman.com.</a>
             </p>
         </div>
         <footer style="margin-top: 8px;">
             <div style="display: inline; vertical-align: middle; margin-right: 10px;">
                 <h5 style="display: inline;">For more information, visit our website:</h5>
-                <a href="{{$generaldata->website}}" style="color: #5F60B9;">{{ $generaldata->website}}</a>
+                <a href="{{$generaldata->website}}" style="color: #f8f9fa;">{{ $generaldata->website}}</a>
                 <h5 style="display: block; margin: 8px 0 0;">© 2024 All Rights Reserved by IQONIC Design</h5>
             </div>
         </footer>
