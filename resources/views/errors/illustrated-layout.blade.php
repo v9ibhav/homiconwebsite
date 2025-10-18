@@ -244,7 +244,7 @@
             }
 
             .bg-purple-light {
-                background-color: #a779e9;
+                background-color: #f8f9fa;
             }
 
             .bg-no-repeat {
