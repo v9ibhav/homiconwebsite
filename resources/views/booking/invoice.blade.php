@@ -7,9 +7,9 @@
 </head>
 <style type="text/css">
     :root {
-        --bs-blue: #f8f9fa;
-        --bs-indigo: #f8f9fa;
-        --bs-purple: #f8f9fa;
+        --bs-blue: #e9ecef;
+        --bs-indigo: #e9ecef;
+        --bs-purple: #e9ecef;
         --bs-pink: #d63384;
         --bs-red: #dc3545;
         --bs-orange: #fd7e14;
@@ -21,7 +21,7 @@
         --bs-white: #fff;
         --bs-gray: #6c757d;
         --bs-gray-dark: #343a40;
-        --bs-gray-100: #f8f9fa;
+        --bs-gray-100: #e9ecef;
         --bs-gray-200: #e9ecef;
         --bs-gray-300: #dee2e6;
         --bs-gray-400: #ced4da;
@@ -36,7 +36,7 @@
         --bs-info: #0dcaf0;
         --bs-warning: #ffc107;
         --bs-danger: #dc3545;
-        --bs-light: #f8f9fa;
+        --bs-light: #e9ecef;
         --bs-dark: #212529;
         --bs-primary-rgb: 13, 110, 253;
         --bs-secondary-rgb: 108, 117, 125;

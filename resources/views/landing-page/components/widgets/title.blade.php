@@ -21,7 +21,7 @@
          <span class="highlighted-text-swipe">{{$title-text-highlight}}</span>
          <span class="highlighted-image">
             <svg xmlns="http://www.w3.org/2000/svg" width="155" height="12" viewBox="0 0 155 12" fill="none">
-               <path d="M2.5 9.5C3.16964 9.26081 78.8393 -2.45948 152.5 4.9554" stroke="#f8f9fa" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+               <path d="M2.5 9.5C3.16964 9.26081 78.8393 -2.45948 152.5 4.9554" stroke="#e9ecef" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
          </span>
       </div> {{$title-text-last}}
