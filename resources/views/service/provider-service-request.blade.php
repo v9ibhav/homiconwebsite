@@ -269,7 +269,7 @@ function showApprovalConfirmation(serviceId, status) {
         showCancelButton: true,
         cancelButtonText: '<span style="color: black; font-weight: 500;">{{ __("messages.cancel") }}</span>', // Black text, medium weight
         confirmButtonText: '{{ __("messages.approve") }}',
-        confirmButtonColor: '#e9ecef', // Light greyish confirm button
+        confirmButtonColor: '#dee2e6', // Light greyish confirm button
         cancelButtonColor: '#E5E7EB', // Light gray cancel button
         reverseButtons: true // Reverse button positions
     }).then((result) => {

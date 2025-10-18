@@ -1139,7 +1139,7 @@ Reason Modal
                     title: 'Done',
                     text: data.message,
                     icon: 'success',
-                    iconColor: '#e9ecef'
+                    iconColor: '#dee2e6'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         IsLoading = false;
@@ -1215,7 +1215,7 @@ Reason Modal
             text: 'Do you want to end this service?',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#e9ecef',
+            confirmButtonColor: '#dee2e6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes',
             cancelButtonText: 'No'

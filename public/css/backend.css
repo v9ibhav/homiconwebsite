@@ -804,9 +804,9 @@ a {
 
 :root,
 [data-bs-theme=light] {
-  --bs-blue: #e9ecef;
-  --bs-indigo: #e9ecef;
-  --bs-purple: #e9ecef;
+  --bs-blue: #dee2e6;
+  --bs-indigo: #dee2e6;
+  --bs-purple: #dee2e6;
   --bs-pink: #E877FF;
   --bs-red: #FB2F2F;
   --bs-orange: #faa938;
