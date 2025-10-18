@@ -7,9 +7,9 @@
 </head>
 <style type="text/css">
     :root {
-        --bs-blue: #dee2e6;
-        --bs-indigo: #dee2e6;
-        --bs-purple: #dee2e6;
+        --bs-blue: #ced4da;
+        --bs-indigo: #ced4da;
+        --bs-purple: #ced4da;
         --bs-pink: #d63384;
         --bs-red: #dc3545;
         --bs-orange: #fd7e14;
@@ -21,9 +21,9 @@
         --bs-white: #fff;
         --bs-gray: #6c757d;
         --bs-gray-dark: #343a40;
-        --bs-gray-100: #dee2e6;
-        --bs-gray-200: #dee2e6;
-        --bs-gray-300: #dee2e6;
+        --bs-gray-100: #ced4da;
+        --bs-gray-200: #ced4da;
+        --bs-gray-300: #ced4da;
         --bs-gray-400: #ced4da;
         --bs-gray-500: #adb5bd;
         --bs-gray-600: #6c757d;
@@ -36,7 +36,7 @@
         --bs-info: #0dcaf0;
         --bs-warning: #ffc107;
         --bs-danger: #dc3545;
-        --bs-light: #dee2e6;
+        --bs-light: #ced4da;
         --bs-dark: #212529;
         --bs-primary-rgb: 13, 110, 253;
         --bs-secondary-rgb: 108, 117, 125;
@@ -61,7 +61,7 @@
         --bs-body-bg: #fff;
         --bs-border-width: 1px;
         --bs-border-style: solid;
-        --bs-border-color: #dee2e6;
+        --bs-border-color: #ced4da;
         --bs-border-color-translucent: rgba(0, 0, 0, 0.175);
         --bs-border-radius: 0.375rem;
         --bs-border-radius-sm: 0.25rem;

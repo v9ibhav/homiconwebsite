@@ -137,7 +137,7 @@
                title: 'Done',
                text: response.message,
                icon: 'success',
-               iconColor: '#dee2e6'
+               iconColor: '#ced4da'
                }).then((result) => {
                   if (result.isConfirmed) {
                      $('#datatable').DataTable().ajax.reload();
@@ -169,7 +169,7 @@
                title: 'Done',
                text: response.message,
                icon: 'success',
-               iconColor: '#dee2e6'
+               iconColor: '#ced4da'
                }).then((result) => {
                   if (result.isConfirmed) {
                      $('#datatable').DataTable().ajax.reload();

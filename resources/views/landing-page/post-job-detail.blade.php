@@ -291,7 +291,7 @@
                 title: 'Done',
                 text: response.message,
                 icon: 'success',
-                iconColor: '#dee2e6'
+                iconColor: '#ced4da'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         const postRequestId = $('#post_request_id').val();
